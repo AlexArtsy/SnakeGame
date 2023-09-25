@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SnakeGame
 {
-    internal class Snake
+    internal class SnakeTail : SnakeMember
     {
         #region Поля
         #endregion
@@ -18,6 +18,10 @@ namespace SnakeGame
         #endregion
 
         #region Конструкторы
+        public SnakeTail(int x, int y) : base(x, y)
+        {
+
+        }
         #endregion
     }
 }

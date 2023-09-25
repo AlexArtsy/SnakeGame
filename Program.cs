@@ -7,11 +7,19 @@ namespace SnakeGame
         static void Main(string[] args)
         {
             State state = new State();
+            Control ctrl = new Control(state);
 
-            Task rendering = new Task(() => Render(state));
-            Task control = new Task(() => Control(state));
+            Task rendering = new Task(() => Render(state, ctrl));
+            Task control = new Task(() =>
+            {
+                while (true)
+                {
+                    ctrl.KeyListener();
+                }
+            });
 
-            state.Move = state.MoveDown;
+
+            ctrl.Move = ctrl.MoveDown;
 
             rendering.Start();
             control.Start();
@@ -20,48 +28,17 @@ namespace SnakeGame
             control.Wait();
         }
 
-        static void Render(State state)
+        static void Render(State state, Control control)
         {
             while (true)
             {
                 Console.Clear();
                 Console.SetCursorPosition(state.X, state.Y);
                 Console.Write("Змеюга ползает");
-                state.Move();
+                control.Move();
                 Thread.Sleep(500);
             }
 
-        }
-
-        static void Control(State state)
-        {
-            while (true)
-            {
-                var pressedKey = Console.ReadKey(true);
-                switch (pressedKey.Key)
-                {
-                    case ConsoleKey.Tab:
-                        break;
-                    case ConsoleKey.LeftArrow:
-                        state.Move = state.MoveLeft;
-                        break;
-                    case ConsoleKey.RightArrow:
-                        state.Move = state.MoveRight;
-                        break;
-                    case ConsoleKey.UpArrow:
-                        state.Move = state.MoveUp;
-                        break;
-                    case ConsoleKey.DownArrow:
-                        state.Move = state.MoveDown;
-                        break;
-                    case ConsoleKey.Enter:
-                        break;
-                    case ConsoleKey.Backspace:
-                        break;
-                    default:
-                        break;
-                }
-            }
         }
     }
 }

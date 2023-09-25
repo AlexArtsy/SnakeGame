@@ -12,15 +12,18 @@ namespace SnakeGame
         #endregion
 
         #region Свойства
+        public int Width { get; set; }
+        public int Height { get; set; }
         #endregion
 
         #region Методы
         #endregion
 
         #region Конструкторы
-        public GameField()
+        public GameField(int width = 50, int height = 50)
         {
-
+            this.Width = width;
+            this.Height = height;
         }
         #endregion
     }

@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace SnakeGame
 {
-    internal class SnakeMember
+    internal class Snake
     {
         #region Поля
         #endregion
 
         #region Свойства
+
         #endregion
 
         #region Методы

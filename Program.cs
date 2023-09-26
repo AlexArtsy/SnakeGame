@@ -6,38 +6,47 @@ namespace SnakeGame
     {
         static void Main(string[] args)
         {
-            State state = new State();
-            Control ctrl = new Control(state);
+            State state = new State(15, 15, 1);
 
-            Task rendering = new Task(() => Render(state, ctrl));
-            Task control = new Task(() =>
+            var game = new SnakeGame(state);
+
+            Task task1 = new Task(() => game.Run());
+            Task task2 = new Task(() =>
             {
                 while (true)
                 {
-                    ctrl.KeyListener();
+                    var pressedKey = Console.ReadKey(true);
+                    switch (pressedKey.Key)
+                    {
+                        case ConsoleKey.Tab:
+                            break;
+                        case ConsoleKey.LeftArrow:
+                            state.HeadDirection = "Left";
+                            break;
+                        case ConsoleKey.RightArrow:
+                            state.HeadDirection = "Right";
+                            break;
+                        case ConsoleKey.UpArrow:
+                            state.HeadDirection = "Up";
+                            break;
+                        case ConsoleKey.DownArrow:
+                            state.HeadDirection = "Down";
+                            break;
+                        case ConsoleKey.Enter:
+                            break;
+                        case ConsoleKey.Backspace:
+                            break;
+                        default:
+                            break;
+                    }
                 }
             });
 
+            task1.Start();
+            task2.Start();
 
-            ctrl.Move = ctrl.MoveDown;
-
-            rendering.Start();
-            control.Start();
-
-            rendering.Wait();
-            control.Wait();
-        }
-
-        static void Render(State state, Control control)
-        {
-            while (true)
-            {
-                Console.Clear();
-                Console.SetCursorPosition(state.X, state.Y);
-                Console.Write("Змеюга ползает");
-                control.Move();
-                Thread.Sleep(500);
-            }
+            task1.Wait();
+            task2.Wait();
 
         }
     }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SnakeGame
 {
-    internal class Direction
+    public class Direction
     {
         public string Value { get; set; }
 

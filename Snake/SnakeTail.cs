@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SnakeGame
+namespace SnakeGame.Snake
 {
     internal class SnakeTail : SnakeMember
     {
@@ -15,12 +15,16 @@ namespace SnakeGame
         #endregion
 
         #region Методы
+
+        
         #endregion
 
         #region Конструкторы
-        public SnakeTail(int x, int y) : base(x, y)
+        public SnakeTail(int prevX, int prevY, State state, string direction) : base(prevX, prevY, state, direction)
         {
-
+            this.Color = Console.ForegroundColor;
+            this.BgColor = Console.BackgroundColor;
+            this.Figure = "_";
         }
         #endregion
     }

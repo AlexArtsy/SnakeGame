@@ -17,7 +17,9 @@ namespace SnakeGame.Snake
         public int X { get; set; }
         public int Y { get; set; }
         public string Figure { get; set; }
-        public Direction Direction { get; set; }
+        //public Direction Direction { get; set; }
+        public string CurrentDirection { get; set; }
+        public string NewDirection { get; set; }
         public int Speed { get; set; }
         public ConsoleColor Color { get; set; }
         public ConsoleColor BgColor { get; set; }
@@ -44,9 +46,9 @@ namespace SnakeGame.Snake
         {
             X = X == 0 ? state.fieldWidth - 1 : X - 1;
         }
-        public void Move()
+        public virtual void Move()
         {
-            switch (Direction.Value)
+            switch (this.NewDirection)
             {
                 case "Up":
                     MoveUp();
@@ -76,14 +78,15 @@ namespace SnakeGame.Snake
         #endregion
 
         #region Конструкторы
-        public SnakeMember(int x, int y, State state, Direction direction)
+        public SnakeMember(int x, int y, State state, string direction)
         {
-            X = x;
-            Y = y;
+            this.X = x;
+            this.Y = y;
             Figure = "O";
             Color = ConsoleColor.Black;
             BgColor = ConsoleColor.White;
-            Direction = direction;
+            this.NewDirection = direction;
+            this.CurrentDirection = direction;
             this.state = state;
         }
         #endregion

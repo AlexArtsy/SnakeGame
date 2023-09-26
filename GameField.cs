@@ -9,21 +9,21 @@ namespace SnakeGame
     internal class GameField
     {
         #region Поля
+        private int width;
+        private int height;
         #endregion
 
         #region Свойства
-        public int Width { get; set; }
-        public int Height { get; set; }
         #endregion
 
         #region Методы
         #endregion
 
         #region Конструкторы
-        public GameField(int width = 50, int height = 50)
+        public GameField(State state)
         {
-            this.Width = width;
-            this.Height = height;
+            state.fieldWidth = width;
+            state.fieldHeight = height;
         }
         #endregion
     }

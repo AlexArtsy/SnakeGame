@@ -11,7 +11,9 @@ namespace SnakeGame
         int Speed { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
-        Direction Direction { get; set; }
+        string CurrentDirection { get; set; }
+        string NewDirection { get; set; }
+
 
         void Move();
 

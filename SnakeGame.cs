@@ -9,10 +9,11 @@ namespace SnakeGame
     internal class SnakeGame
     {
         #region Поля
-
         private readonly State state;
         private readonly GameField field;
         private readonly Control gameControl;
+        private RenderProcessor rendering;
+        private readonly Snake.Snake snake;
         #endregion
 
         #region Свойства
@@ -21,7 +22,11 @@ namespace SnakeGame
         #region Методы
         public void Run()
         {
-
+            while (true)
+            {
+                this.snake.Move();
+                Thread.Sleep(1000);
+            }
         }
         #endregion
 
@@ -29,8 +34,11 @@ namespace SnakeGame
         public SnakeGame(State state)
         {
             this.state = state;
-            this.field = new GameField();
+            //this.field = new GameField();
             this.gameControl = new Control(state);
+
+            this.snake = new Snake.Snake(5, 3, state);
+
         }
         #endregion
     }

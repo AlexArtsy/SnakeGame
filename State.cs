@@ -13,10 +13,11 @@ namespace SnakeGame
         public int fieldHeight;
         public int fieldWidth;
         public int speed;
+        public RenderProcessor rendering = new RenderProcessor();
         #endregion
 
         #region Свойства
-        public Direction HeaDirection { get; set; }
+        public string HeadDirection { get; set; }
         #endregion
 
         #region Методы
@@ -25,9 +26,12 @@ namespace SnakeGame
         #endregion
 
         #region Конструкторы
-        public State(string direction)
+        public State(int width, int height, int speed)
         {
-            this.HeaDirection = new Direction(direction);
+            this.fieldWidth = width;
+            this.fieldHeight = height;
+            this.speed = speed;
+            this.HeadDirection = "Right";
         }
         #endregion
     }

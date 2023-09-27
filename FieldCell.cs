@@ -14,19 +14,16 @@ namespace SnakeGame
         #endregion
 
         #region Свойства
-        public int X { get; set; }  //  Внешний Х
-        public int Y { get; set; }  //   Внешний Y
-        public string Value { get; set; }
+        public FieldCoordinates Position { get; set; }
+        public IFieldCell Value { get; set; }
         public ConsoleColor Color { get; set; }
         public ConsoleColor BgColor { get; set; }
         #endregion
 
         #region Методы
 
-        public void UpdateCell(string value, ConsoleColor color, ConsoleColor bg)
+        public void UpdateCell(IFieldCell value)
         {
-            this.Color = color;
-            this.BgColor = bg;
             this.Value = value;
             Changed?.Invoke(this);
         }
@@ -40,11 +37,10 @@ namespace SnakeGame
         #endregion
 
         #region Конструкторы
-        public FieldCell(int x, int y, string value)
+        public FieldCell(int x, int y, IFieldCell eny)
         {
-            this.X = x;
-            this.Y = y;
-            this.Value = value;
+            this.Position = new FieldCoordinates(x, y);
+            this.Value = eny;
             Color = ConsoleColor.Black;
             BgColor = ConsoleColor.White;
         }

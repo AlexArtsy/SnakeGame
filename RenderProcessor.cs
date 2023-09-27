@@ -23,31 +23,30 @@ namespace SnakeGame
             Console.Write(new String(' ', 1));
             Console.SetCursorPosition(x, y);
         } 
-        public void RenderSnakeMember(SnakeMember member)
+
+        public void UpdateFieldCell(FieldCell cell)
         {
-            ClearCell(member.X, member.Y);
-            Console.ForegroundColor = member.Color;
-            Console.BackgroundColor = member.BgColor;
-            Console.Write(member.Figure);
+            ClearCell(cell.Position.X, cell.Position.Y);
+            Console.ForegroundColor = cell.Color;
+            Console.BackgroundColor = cell.BgColor;
+            Console.Write(cell.Value.Figure);
 
             Console.SetCursorPosition(Console.WindowWidth - 1, Console.WindowHeight - 1);
         }
 
-        public void UpdateFieldCell(FieldCell cell)
+        private void SubscribeFieldCellChangingEvent(GameField gameField)
         {
-            ClearCell(cell.X, cell.Y);
-            Console.ForegroundColor = cell.Color;
-            Console.BackgroundColor = cell.BgColor;
-            Console.Write(cell.Value);
-
-            Console.SetCursorPosition(Console.WindowWidth - 1, Console.WindowHeight - 1);
+            foreach (var fieldCell in gameField.Field)
+            {
+                fieldCell.Changed += UpdateFieldCell;
+            }
         }
         #endregion
 
         #region Конструкторы
-        public RenderProcessor()
+        public RenderProcessor(GameField field)
         {
-
+            SubscribeFieldCellChangingEvent(field);
         }
         #endregion
     }

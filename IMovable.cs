@@ -9,11 +9,8 @@ namespace SnakeGame
     internal interface IMovable
     {
         int Speed { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
-        string CurrentDirection { get; set; }
-        string NewDirection { get; set; }
-
+        FieldCoordinates Position { get; set; }
+        FieldCoordinates NextPosition { get; set; }
 
         void Move();
 

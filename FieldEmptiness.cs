@@ -6,34 +6,27 @@ using System.Threading.Tasks;
 
 namespace SnakeGame
 {
-    internal class SnakeFood : IFieldCell
+    internal class FieldEmptiness : IFieldCell
     {
         #region Поля
         #endregion
 
         #region Свойства
-        public FieldCoordinates Position { get; set; }
+        //public FieldCoordinates Position { get; set; }
         public string Figure { get; set; }
         public ConsoleColor Color { get; set; }
         public ConsoleColor BgColor { get; set; }
-        public FieldCell Cell { get; set; }
         #endregion
 
         #region Методы
-        public void Consume(IFieldCell head)
-        {
-            this.Cell.UpdateCell(head);  //  Срабатывает событие перерисовки ячейки.
-        }
         #endregion
 
         #region Конструкторы
-
-        public SnakeFood(GameField field, FieldCoordinates position)
+        //public FieldEmptiness(FieldCoordinates position)  ----- нужна ли тут позиция???
+        public FieldEmptiness()
         {
-            this.Cell = field.Field[position.X, position.Y];
-            this.Position = position;
-            this.Figure = "F";
-            this.Color = ConsoleColor.White;
+            this.Figure = "*";  //  пока так, для отладки, потом будет пробел
+            this.Color = ConsoleColor.Gray;
             this.BgColor = ConsoleColor.Black;
         }
         #endregion

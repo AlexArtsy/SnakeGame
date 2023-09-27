@@ -22,78 +22,6 @@ namespace SnakeGame
         #endregion
 
         #region Методы
-        //private void PassDirectionToNext(Snake.Snake snake)
-        //{
-        //    for (int i = 0; i < snake.Parts.Count - 1; i += 1)
-        //    {
-        //        snake.Parts[i + 1].NewDirection = snake.Parts[i].CurrentDirection;
-        //    }
-        //}
-        ////private void MoveAllParts(Snake.Snake snake)
-        ////{
-        ////    snake.Parts.ForEach(p => p.Move());
-        ////}
-
-        //private void SetCurrentDirection(Snake.Snake snake)
-        //{
-        //    snake.Parts.ForEach(p => p.CurrentDirection = p.NewDirection);
-        //}
-
-        //public void MoveSnakePartUp(SnakeMember part)
-        //{
-        //    part.Y = part.Y == 0 ? this.height - 1 : part.Y - 1;
-        //}
-
-        //public void MoveSnakePartDown(SnakeMember part)
-        //{
-        //    part.Y = part.Y == this.height - 1 ? 0 : part.Y + 1;
-        //}
-
-        //public void MoveSnakePartRight(SnakeMember part)
-        //{
-        //    part.X = part.X == this.width - 1 ? 0 : part.X + 1;
-        //}
-
-        //public void MoveSnakePartLeft(SnakeMember part)
-        //{
-        //    part.X = part.X == 0 ? this.width - 1 : part.X - 1;
-        //}
-
-        //public void MoveSnake(Snake.Snake snake)
-        //{
-        //    PassDirectionToNext(snake);
-
-        //    snake.Parts.ForEach(p =>
-        //    {
-        //        switch (p.NewDirection)
-        //        {
-        //            case "Up":
-        //                MoveSnakePartUp(p);
-        //                break;
-        //            case "Down":
-        //                MoveSnakePartDown(p);
-        //                break;
-        //            case "Right":
-        //                MoveSnakePartRight(p);
-        //                break;
-        //            case "Left":
-        //                MoveSnakePartLeft(p);
-        //                break;
-        //        }
-        //        //p.Move();   //  Событие для отрисовки.
-        //    });
-
-        //    SetCurrentDirection(snake);
-        //    UpdateFieldState(snake);
-        //}
-
-        private void UpdateFieldState(Snake.Snake snake)
-        {
-            snake.Parts.ForEach(p =>
-            {
-                this.Field[p.X, p.Y].UpdateCell(p.Figure, p.Color, p.BgColor);
-            });
-        }
 
         private void InitGameField()
         {
@@ -103,8 +31,8 @@ namespace SnakeGame
             {
                 for (int y = 0; y < this.height; y += 1)
                 {
-                    var newCell = new FieldCell(x + this.X, y + this.Y, startValue);
-                    newCell.Changed += State.rendering.UpdateFieldCell;
+                    var newCell = new FieldCell(x + this.X, y + this.Y, new FieldEmptiness());
+                    //  newCell.Changed += State.rendering.UpdateFieldCell; перенесено в RenderProcessor
                     this.Field[x, y] = newCell;
                 }
             }

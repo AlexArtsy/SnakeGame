@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SnakeGame.Snake
 {
-    internal class SnakeTail : SnakeMember
+    internal class SnakeTail : SnakeMember, ISnakeable
     {
         #region Поля
         #endregion
@@ -20,7 +20,7 @@ namespace SnakeGame.Snake
         #endregion
 
         #region Конструкторы
-        public SnakeTail(int x, int y, string direction) : base(x, y, direction)
+        public SnakeTail(FieldCoordinates position) : base(position)
         {
             this.Color = Console.ForegroundColor;
             this.BgColor = Console.BackgroundColor;

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace SnakeGame
 {
-    internal interface IFieldCell
+    internal interface ISnakeable
     {
-        //FieldCoordinates Position { get; set; }
         string Figure { get; set; }
+        //int Speed { get; set; }
         ConsoleColor Color { get; set; }
         ConsoleColor BgColor { get; set; }
     }

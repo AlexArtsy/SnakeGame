@@ -35,6 +35,7 @@ namespace SnakeGame
         {
             this.state = state;
             this.field = new GameField(5, 5, 10, 10);
+            this.rendering = new RenderProcessor(this.field);
             this.gameControl = new Control(state);
 
             this.snake = new Snake.Snake(5, 3, this.field, 20);

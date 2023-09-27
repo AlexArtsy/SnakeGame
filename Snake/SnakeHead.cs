@@ -6,31 +6,32 @@ using System.Threading.Tasks;
 
 namespace SnakeGame.Snake
 {
-    internal class SnakeHead : SnakeMember
+    internal class SnakeHead : SnakeMember, ISnakeable
     {
         #region Поля
         #endregion
 
         #region Свойства
+        public string Direction { get; set; }
         #endregion
 
         #region Методы
         public override void Move()
         {
-            this.NewDirection = State.HeadDirection;
+            this.Direction = State.HeadDirection;
             base.Move();
         }
 
-        public void ExploreNewCell()
+        public void ExploreNextCell(FieldCell cell)
         {
 
         }
         #endregion
 
         #region Конструкторы
-        public SnakeHead(int x, int y) : base(x, y, State.HeadDirection)
+        public SnakeHead(FieldCoordinates position, string direction) : base(position)
         {
-            this.NewDirection = State.HeadDirection;
+            this.Direction = direction;
         }
         #endregion
     }

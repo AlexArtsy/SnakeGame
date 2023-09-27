@@ -8,18 +8,16 @@ using System.Threading.Tasks;
 
 namespace SnakeGame.Snake
 {
-    internal class SnakeMember : IMovable
+    internal class SnakeMember : IMovable, IFieldCell, ISnakeable
     {
         #region Поля
         //private readonly State state;
         #endregion
 
         #region Свойства
-        public int X { get; set; }
-        public int Y { get; set; }
+        public FieldCoordinates Position { get; set; }
+        public FieldCoordinates NextPosition { get; set; }
         public string Figure { get; set; }
-        public string CurrentDirection { get; set; }
-        public string NewDirection { get; set; }
         public int Speed { get; set; }
         public ConsoleColor Color { get; set; }
         public ConsoleColor BgColor { get; set; }
@@ -27,64 +25,28 @@ namespace SnakeGame.Snake
 
         #region Методы
         #region Moving function
-        ////public void MoveUp()
-        ////{
-        ////    Y = Y == 0 ? state.fieldHeight - 1 : Y - 1;
-        ////}
-
-        ////public void MoveDown()
-        ////{
-        ////    Y = Y == state.fieldHeight - 1 ? 0 : Y + 1;
-        ////}
-
-        ////public void MoveRight()
-        ////{
-        ////    X = X == state.fieldWidth ? 0 : X + 1;
-        ////}
-
-        ////public void MoveLeft()
-        ////{
-        ////    X = X == 0 ? state.fieldWidth - 1 : X - 1;
-        ////}
         public virtual void Move()
         {
-            //switch (this.NewDirection)
-            //{
-            //    case "Up":
-            //        MoveUp();
-            //        break;
-            //    case "Down":
-            //        MoveDown();
-            //        break;
-            //    case "Right":
-            //        MoveRight();
-            //        break;
-            //    case "Left":
-            //        MoveLeft();
-            //        break;
-            //}
-            //Moved?.Invoke(this);
+            this.Position = this.NextPosition;
+            Moved?.Invoke(this);    //  а это как-то обрабатывается???
         }
         #endregion
 
         #endregion
 
         #region Делегаты
-        //public delegate void SnakeMemberHandler(SnakeMember part);
+        public delegate void SnakeMemberHandler(SnakeMember part);
         #endregion
 
         #region События
-        //public event SnakeMemberHandler Moved;
+        public event SnakeMemberHandler Moved;
         #endregion
 
         #region Конструкторы
-        public SnakeMember(int x, int y, string direction)
+        public SnakeMember(FieldCoordinates position)
         {
-            this.X = x;
-            this.Y = y;
+            this.Position = position;
             Figure = "O";
-            this.NewDirection = direction;
-            this.CurrentDirection = direction;
             Color = ConsoleColor.Black;
             BgColor = ConsoleColor.White;
         }

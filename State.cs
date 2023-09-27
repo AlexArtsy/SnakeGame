@@ -13,7 +13,6 @@ namespace SnakeGame
         public int fieldHeight;
         public int fieldWidth;
         public int speed;
-        public static RenderProcessor rendering = new RenderProcessor();
         #endregion
 
         #region Свойства

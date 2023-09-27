@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace SnakeGame
 {
-    internal interface IPlayable
+    internal interface IFieldCell
     {
-        string Direction { get; set; }
-
-        void ChangeDirection();
+        int X { get; set; }
+        int Y { get; set; }
+        string Value { get; set; }
     }
 }

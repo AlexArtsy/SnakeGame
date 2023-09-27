@@ -7,6 +7,8 @@ namespace SnakeGame
         static void Main(string[] args)
         {
             State state = new State(15, 15, 1);
+            state.fieldWidth = 10;
+            state.fieldHeight = 10;
 
             var game = new SnakeGame(state);
 
@@ -21,16 +23,16 @@ namespace SnakeGame
                         case ConsoleKey.Tab:
                             break;
                         case ConsoleKey.LeftArrow:
-                            state.HeadDirection = "Left";
+                            State.HeadDirection = "Left";
                             break;
                         case ConsoleKey.RightArrow:
-                            state.HeadDirection = "Right";
+                            State.HeadDirection = "Right";
                             break;
                         case ConsoleKey.UpArrow:
-                            state.HeadDirection = "Up";
+                            State.HeadDirection = "Up";
                             break;
                         case ConsoleKey.DownArrow:
-                            state.HeadDirection = "Down";
+                            State.HeadDirection = "Down";
                             break;
                         case ConsoleKey.Enter:
                             break;

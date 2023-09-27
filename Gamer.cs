@@ -6,7 +6,7 @@ public class Gamer : IPlayable
     #endregion
 
     #region Свойства
-    public Direction Direction { get; set; }
+    public string Direction { get; set; }
     #endregion
 
     #region Методы

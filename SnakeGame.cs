@@ -25,7 +25,7 @@ namespace SnakeGame
             while (true)
             {
                 this.snake.Move();
-                Thread.Sleep(1000);
+                Thread.Sleep(this.snake.Speed * 100);
             }
         }
         #endregion
@@ -34,10 +34,10 @@ namespace SnakeGame
         public SnakeGame(State state)
         {
             this.state = state;
-            //this.field = new GameField();
+            this.field = new GameField(5, 5, 10, 10);
             this.gameControl = new Control(state);
 
-            this.snake = new Snake.Snake(5, 3, state);
+            this.snake = new Snake.Snake(5, 3, this.field, 20);
 
         }
         #endregion

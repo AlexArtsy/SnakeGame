@@ -9,8 +9,6 @@ namespace SnakeGame.Snake
     internal class SnakeHead : SnakeMember
     {
         #region Поля
-
-        private readonly State state;
         #endregion
 
         #region Свойства
@@ -19,16 +17,20 @@ namespace SnakeGame.Snake
         #region Методы
         public override void Move()
         {
-            this.NewDirection = state.HeadDirection;
+            this.NewDirection = State.HeadDirection;
             base.Move();
+        }
+
+        public void ExploreNewCell()
+        {
+
         }
         #endregion
 
         #region Конструкторы
-        public SnakeHead(int x, int y, State state) : base(x, y, state, state.HeadDirection)
+        public SnakeHead(int x, int y) : base(x, y, State.HeadDirection)
         {
-            this.state = state;
-            this.NewDirection = state.HeadDirection;
+            this.NewDirection = State.HeadDirection;
         }
         #endregion
     }

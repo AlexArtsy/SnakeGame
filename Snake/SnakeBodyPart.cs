@@ -18,7 +18,7 @@ namespace SnakeGame.Snake
         #endregion
 
         #region Конструкторы
-        public SnakeBodyPart(int x, int y, State state, string direction) : base(x, y, state, direction)
+        public SnakeBodyPart(int x, int y, string direction) : base(x, y, direction)
         {
 
         }

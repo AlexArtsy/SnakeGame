@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace SnakeGame
 {
-    internal class RandomGenerator
+    internal class RandomGen
     {
         #region Поля
         private readonly State state;
-        private readonly Random random = new Random();
         #endregion
 
         #region Свойства
@@ -19,19 +18,19 @@ namespace SnakeGame
 
         #region Методы
 
-        public int GetRandomX()
-        {
-            return this.random.Next(0, state.fieldWidth);
-        }
-        public int GetRandomY()
-        {
-            return this.random.Next(0, state.fieldHeight);
-        }
-        public string GetStartDirection()
+        //public static int GetRandomX()
+        //{
+        //    return new Random().Next(0, state.fieldWidth);
+        //}
+        //public int GetRandomY()
+        //{
+        //    return new Random().Next(0, state.fieldHeight);
+        //}
+        public static string GetDirection()
         {
             string direction = "";
 
-            switch (this.random.Next(1, 5))
+            switch (new Random().Next(1, 5))
             {
                 case 1:
                     direction = "Up";
@@ -52,7 +51,7 @@ namespace SnakeGame
         #endregion
 
         #region Конструкторы
-        public RandomGenerator(State state)
+        public RandomGen(State state)
         {
             this.state = state;
         }

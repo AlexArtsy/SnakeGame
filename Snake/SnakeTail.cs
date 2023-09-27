@@ -20,11 +20,11 @@ namespace SnakeGame.Snake
         #endregion
 
         #region Конструкторы
-        public SnakeTail(int prevX, int prevY, State state, string direction) : base(prevX, prevY, state, direction)
+        public SnakeTail(int x, int y, string direction) : base(x, y, direction)
         {
             this.Color = Console.ForegroundColor;
             this.BgColor = Console.BackgroundColor;
-            this.Figure = "_";
+            this.Figure = " ";
         }
         #endregion
     }

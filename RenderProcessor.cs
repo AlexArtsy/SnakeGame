@@ -32,6 +32,16 @@ namespace SnakeGame
 
             Console.SetCursorPosition(Console.WindowWidth - 1, Console.WindowHeight - 1);
         }
+
+        public void UpdateFieldCell(FieldCell cell)
+        {
+            ClearCell(cell.X, cell.Y);
+            Console.ForegroundColor = cell.Color;
+            Console.BackgroundColor = cell.BgColor;
+            Console.Write(cell.Value);
+
+            Console.SetCursorPosition(Console.WindowWidth - 1, Console.WindowHeight - 1);
+        }
         #endregion
 
         #region Конструкторы

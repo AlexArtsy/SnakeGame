@@ -6,11 +6,8 @@ namespace SnakeGame
     {
         static void Main(string[] args)
         {
-            State state = new State(15, 15, 1);
-            state.fieldWidth = 10;
-            state.fieldHeight = 10;
 
-            var game = new SnakeGame(state);
+            var game = new SnakeGame();
 
             Task task1 = new Task(() => game.Run());
             Task task2 = new Task(() =>

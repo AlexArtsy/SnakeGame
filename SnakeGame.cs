@@ -9,7 +9,6 @@ namespace SnakeGame
     internal class SnakeGame
     {
         #region Поля
-        private readonly State state;
         private readonly GameField field;
         private readonly Control gameControl;
         private RenderProcessor rendering;
@@ -27,9 +26,8 @@ namespace SnakeGame
         #endregion
 
         #region Конструкторы
-        public SnakeGame(State state)
+        public SnakeGame()
         {
-            this.state = state;
             this.field = new GameField(5, 5, 20, 20);
             this.rendering = new RenderProcessor();
             this.rendering.SubscribeFieldCellChangingEvent(this.field);

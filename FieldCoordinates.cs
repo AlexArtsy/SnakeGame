@@ -10,7 +10,7 @@ namespace SnakeGame
     internal class FieldCoordinates
     {
         #region Поля
-        
+
         #endregion
 
         #region Свойства

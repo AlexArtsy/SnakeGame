@@ -24,7 +24,7 @@ namespace SnakeGame
 
         public void UpdateCell(IFieldCell value)    //  надо переписать чтобы событие срабатывало когда устанавливается Value ячейки
         {
-            this.Value = value;
+            Value = value;
             //this.Color = value.Color;
             //this.BgColor = value.BgColor;
 
@@ -42,8 +42,8 @@ namespace SnakeGame
         #region Конструкторы
         public FieldCell(int x, int y, IFieldCell eny)
         {
-            this.Position = new FieldCoordinates(x, y);
-            this.Value = eny;
+            Position = new FieldCoordinates(x, y);
+            Value = eny;
             //Color = ConsoleColor.Black;
             //BgColor = ConsoleColor.White;
 

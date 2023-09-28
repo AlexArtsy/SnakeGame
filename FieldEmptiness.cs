@@ -25,9 +25,9 @@ namespace SnakeGame
         //public FieldEmptiness(FieldCoordinates position)  ----- нужна ли тут позиция???
         public FieldEmptiness()
         {
-            this.Figure = "*";  //  пока так, для отладки, потом будет пробел
-            this.Color = ConsoleColor.Gray;
-            this.BgColor = ConsoleColor.Black;
+            Figure = "*";  //  пока так, для отладки, потом будет пробел
+            Color = ConsoleColor.Gray;
+            BgColor = ConsoleColor.Black;
         }
         #endregion
     }

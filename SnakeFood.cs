@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SnakeGame
+﻿namespace SnakeGame
 {
     internal class SnakeFood : IFieldCell
     {
@@ -22,7 +16,7 @@ namespace SnakeGame
         #region Методы
         public void Consume(IFieldCell head)
         {
-            this.Cell.UpdateCell(head);  //  Срабатывает событие перерисовки ячейки.
+            Cell.UpdateCell(head);  //  Срабатывает событие перерисовки ячейки.
         }
         #endregion
 
@@ -30,11 +24,11 @@ namespace SnakeGame
 
         public SnakeFood(GameField field, FieldCoordinates position)
         {
-            this.Cell = field.Field[position.X, position.Y];
-            this.Position = position;
-            this.Figure = "F";
-            this.Color = ConsoleColor.White;
-            this.BgColor = ConsoleColor.Black;
+            Cell = field.Field[position.X, position.Y];
+            Position = position;
+            Figure = "F";
+            Color = ConsoleColor.White;
+            BgColor = ConsoleColor.Black;
         }
         #endregion
     }

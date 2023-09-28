@@ -8,11 +8,11 @@ namespace SnakeGame
 {
     internal interface IMovable
     {
-        int Speed { get; set; }
-        FieldCoordinates Position { get; set; }
-        FieldCoordinates NextPosition { get; set; }
+        //int Speed { get; set; }
+        //FieldCoordinates Position { get; set; }
+        //FieldCoordinates NextPosition { get; set; }
 
-        void Move(GameField field);
+        //void Move(GameField field);
 
     }
 }

@@ -10,14 +10,12 @@ namespace SnakeGame
     internal class State
     {
         #region Поля
-        public int fieldHeight;
-        public int fieldWidth;
-        public int speed;
+        public static string HeadDirection = RandomGen.GetDirection();
+        public static int SnakeSpeed = 0;
         #endregion
 
         #region Свойства
-        public static string HeadDirection { get; set; }
-        public static int SnakeSpeed { get; set; }
+        
         #endregion
 
         #region Методы
@@ -26,13 +24,9 @@ namespace SnakeGame
         #endregion
 
         #region Конструкторы
-        public State(int width, int height, int speed)
+        public State()
         {
-            this.fieldWidth = width;
-            this.fieldHeight = height;
-            this.speed = speed;
-            HeadDirection = RandomGen.GetDirection();
-            SnakeSpeed = 0;
+
         }
         #endregion
     }

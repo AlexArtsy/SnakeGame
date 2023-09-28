@@ -25,14 +25,34 @@ namespace SnakeGame.Snake
         #endregion
 
         #region Методы
+
+        public void RunSnake()
+        {
+            Task snakeTask = new Task(() =>
+            {
+                while (true)
+                {
+                    Move();
+                    this.head.ExploreNextCell(this.gameField.Field[this.head.NextPosition.X, this.head.NextPosition.Y]);
+                    Thread.Sleep(this.Speed * 10);
+                }
+            });
+
+            snakeTask.Start();
+
+            snakeTask.Wait();
+
+        }
         public void Move()
         {
             this.Mind.CalculateNextHeadCoordinates(this.head.Direction);
             this.Mind.CalculateBodyMovingCoordinates();
 
-            this.Body.ForEach(p => p.Move());
+            this.Body.ForEach(p =>
+            {
+                p.Move(this.gameField);
+            });
 
-            this.head.ExploreNextCell(this.gameField.Field[this.head.NextPosition.X, this.head.NextPosition.Y]);
         }
 
         public void RaiseSnake(SnakeFood food)

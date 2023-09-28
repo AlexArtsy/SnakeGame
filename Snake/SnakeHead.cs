@@ -16,10 +16,10 @@ namespace SnakeGame.Snake
         #endregion
 
         #region Методы
-        public override void Move()
+        public override void Move(GameField field)
         {
             this.Direction = State.HeadDirection;
-            base.Move();
+            base.Move(field);
         }
 
         public void ExploreNextCell(FieldCell cell)

@@ -27,26 +27,27 @@ namespace SnakeGame
         public void UpdateFieldCell(FieldCell cell)
         {
             ClearCell(cell.Position.X, cell.Position.Y);
-            Console.ForegroundColor = cell.Color;
-            Console.BackgroundColor = cell.BgColor;
+            Console.ForegroundColor = cell.Value.Color;
+            Console.BackgroundColor = cell.Value.BgColor;
             Console.Write(cell.Value.Figure);
 
             Console.SetCursorPosition(Console.WindowWidth - 1, Console.WindowHeight - 1);
         }
 
-        private void SubscribeFieldCellChangingEvent(GameField gameField)
+        public void SubscribeFieldCellChangingEvent(GameField gameField)
         {
             foreach (var fieldCell in gameField.Field)
             {
                 fieldCell.Changed += UpdateFieldCell;
+                UpdateFieldCell(fieldCell);
             }
         }
         #endregion
 
         #region Конструкторы
-        public RenderProcessor(GameField field)
+        public RenderProcessor()
         {
-            SubscribeFieldCellChangingEvent(field);
+           // SubscribeFieldCellChangingEvent(field);
         }
         #endregion
     }

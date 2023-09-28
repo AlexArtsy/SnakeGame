@@ -40,11 +40,11 @@ namespace SnakeGame.Snake
             body3.Figure = "4";
             tail.Figure = " ";
 
-            head.Moved = this.field.
-            body1.Figure = "2";
-            body2.Figure = "3";
-            body3.Figure = "4";
-            tail.Figure = " ";
+            //head.Moved = this.field.
+            //body1.Figure = "2";
+            //body2.Figure = "3";
+            //body3.Figure = "4";
+            //tail.Figure = " ";
 
             this.body.Add(head);
             this.body.Add(body1);
@@ -63,11 +63,11 @@ namespace SnakeGame.Snake
             {
                 case "Up":
                     x = head.Position.X;
-                    y = head.Position.Y == 0 ? this.field.height - 1 : head.Position.Y + 1;
+                    y = head.Position.Y == 0 ? this.field.height - 1 : head.Position.Y - 1;
                     break;
                 case "Down":
                     x = head.Position.X;
-                    y = head.Position.Y == this.field.height - 1 ? 0 : head.Position.Y - 1;
+                    y = head.Position.Y == this.field.height - 1 ? 0 : head.Position.Y + 1;
                     break;
                 case "Right":
                     x = head.Position.X == this.field.width - 1 ? 0 : head.Position.X + 1;

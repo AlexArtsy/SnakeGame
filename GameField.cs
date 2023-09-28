@@ -25,8 +25,11 @@ namespace SnakeGame
 
         private void InitGameField()
         {
-            this.Field = new FieldCell[this.width, this.height];
-            var startValue = " ";
+            FillCellsWithEmptyness();
+        }
+
+        private void FillCellsWithEmptyness()
+        {
             for (int x = 0; x < this.width; x += 1)
             {
                 for (int y = 0; y < this.height; y += 1)
@@ -37,6 +40,14 @@ namespace SnakeGame
                 }
             }
         }
+
+        //private void UpdateCells()
+        //{
+        //    foreach (var fieldCell in this.Field)
+        //    {
+        //        fieldCell.UpdateCell();
+        //    }
+        //}
         #endregion
 
         #region Конструкторы
@@ -46,6 +57,7 @@ namespace SnakeGame
             this.Y = y;
             this.width = width;
             this.height = height;
+            this.Field = new FieldCell[this.width, this.height];
 
             InitGameField();
         }

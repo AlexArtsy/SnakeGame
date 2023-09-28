@@ -16,8 +16,8 @@ namespace SnakeGame
         #region Свойства
         public FieldCoordinates Position { get; set; }
         public IFieldCell Value { get; set; }
-        public ConsoleColor Color { get; set; }
-        public ConsoleColor BgColor { get; set; }
+        //public ConsoleColor Color { get; set; }
+        //public ConsoleColor BgColor { get; set; }
         #endregion
 
         #region Методы
@@ -25,6 +25,9 @@ namespace SnakeGame
         public void UpdateCell(IFieldCell value)
         {
             this.Value = value;
+            //this.Color = value.Color;
+            //this.BgColor = value.BgColor;
+
             Changed?.Invoke(this);
         }
         #endregion
@@ -41,8 +44,10 @@ namespace SnakeGame
         {
             this.Position = new FieldCoordinates(x, y);
             this.Value = eny;
-            Color = ConsoleColor.Black;
-            BgColor = ConsoleColor.White;
+            //Color = ConsoleColor.Black;
+            //BgColor = ConsoleColor.White;
+
+            Changed?.Invoke(this);
         }
         #endregion
     }

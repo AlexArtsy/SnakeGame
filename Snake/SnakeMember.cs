@@ -25,10 +25,21 @@ namespace SnakeGame.Snake
 
         #region Методы
         #region Moving function
-        public virtual void Move()
+        public virtual void Move(GameField field)
+        {
+            UpdateCurrentPosition();
+            CaptureCell(field);
+            //Moved?.Invoke(this);    //  а это как-то обрабатывается???
+        }
+
+        private void UpdateCurrentPosition()
         {
             this.Position = this.NextPosition;
-            Moved?.Invoke(this);    //  а это как-то обрабатывается???
+        }
+
+        private void CaptureCell(GameField field)
+        {
+            field.Field[this.Position.X, this.Position.Y].UpdateCell(this);
         }
         #endregion
 

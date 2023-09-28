@@ -12,7 +12,7 @@ namespace SnakeGame
         FieldCoordinates Position { get; set; }
         FieldCoordinates NextPosition { get; set; }
 
-        void Move();
+        void Move(GameField field);
 
     }
 }

@@ -34,7 +34,11 @@ namespace SnakeGame
                         case ConsoleKey.DownArrow:
                             State.HeadDirection = "Down";
                             break;
-                        case ConsoleKey.Enter:
+                        case ConsoleKey.PageUp:
+                            State.SnakeSpeed = State.SnakeSpeed == 0 ? 0 : State.SnakeSpeed - 20;
+                            break;
+                        case ConsoleKey.PageDown:
+                            State.SnakeSpeed += 20;
                             break;
                         case ConsoleKey.Backspace:
                             break;

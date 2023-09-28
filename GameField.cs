@@ -41,13 +41,22 @@ namespace SnakeGame
             }
         }
 
-        //private void UpdateCells()
-        //{
-        //    foreach (var fieldCell in this.Field)
-        //    {
-        //        fieldCell.UpdateCell();
-        //    }
-        //}
+        public void GenerateFood()
+        {
+            Task foodTask = new Task(() =>
+            {
+                while (true)
+                {
+                    var x = RandomGen.GetRandomX(this.width);
+                    var y = RandomGen.GetRandomY(this.height);
+                    this.Field[x, y].Value = new SnakeFood(this, new FieldCoordinates(1, 1));
+                    this.Field[x, y].UpdateCell(this.Field[x, y].Value);
+                    Thread.Sleep(100 * new Random().Next(50, 100));
+                }
+                
+            });
+            foodTask.Start();
+        }
         #endregion
 
         #region Конструкторы
@@ -60,6 +69,7 @@ namespace SnakeGame
             this.Field = new FieldCell[this.width, this.height];
 
             InitGameField();
+            GenerateFood();
         }
         #endregion
     }

@@ -18,7 +18,7 @@ namespace SnakeGame.Snake
 
         #region Свойства
         public int Speed { get; set; }
-        public string HeadDirection { get; set; }
+        //  public string HeadDirection { get; set; }
         public SnakeMind Mind { get; set; }
         public List<SnakeMember> Body { get; set; }
 
@@ -33,8 +33,13 @@ namespace SnakeGame.Snake
                 while (true)
                 {
                     Move();
-                    this.head.ExploreNextCell(this.gameField.Field[this.head.NextPosition.X, this.head.NextPosition.Y]);
-                    Thread.Sleep(this.Speed * 10);
+                    var next = this.Mind.ExploreNextCell();
+                    if (next.Value.ToString() == "SnakeGame.SnakeFood")
+                    {
+                        RaiseSnake((SnakeFood)next.Value);
+                    }
+
+                    Thread.Sleep(this.head.Speed * 10);
                 }
             });
 
@@ -45,7 +50,7 @@ namespace SnakeGame.Snake
         }
         public void Move()
         {
-            this.Mind.CalculateNextHeadCoordinates(this.head.Direction);
+            this.Mind.SetNextHeadCoordinates(this.head.Direction);
             this.Mind.CalculateBodyMovingCoordinates();
 
             this.Body.ForEach(p =>
@@ -57,9 +62,10 @@ namespace SnakeGame.Snake
 
         public void RaiseSnake(SnakeFood food)
         {
-            this.Body.Insert(1, new SnakeMember(this.head.Position));
-            this.head.Position = food.Position;
-            this.Mind.EatFood(food);
+            this.Body.Insert(1, new SnakeBodyPart(this.head.Position));
+            this.Mind.SetNextHeadCoordinates(this.head.Direction);
+            this.head.Move(this.gameField);
+            this.head.EatFood(food);
         }
         #endregion
         //private void CreateSnake(int x, int y)
@@ -91,7 +97,7 @@ namespace SnakeGame.Snake
 
         public Snake(int x, int y, GameField gameField, int speed)
         {
-            this.head = new SnakeHead(new FieldCoordinates(x, y), RandomGen.GetDirection());
+            this.head = new SnakeHead(new FieldCoordinates(x, y), State.HeadDirection);
             this.Body = new List<SnakeMember>();
             this.gameField = gameField;
             this.Mind = new SnakeMind(this.Body, this.head, this.gameField);

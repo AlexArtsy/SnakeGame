@@ -22,7 +22,7 @@ namespace SnakeGame
 
         #region Методы
 
-        public void UpdateCell(IFieldCell value)
+        public void UpdateCell(IFieldCell value)    //  надо переписать чтобы событие срабатывало когда устанавливается Value ячейки
         {
             this.Value = value;
             //this.Color = value.Color;

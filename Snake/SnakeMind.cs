@@ -19,11 +19,17 @@ namespace SnakeGame.Snake
 
         #region Методы
 
-        public void EatFood(SnakeFood food)
+        public FieldCell ExploreNextCell()
         {
-            food.Consume(this.head);
-        }
+            var nextCell = SeeNextCell();
 
+            Console.SetCursorPosition(0,0);
+            Console.Write("                                                           ");
+            Console.SetCursorPosition(0, 0);
+            Console.Write($"Содержимое ячейки: {nextCell.Value.GetType()}");
+
+            return nextCell;
+        }
         public void CreateSnake()
         {
             var direction = this.head.Direction;
@@ -53,33 +59,43 @@ namespace SnakeGame.Snake
             this.body.Add(tail);
 
         }
-        public void CalculateNextHeadCoordinates(string direction)
+
+        public FieldCell SeeNextCell()
+        {
+            var nextPosition = GetNextPosition(this.head.Position, this.head.Direction);
+            return this.field.Field[nextPosition.X, nextPosition.Y];
+        }
+
+        public FieldCoordinates GetNextPosition(FieldCoordinates current, string direction)
         {
             var x = 0;
             var y = 0;
-            var head = this.body[0];    //  Просто для красоты.
 
             switch (direction)
             {
                 case "Up":
-                    x = head.Position.X;
-                    y = head.Position.Y == 0 ? this.field.height - 1 : head.Position.Y - 1;
+                    x = current.X;
+                    y = current.Y == 0 ? this.field.height - 1 : current.Y - 1;
                     break;
                 case "Down":
-                    x = head.Position.X;
-                    y = head.Position.Y == this.field.height - 1 ? 0 : head.Position.Y + 1;
+                    x = current.X;
+                    y = current.Y == this.field.height - 1 ? 0 : current.Y + 1;
                     break;
                 case "Right":
-                    x = head.Position.X == this.field.width - 1 ? 0 : head.Position.X + 1;
-                    y = head.Position.Y;
+                    x = current.X == this.field.width - 1 ? 0 : current.X + 1;
+                    y = current.Y;
                     break;
                 case "Left":
-                    x = head.Position.X == 0 ? this.field.width - 1 : head.Position.X - 1;
-                    y = head.Position.Y;
+                    x = current.X == 0 ? this.field.width - 1 : current.X - 1;
+                    y = current.Y;
                     break;
             }
 
-            head.NextPosition = new FieldCoordinates(x, y);
+            return new FieldCoordinates(x, y);
+        }
+        public void SetNextHeadCoordinates(string direction)
+        {
+            this.head.NextPosition = GetNextPosition(this.head.Position, direction);
         }
         public void CalculateBodyMovingCoordinates()
         {

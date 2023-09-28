@@ -17,11 +17,12 @@ namespace SnakeGame
 
         #region Свойства
         public static string HeadDirection { get; set; }
+        public static int SnakeSpeed { get; set; }
         #endregion
 
         #region Методы
 
-        
+
         #endregion
 
         #region Конструкторы
@@ -30,7 +31,8 @@ namespace SnakeGame
             this.fieldWidth = width;
             this.fieldHeight = height;
             this.speed = speed;
-            HeadDirection = "Right";
+            HeadDirection = RandomGen.GetDirection();
+            SnakeSpeed = 0;
         }
         #endregion
     }

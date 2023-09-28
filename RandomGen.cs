@@ -18,14 +18,14 @@ namespace SnakeGame
 
         #region Методы
 
-        //public static int GetRandomX()
-        //{
-        //    return new Random().Next(0, state.fieldWidth);
-        //}
-        //public int GetRandomY()
-        //{
-        //    return new Random().Next(0, state.fieldHeight);
-        //}
+        public static int GetRandomX(int width)
+        {
+            return new Random().Next(0, width);
+        }
+        public static int GetRandomY(int height)
+        {
+            return new Random().Next(0, height);
+        }
         public static string GetDirection()
         {
             string direction = "";

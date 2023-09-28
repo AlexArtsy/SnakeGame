@@ -19,12 +19,12 @@ namespace SnakeGame.Snake
         public override void Move(GameField field)
         {
             this.Direction = State.HeadDirection;
+            this.Speed = State.SnakeSpeed;
             base.Move(field);
         }
-
-        public void ExploreNextCell(FieldCell cell)
+        public void EatFood(SnakeFood food)
         {
-
+            food.Consume(this);
         }
         #endregion
 

@@ -24,7 +24,8 @@ namespace SnakeGame.Snake
         }
         public void EatFood(FieldCell cell)
         {
-            cell.UpdateCell(this);
+            cell.Value = this;
+            //cell.UpdateCell(this);
             //cell.Value.Consume(this);
         }
         #endregion

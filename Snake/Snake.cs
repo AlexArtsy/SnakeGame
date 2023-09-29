@@ -22,22 +22,15 @@ namespace SnakeGame.Snake
         {
             while (true)
             {
-                Move();
-
-                var next = this.Mind.ExploreNextCell();
-
-                if (next.Value.ToString() == "SnakeGame.SnakeFood")
-                {
-                    RaiseSnake(next);
-                }
-
-                //Thread.Sleep(1000 - State.SnakeSpeed);
+                Move(); //  Самый первый шаг делаем вслепую?
+                var cell =  this.Mind.ExploreNextCell();    //  голова поглощает ячейки в любом случае каждый раз, просто реакция на содержимое - разная
+                cell.Value.Consume(this, cell);
             }
         }
         public void Move()
         {
-            Thread.Sleep(1000 - State.SnakeSpeed);
             this.Mind.SetNextHeadCoordinates(this.head.Direction);
+
             this.Mind.CalculateBodyMovingCoordinates();
 
             this.Body.ForEach(p =>
@@ -45,6 +38,7 @@ namespace SnakeGame.Snake
                 p.Move(this.gameField);
             });
 
+            Thread.Sleep(1000 - State.SnakeSpeed); 
         }
 
         public void RaiseSnake(FieldCell cell)
@@ -53,11 +47,23 @@ namespace SnakeGame.Snake
             this.Mind.SetNextHeadCoordinates(this.head.Direction);
             this.head.Move(this.gameField);
             this.head.EatFood(cell);
+
+            RaisedSpeed?.Invoke();
+            Raised?.Invoke(cell, ConsoleColor.Green);
         }
         #endregion
 
-        #region Конструкторы
+        #region Делегаты
+        public delegate void SnakeVisualHandler(FieldCell cell, ConsoleColor color);
+        public delegate void SnakeHandler();
+        #endregion
 
+        #region События
+        public event SnakeVisualHandler Raised;
+        public event SnakeHandler RaisedSpeed;
+        #endregion
+
+        #region Конструкторы
         public Snake(int x, int y, GameField gameField, int speed)
         {
             this.head = new SnakeHead(new FieldCoordinates(x, y), State.HeadDirection);
@@ -69,6 +75,8 @@ namespace SnakeGame.Snake
             this.Mind.CreateSnake();
 
             this.Speed = speed;
+
+            Raised += RenderProcessor.Blink;
         }
 
         #endregion

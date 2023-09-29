@@ -19,6 +19,18 @@ namespace SnakeGame
         #endregion
 
         #region Методы
+        public void Consume(Snake.Snake snake, FieldCell cell)
+        {
+            return;
+        }
+        #endregion
+
+        #region Делегаты
+       // public delegate void IFieldCellHandler(IFieldCell value);
+        #endregion
+
+        #region События
+       // public event IFieldCell.IFieldCellHandler Changed;
         #endregion
 
         #region Конструкторы

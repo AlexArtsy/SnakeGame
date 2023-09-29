@@ -16,7 +16,7 @@ namespace SnakeGame
 
         #region Методы
 
-        public void KeyEventListener()
+        public void DirectionListener()
         {
             while (true)
             {
@@ -26,16 +26,16 @@ namespace SnakeGame
                     case ConsoleKey.Tab:
                         break;
                     case ConsoleKey.LeftArrow:
-                        State.HeadDirection = "Left";
+                        State.HeadDirection = State.HeadDirection == "Right" ? "Right" : "Left";
                         break;
                     case ConsoleKey.RightArrow:
-                        State.HeadDirection = "Right";
+                        State.HeadDirection = State.HeadDirection == "Left" ? "Left" : "Right";
                         break;
                     case ConsoleKey.UpArrow:
-                        State.HeadDirection = "Up";
+                        State.HeadDirection = State.HeadDirection == "Down" ? "Down" : "Up";
                         break;
                     case ConsoleKey.DownArrow:
-                        State.HeadDirection = "Down";
+                        State.HeadDirection = State.HeadDirection == "Up" ? "Up" : "Down";
                         break;
                     //case ConsoleKey.PageUp:
                     //    State.SnakeSpeed = State.SnakeSpeed == 0 ? 0 : State.SnakeSpeed - 20;

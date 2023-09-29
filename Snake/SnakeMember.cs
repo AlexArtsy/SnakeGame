@@ -12,6 +12,8 @@ namespace SnakeGame.Snake
     {
         #region Поля
         //private readonly State state;
+        private ConsoleColor color;
+        private ConsoleColor bgColor;
         #endregion
 
         #region Свойства
@@ -19,7 +21,9 @@ namespace SnakeGame.Snake
         public FieldCoordinates NextPosition { get; set; }
         public string Figure { get; set; }
         public int Speed { get; set; }
+
         public ConsoleColor Color { get; set; }
+
         public ConsoleColor BgColor { get; set; }
         #endregion
 
@@ -28,7 +32,8 @@ namespace SnakeGame.Snake
         public virtual void Move(GameField field)
         {
             UpdateCurrentPosition();
-            CaptureCell(field);
+            field.Field[this.Position.X, this.Position.Y].Value = this;
+            //CaptureCell(field); // поменять
             //Moved?.Invoke(this);    //  а это как-то обрабатывается???
         }
 
@@ -36,21 +41,26 @@ namespace SnakeGame.Snake
         {
             this.Position = this.NextPosition;
         }
-
-        private void CaptureCell(GameField field)
+        public void Consume(Snake snake, FieldCell cell)
         {
-            field.Field[this.Position.X, this.Position.Y].UpdateCell(this);
+
         }
+        //private void CaptureCell(GameField field)
+        //{
+        //    field.Field[this.Position.X, this.Position.Y].UpdateCell(this);
+        //}
         #endregion
 
         #endregion
 
         #region Делегаты
         public delegate void SnakeMemberHandler(SnakeMember part);
+       // public delegate void IFieldCellHandler(IFieldCell value);
         #endregion
 
         #region События
-        public event SnakeMemberHandler Moved;
+        //public event SnakeMemberHandler Moved;
+        //public event IFieldCell.IFieldCellHandler Changed;
         #endregion
 
         #region Конструкторы

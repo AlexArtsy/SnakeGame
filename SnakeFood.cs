@@ -14,10 +14,20 @@
         #endregion
 
         #region Методы
-        //public void Consume(FieldCell cell, IFieldCell head)
-        //{
-        //    cell.UpdateCell(head);  //  Срабатывает событие перерисовки ячейки.
-        //}
+        public void Consume(Snake.Snake snake, FieldCell cell)
+        {
+            cell.Value = snake.head;
+            snake.RaiseSnake(cell);
+            //  cell.UpdateCell(snake.head);  //  Срабатывает событие перерисовки ячейки.
+        }
+        #endregion
+
+        #region Делегаты
+        //public delegate void IFieldCellHandler(IFieldCell value);
+        #endregion
+
+        #region События
+       // public event IFieldCell.IFieldCellHandler Changed;
         #endregion
 
         #region Конструкторы

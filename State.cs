@@ -12,10 +12,11 @@ namespace SnakeGame
         #region Поля
         public static string HeadDirection = RandomGen.GetDirection();
         public static int SnakeSpeed = 0;
+        public static readonly object ConsoleWriterLock = new object();
         #endregion
 
         #region Свойства
-        
+
         #endregion
 
         #region Методы

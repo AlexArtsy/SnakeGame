@@ -19,16 +19,11 @@ namespace SnakeGame
 
         private void InitGameField()
         {
-            FillCellsWithEmptiness();
-        }
-
-        private void FillCellsWithEmptiness()
-        {
             for (int x = 0; x < width; x += 1)
             {
                 for (int y = 0; y < height; y += 1)
                 {
-                    var newCell = new FieldCell(x + X, y + Y, new FieldEmptiness());
+                    var newCell = new FieldCell(x + X, y + Y);
                     Field[x, y] = newCell;
                 }
             }
@@ -41,7 +36,7 @@ namespace SnakeGame
                 var x = RandomGen.GetRandomX(width);
                 var y = RandomGen.GetRandomY(height);
                 Field[x, y].Value = new SnakeFood(this);
-                Field[x, y].UpdateCell(Field[x, y].Value);
+                //Field[x, y].UpdateCell(Field[x, y].Value);
                 Thread.Sleep(100 * new Random().Next(50, 200));
             }
         }

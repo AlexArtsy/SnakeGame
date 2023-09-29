@@ -21,15 +21,20 @@ namespace SnakeGame.Snake
 
         public FieldCell ExploreNextCell()
         {
-            var nextCell = SeeNextCell();
+            var nextPosition = GetNextPosition(this.head.Position, this.head.Direction);
+            var nextCell = this.field.Field[nextPosition.X, nextPosition.Y];
 
-            Console.SetCursorPosition(0,0);
-            Console.Write("                                                           ");
-            Console.SetCursorPosition(0, 0);
-            Console.Write($"Содержимое ячейки: {nextCell.Value.GetType()}");
+            lock (State.ConsoleWriterLock)
+            {
+                Console.SetCursorPosition(0, 0);
+                Console.Write("                                                           ");
+                Console.SetCursorPosition(0, 0);
+                Console.Write($"Содержимое ячейки: {nextCell.Value.GetType()}");
+            }
 
             return nextCell;
         }
+
         public void CreateSnake()
         {
             var direction = this.head.Direction;
@@ -46,11 +51,6 @@ namespace SnakeGame.Snake
             body3.Figure = "4";
             tail.Figure = " ";
 
-            //head.Moved = this.field.
-            //body1.Figure = "2";
-            //body2.Figure = "3";
-            //body3.Figure = "4";
-            //tail.Figure = " ";
 
             this.body.Add(head);
             this.body.Add(body1);

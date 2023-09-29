@@ -10,12 +10,22 @@ namespace SnakeGame
     internal class FieldCell
     {
         #region Поля
-
+        private IFieldCell cellValue;
         #endregion
 
         #region Свойства
         public FieldCoordinates Position { get; set; }
-        public IFieldCell Value { get; set; }
+
+        public IFieldCell Value
+        {
+            get => this.cellValue;
+            set
+            {
+                this.cellValue = value;
+                Changed?.Invoke(this);  //  Перерисовываем ячейку.
+            }
+        }
+
         //public ConsoleColor Color { get; set; }
         //public ConsoleColor BgColor { get; set; }
         #endregion
@@ -31,6 +41,7 @@ namespace SnakeGame
             Changed?.Invoke(this);
         }
         #endregion
+
         #region Делегаты
         public delegate void FieldCellHandler(FieldCell cell);
         #endregion
@@ -40,14 +51,14 @@ namespace SnakeGame
         #endregion
 
         #region Конструкторы
-        public FieldCell(int x, int y, IFieldCell eny)
+        public FieldCell(int x, int y) //IFieldCell eny
         {
             Position = new FieldCoordinates(x, y);
-            Value = eny;
+            Value = new FieldEmptiness();
             //Color = ConsoleColor.Black;
             //BgColor = ConsoleColor.White;
 
-            Changed?.Invoke(this);
+            //Changed?.Invoke(this);
         }
         #endregion
     }

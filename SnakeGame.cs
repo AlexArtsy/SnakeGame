@@ -15,7 +15,7 @@
         #region Методы
         public void Run()
         {
-            var task1 = new Task(() => gameControl.KeyEventListener());
+            var task1 = new Task(() => gameControl.DirectionListener());
             var task2 = new Task(() => this.snake.RunSnake());
             var task3 = new Task(() => this.field.GenerateFood());
 
@@ -26,6 +26,11 @@
             task1.Wait();
             task2.Wait();
             task3.Wait();
+        }
+
+        private void IncreaseSpeed()
+        {
+            State.SnakeSpeed += 50;
         }
         #endregion
 
@@ -38,6 +43,7 @@
             this.gameControl = new Control();
 
             this.snake = new Snake.Snake(5, 3, this.field, 100);
+            this.snake.RaisedSpeed += IncreaseSpeed;
 
         }
         #endregion

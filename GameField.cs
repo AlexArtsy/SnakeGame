@@ -36,19 +36,14 @@ namespace SnakeGame
 
         public void GenerateFood()
         {
-            Task foodTask = new Task(() =>
+            while (true)
             {
-                while (true)
-                {
-                    var x = RandomGen.GetRandomX(width);
-                    var y = RandomGen.GetRandomY(height);
-                    Field[x, y].Value = new SnakeFood(this, new FieldCoordinates(1, 1));
-                    Field[x, y].UpdateCell(Field[x, y].Value);
-                    Thread.Sleep(100 * new Random().Next(50, 200));
-                }
-
-            });
-            foodTask.Start();
+                var x = RandomGen.GetRandomX(width);
+                var y = RandomGen.GetRandomY(height);
+                Field[x, y].Value = new SnakeFood(this);
+                Field[x, y].UpdateCell(Field[x, y].Value);
+                Thread.Sleep(100 * new Random().Next(50, 200));
+            }
         }
         #endregion
 
@@ -62,7 +57,7 @@ namespace SnakeGame
             Field = new FieldCell[this.width, this.height];
 
             InitGameField();
-            GenerateFood();
+            //GenerateFood();
         }
         #endregion
     }

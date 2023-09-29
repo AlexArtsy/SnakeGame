@@ -20,28 +20,23 @@ namespace SnakeGame.Snake
 
         public void RunSnake()
         {
-            Task snakeTask = new Task(() =>
+            while (true)
             {
-                while (true)
+                Move();
+
+                var next = this.Mind.ExploreNextCell();
+
+                if (next.Value.ToString() == "SnakeGame.SnakeFood")
                 {
-                    Move();
-                    var next = this.Mind.ExploreNextCell();
-                    if (next.Value.ToString() == "SnakeGame.SnakeFood")
-                    {
-                        RaiseSnake((SnakeFood)next.Value);
-                    }
-
-                    Thread.Sleep(this.head.Speed * 10);
+                    RaiseSnake(next);
                 }
-            });
 
-            snakeTask.Start();
-
-            snakeTask.Wait();
-
+                //Thread.Sleep(1000 - State.SnakeSpeed);
+            }
         }
         public void Move()
         {
+            Thread.Sleep(1000 - State.SnakeSpeed);
             this.Mind.SetNextHeadCoordinates(this.head.Direction);
             this.Mind.CalculateBodyMovingCoordinates();
 
@@ -52,12 +47,12 @@ namespace SnakeGame.Snake
 
         }
 
-        public void RaiseSnake(SnakeFood food)
+        public void RaiseSnake(FieldCell cell)
         {
             this.Body.Insert(1, new SnakeBodyPart(this.head.Position));
             this.Mind.SetNextHeadCoordinates(this.head.Direction);
             this.head.Move(this.gameField);
-            this.head.EatFood(food);
+            this.head.EatFood(cell);
         }
         #endregion
 

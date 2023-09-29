@@ -22,9 +22,10 @@ namespace SnakeGame.Snake
             this.Speed = State.SnakeSpeed;
             base.Move(field);
         }
-        public void EatFood(SnakeFood food)
+        public void EatFood(FieldCell cell)
         {
-            food.Consume(this);
+            cell.UpdateCell(this);
+            //cell.Value.Consume(this);
         }
         #endregion
 

@@ -6,26 +6,26 @@
         #endregion
 
         #region Свойства
-        public FieldCoordinates Position { get; set; }
+        //public FieldCoordinates Position { get; set; }
         public string Figure { get; set; }
         public ConsoleColor Color { get; set; }
         public ConsoleColor BgColor { get; set; }
-        public FieldCell Cell { get; set; }
+        //public FieldCell Cell { get; set; }
         #endregion
 
         #region Методы
-        public void Consume(IFieldCell head)
-        {
-            Cell.UpdateCell(head);  //  Срабатывает событие перерисовки ячейки.
-        }
+        //public void Consume(FieldCell cell, IFieldCell head)
+        //{
+        //    cell.UpdateCell(head);  //  Срабатывает событие перерисовки ячейки.
+        //}
         #endregion
 
         #region Конструкторы
 
-        public SnakeFood(GameField field, FieldCoordinates position)
+        public SnakeFood(GameField field)
         {
-            Cell = field.Field[position.X, position.Y];
-            Position = position;
+            //Cell = field.Field[position.X, position.Y];
+            //Position = position;
             Figure = "F";
             Color = ConsoleColor.White;
             BgColor = ConsoleColor.Black;

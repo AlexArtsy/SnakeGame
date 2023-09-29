@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SnakeGame
+﻿namespace SnakeGame
 {
     internal class SnakeGame
     {
@@ -21,7 +15,17 @@ namespace SnakeGame
         #region Методы
         public void Run()
         {
-            this.snake.RunSnake();
+            var task1 = new Task(() => gameControl.KeyEventListener());
+            var task2 = new Task(() => this.snake.RunSnake());
+            var task3 = new Task(() => this.field.GenerateFood());
+
+            task1.Start();
+            task2.Start();
+            task3.Start();
+
+            task1.Wait();
+            task2.Wait();
+            task3.Wait();
         }
         #endregion
 
@@ -31,7 +35,7 @@ namespace SnakeGame
             this.field = new GameField(5, 5, 20, 20);
             this.rendering = new RenderProcessor();
             this.rendering.SubscribeFieldCellChangingEvent(this.field);
-            //this.gameControl = new Control(state);
+            this.gameControl = new Control();
 
             this.snake = new Snake.Snake(5, 3, this.field, 100);
 

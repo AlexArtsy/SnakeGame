@@ -16,38 +16,24 @@ namespace SnakeGame
 
         #region Методы
 
-        public void DirectionListener()
+        public static void DirectionListener(string direction)
         {
-            while (true)
+            switch (direction)
             {
-                var pressedKey = Console.ReadKey(true);
-                switch (pressedKey.Key)
-                {
-                    case ConsoleKey.Tab:
-                        break;
-                    case ConsoleKey.LeftArrow:
-                        State.HeadDirection = State.HeadDirection == "Right" ? "Right" : "Left";
-                        break;
-                    case ConsoleKey.RightArrow:
-                        State.HeadDirection = State.HeadDirection == "Left" ? "Left" : "Right";
-                        break;
-                    case ConsoleKey.UpArrow:
-                        State.HeadDirection = State.HeadDirection == "Down" ? "Down" : "Up";
-                        break;
-                    case ConsoleKey.DownArrow:
-                        State.HeadDirection = State.HeadDirection == "Up" ? "Up" : "Down";
-                        break;
-                    //case ConsoleKey.PageUp:
-                    //    State.SnakeSpeed = State.SnakeSpeed == 0 ? 0 : State.SnakeSpeed - 20;
-                    //    break;
-                    //case ConsoleKey.PageDown:
-                    //    State.SnakeSpeed += 20;
-                        //break;
-                    case ConsoleKey.Backspace:
-                        break;
-                    default:
-                        break;
-                }
+                case "Left":
+                    State.HeadDirection = State.HeadDirection == "Right" ? "Right" : "Left";
+                    break;
+                case "Right":
+                    State.HeadDirection = State.HeadDirection == "Left" ? "Left" : "Right";
+                    break;
+                case "Up":
+                    State.HeadDirection = State.HeadDirection == "Down" ? "Down" : "Up";
+                    break;
+                case "Down":
+                    State.HeadDirection = State.HeadDirection == "Up" ? "Up" : "Down";
+                    break;
+                default:
+                    break;
             }
         }
 

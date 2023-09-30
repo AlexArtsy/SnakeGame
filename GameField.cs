@@ -31,13 +31,18 @@ namespace SnakeGame
 
         public void GenerateFood()
         {
-            while (true)
+            while (State.IsSnakeAlive)
             {
                 var x = RandomGen.GetRandomX(width);
                 var y = RandomGen.GetRandomY(height);
-                Field[x, y].Value = new SnakeFood(this);
+
+                if (State.FoodPiecesValue <= 5)
+                {
+                    Field[x, y].Value = new SnakeFood(this);
+                    State.FoodPiecesValue += 1;
+                }
                 //Field[x, y].UpdateCell(Field[x, y].Value);
-                Thread.Sleep(100 * new Random().Next(50, 200));
+                Thread.Sleep(100 * new Random().Next(50, 1000 - State.SnakeSpeed));
             }
         }
         #endregion

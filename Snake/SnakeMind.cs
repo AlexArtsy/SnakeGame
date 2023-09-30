@@ -58,13 +58,15 @@ namespace SnakeGame.Snake
             this.body.Add(body3);
             this.body.Add(tail);
 
+            State.IsSnakeAlive = true;
+
         }
 
-        public FieldCell SeeNextCell()
-        {
-            var nextPosition = GetNextPosition(this.head.Position, this.head.Direction);
-            return this.field.Field[nextPosition.X, nextPosition.Y];
-        }
+        //public FieldCell SeeNextCell()
+        //{
+        //    var nextPosition = GetNextPosition(this.head.Position, this.head.Direction);
+        //    return this.field.Field[nextPosition.X, nextPosition.Y];
+        //}
 
         public FieldCoordinates GetNextPosition(FieldCoordinates current, string direction)
         {

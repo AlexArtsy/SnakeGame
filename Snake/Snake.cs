@@ -20,7 +20,7 @@ namespace SnakeGame.Snake
 
         public void RunSnake()
         {
-            while (true)
+            while (State.IsSnakeAlive)
             {
                 Move(); //  Самый первый шаг делаем вслепую?
                 var cell =  this.Mind.ExploreNextCell();    //  голова поглощает ячейки в любом случае каждый раз, просто реакция на содержимое - разная
@@ -38,7 +38,9 @@ namespace SnakeGame.Snake
                 p.Move(this.gameField);
             });
 
-            Thread.Sleep(1000 - State.SnakeSpeed); 
+            Thread.Sleep(1000 - State.SnakeSpeed);
+
+            State.Score -= 1;
         }
 
         public void RaiseSnake(FieldCell cell)
@@ -74,9 +76,9 @@ namespace SnakeGame.Snake
 
             this.Mind.CreateSnake();
 
-            this.Speed = speed;
-
             Raised += RenderProcessor.Blink;
+            RaisedSpeed += RenderProcessor.ShowScore;
+            RaisedSpeed += RenderProcessor.ShowSpeed;
         }
 
         #endregion

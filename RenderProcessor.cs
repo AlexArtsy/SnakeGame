@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -81,10 +82,27 @@ namespace SnakeGame
                     Thread.Sleep(200);
 
                 }
-
                 cell.Value.BgColor = originalColor;
             }
+        }
 
+        public static void ShowScore()
+        {
+            lock (State.ConsoleWriterLock)
+            {
+                Console.SetCursorPosition(3, 2);
+                Console.Write($"Скорость: {State.SnakeSpeed}");
+                Console.SetCursorPosition(3, 3);
+                Console.Write($"Очки: {State.Score}");
+            }
+        }
+
+        public static void ShowSpeed()
+        {
+            lock (State.ConsoleWriterLock)
+            {
+
+            }
         }
         #endregion
 

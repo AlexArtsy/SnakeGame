@@ -6,8 +6,9 @@ namespace SnakeGame
     {
         static void Main(string[] args)
         {
-
-            var game = new SnakeGame();
+            //var gamer = new Human();
+            var gamer = new Robot();
+            var game = new SnakeGame(gamer);
             game.Run();
 
         }

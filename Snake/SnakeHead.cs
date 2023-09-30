@@ -20,11 +20,14 @@ namespace SnakeGame.Snake
         {
             this.Direction = State.HeadDirection;
             this.Speed = State.SnakeSpeed;
+
             base.Move(field);
         }
         public void EatFood(FieldCell cell)
         {
             cell.Value = this;
+            State.FoodPiecesValue -= 1;
+            State.Score += 100;
             //cell.UpdateCell(this);
             //cell.Value.Consume(this);
         }

@@ -37,9 +37,9 @@ namespace SnakeGame
 
         #region Конструкторы
 
-        public Robot()
+        public Robot(GameField field)
         {
-
+            this.Field = field;
         }
         #endregion
     }

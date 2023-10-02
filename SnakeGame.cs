@@ -36,11 +36,11 @@
         #endregion
 
         #region Конструкторы
-        public SnakeGame(IGamer gamer)
+        public SnakeGame(IGamer gamer, GameField field)
         {
             this.Gamer = gamer;
-            
-            this.field = new GameField(5, 5, 20, 20);
+
+            this.field = field;
             this.rendering = new RenderProcessor();
             this.rendering.SubscribeFieldCellChangingEvent(this.field);
             this.gameControl = new Control();
@@ -48,9 +48,7 @@
             this.snake = new Snake.Snake(5, 3, this.field, 100);
             this.snake.RaisedSpeed += IncreaseSpeed;
 
-            this.Gamer.Field = this.field;
             this.Gamer.Snake = this.snake;
-
         }
         #endregion
     }

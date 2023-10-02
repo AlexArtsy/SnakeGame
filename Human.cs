@@ -50,9 +50,9 @@ namespace SnakeGame
 
         #region Конструкторы
 
-        public Human()
+        public Human(GameField field)
         {
-
+            this.Field = field;
         }
         #endregion
     }

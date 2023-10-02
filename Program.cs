@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using NeuroCompote;
 
 namespace SnakeGame
 {
@@ -6,9 +7,13 @@ namespace SnakeGame
     {
         static void Main(string[] args)
         {
-            //var gamer = new Human();
-            var gamer = new Robot();
-            var game = new SnakeGame(gamer);
+            var field = new GameField(5, 5, 20, 20);
+
+            //var gamer = new Robot(field);
+            //var gamer = new Human(field);
+            var gamer = new AiGamer(field);
+
+            var game = new SnakeGame(gamer, field);
             game.Run();
 
         }

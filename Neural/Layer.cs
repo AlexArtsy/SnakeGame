@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SnakeGame.Neural;
 
 namespace NeuroCompote
 {
@@ -11,7 +12,7 @@ namespace NeuroCompote
         public List<Neuron> Neurons { get; set; } = new List<Neuron>();
         //public List<double> Outputs { get; set; } = new List<double>();
 
-        private void InitializeNeurons(List<double> inputs, int valueOfNeurons)
+        private void InitializeNeurons(List<Value> inputs, int valueOfNeurons)
         {
             for (var i = 0; i < valueOfNeurons; i += 1)
             {
@@ -32,7 +33,7 @@ namespace NeuroCompote
             //this.Neurons.ForEach(neuron => this.Outputs.Add(neuron.OutputValue));
         }
 
-        public Layer(List<double> inputs, int valueOfNeurons)   //  Входной слой (без нейронов)
+        public Layer(List<Value> inputs, int valueOfNeurons)   //  Входной слой (без нейронов)
         {
             InitializeNeurons(inputs, valueOfNeurons);
         }

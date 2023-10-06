@@ -41,8 +41,8 @@
             this.Gamer = gamer;
 
             this.field = field;
-            this.rendering = new RenderProcessor();
-            this.rendering.SubscribeFieldCellChangingEvent(this.field);
+            //this.rendering = new RenderProcessor();
+            //RenderProcessor.SubscribeFieldCellChangingEvent(this.field);
             this.gameControl = new Control();
 
             this.snake = new Snake.Snake(5, 3, this.field, 100);

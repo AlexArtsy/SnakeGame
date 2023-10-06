@@ -19,9 +19,9 @@ namespace SnakeGame
 
         private void InitGameField()
         {
-            for (int x = 0; x < width; x += 1)
+            for (int y = 0; y < width; y += 1)
             {
-                for (int y = 0; y < height; y += 1)
+                for (int x = 0; x < height; x += 1)
                 {
                     var newCell = new FieldCell(x + X, y + Y);
                     Field[x, y] = newCell;
@@ -57,6 +57,7 @@ namespace SnakeGame
             Field = new FieldCell[this.width, this.height];
 
             InitGameField();
+            RenderProcessor.SubscribeFieldCellChangingEvent(this);
             //GenerateFood();
         }
         #endregion

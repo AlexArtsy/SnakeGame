@@ -18,7 +18,7 @@ namespace SnakeGame
         #endregion
 
         #region Методы
-        private void ClearCell(int x, int y)
+        private static void ClearCell(int x, int y)
         {
             lock (State.ConsoleWriterLock)
             {
@@ -28,7 +28,7 @@ namespace SnakeGame
             }
         } 
 
-        public void UpdateFieldCell(FieldCell cell) //  Сделать статическим
+        public static void UpdateFieldCell(FieldCell cell) //  Сделать статическим
         {
             lock (State.ConsoleWriterLock)
             {
@@ -41,12 +41,21 @@ namespace SnakeGame
             }
         }
 
-        public void SubscribeFieldCellChangingEvent(GameField gameField)
+        public static void SubscribeFieldCellChangingEvent(GameField gameField)
         {
-            foreach (var fieldCell in gameField.Field)
+            //foreach (var fieldCell in gameField.Field)
+            //{
+            //    fieldCell.Changed += UpdateFieldCell;
+            //    UpdateFieldCell(fieldCell);
+            //}
+
+            for (int y = 0; y < gameField.height; y += 1)
             {
-                fieldCell.Changed += UpdateFieldCell;
-                UpdateFieldCell(fieldCell);
+                for (int x = 0; x < gameField.width; x += 1)
+                {
+                    gameField.Field[x,y].Changed += UpdateFieldCell;
+                    UpdateFieldCell(gameField.Field[x, y]);
+                }
             }
         }
 

@@ -1,12 +1,14 @@
-﻿namespace NeuroCompote
+﻿using SnakeGame.Neural;
+
+namespace NeuroCompote
 {
     public class Network
     {
         public List<Layer> Layers { get; set; } = new List<Layer>();
         //public Layer InputLayer { get; set; }
-        public List<double> Outputs { get; set; } = new List<double>();
+        public List<Value> Outputs { get; set; } = new List<Value>();
 
-        private void CreateNetwork(List<double> inputs, int[] neuronsInLayers)
+        private void CreateNetwork(List<Value> inputs, int[] neuronsInLayers)
         {
             // this.InputLayer = new Layer(inputs, neuronsInLayers[0]);
 
@@ -31,7 +33,7 @@
             });
         }
 
-        public Network(List<double> inputs, int[] neuronsInLayers)
+        public Network(List<Value> inputs, int[] neuronsInLayers)
         {
             CreateNetwork(inputs, neuronsInLayers);
             InitializeOutputs();

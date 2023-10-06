@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using SnakeGame.Neural;
 
 namespace NeuroCompote
 {
@@ -11,12 +13,12 @@ namespace NeuroCompote
         public readonly int layerId;
 
         public int Id { get; set; }
-        public double OutputValue { get; set; }
+        public Value OutputValue { get; set; } = new Value(0, 0);   //  пересмотреть айди
         public IActivation ActivationFunc { get; set; }
         public List<Synapse> Inputs { get; set; } = new List<Synapse>();
 
         
-        private void InitializeSynapses(List<double> inputs)    //  inputs - выхода предидущего слоя
+        private void InitializeSynapses(List<Value> inputs)    //  inputs - выхода предидущего слоя
         {
             var i = 0;
             inputs.ForEach(input =>
@@ -41,21 +43,21 @@ namespace NeuroCompote
         }
         public void CalculateValue()
         {
-            this.OutputValue = ActivationFunc.Calculate(GetWeightedSum());
+            this.OutputValue.Double = ActivationFunc.Calculate(GetWeightedSum());
         }
-        public void CalculateValue(double input)    //  для псевдо-нейронов-входов
-        {
-            this.OutputValue = input;
-        }
+        //public void CalculateValue(Value input)    //  для псевдо-нейронов-входов
+        //{
+        //    this.OutputValue = input;
+        //}
 
-        private double GetWeightedSum()
+        private Value GetWeightedSum()
         {
             double sum = 0;
             this.Inputs.ForEach(s =>
             {
-                sum += s.Weight * s.Value;
+                sum += s.Weight * s.InputValue.Double;
             });
-            return sum;
+            return new Value(0, sum);
         }
 
         #region Constructors
@@ -68,7 +70,7 @@ namespace NeuroCompote
             CalculateValue();
         }
 
-        public Neuron(int id, List<double> inputs, IActivation activationFunc)    //  Для входного слоя
+        public Neuron(int id, List<Value> inputs, IActivation activationFunc)    //  Для входного слоя
         {
             this.Id = id;
             this.ActivationFunc = activationFunc;

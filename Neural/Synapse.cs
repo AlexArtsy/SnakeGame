@@ -13,6 +13,7 @@ namespace NeuroCompote
         //public double InitializedWeight { get; set; }
         //public double InitializedValue { get; set; }
         public double Weight { get; set; }
+        public double DeltaW { get; set; }
         public int Id { get; set; }
 
         public Value InputValue { get; set; }
@@ -30,7 +31,10 @@ namespace NeuroCompote
         //        }
         //    }
         //}
-
+        public void UpdateWeight(double learningSpeed)
+        {
+            this.Weight = this.Weight - learningSpeed * this.DeltaW;
+        }
         private void InitializeWeight()
         {
             this.Weight = RndGen.GetWeight();

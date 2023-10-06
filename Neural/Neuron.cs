@@ -16,6 +16,7 @@ namespace NeuroCompote
         public Value OutputValue { get; set; } = new Value(0, 0);   //  пересмотреть айди
         public IActivation ActivationFunc { get; set; }
         public List<Synapse> Inputs { get; set; } = new List<Synapse>();
+        public double DeltaOut { get; set; }
 
         
         private void InitializeSynapses(List<Value> inputs)    //  inputs - выхода предидущего слоя

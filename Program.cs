@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using SnakeGame.App;
 using SnakeGame.App.Field;
+using SnakeGame.App.Game;
 using SnakeGame.App.Gamer;
 
 namespace SnakeGame

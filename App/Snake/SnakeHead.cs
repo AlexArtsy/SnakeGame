@@ -17,10 +17,6 @@ namespace SnakeGame.App.Snake
         #endregion
 
         #region Методы
-        //public void EatFood(FieldCell cell)
-        //{
-        //    cell.Value = this;
-        //}
 
         public void Eat(IFieldCellValue food, FieldCell cell, Snake snake)
         {

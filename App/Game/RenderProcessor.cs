@@ -28,7 +28,7 @@ namespace SnakeGame.App.Game
             }
         }
 
-        public static void UpdateFieldCell(FieldCell cell) //  Сделать статическим
+        public static void UpdateFieldCell(FieldCell cell)
         {
             lock (State.ConsoleWriterLock)
             {
@@ -43,12 +43,6 @@ namespace SnakeGame.App.Game
 
         public static void SubscribeFieldCellChangingEvent(GameField gameField)
         {
-            //foreach (var fieldCell in gameField.Field)
-            //{
-            //    fieldCell.Changed += UpdateFieldCell;
-            //    UpdateFieldCell(fieldCell);
-            //}
-
             for (int y = 0; y < gameField.height; y += 1)
             {
                 for (int x = 0; x < gameField.width; x += 1)
@@ -99,8 +93,6 @@ namespace SnakeGame.App.Game
         {
             lock (State.ConsoleWriterLock)
             {
-                Console.SetCursorPosition(3, 2);
-                Console.Write($"Скорость: {State.SnakeSpeed}");
                 Console.SetCursorPosition(3, 3);
                 Console.Write($"Очки: {State.Score}");
             }
@@ -110,7 +102,8 @@ namespace SnakeGame.App.Game
         {
             lock (State.ConsoleWriterLock)
             {
-
+                Console.SetCursorPosition(3, 2);
+                Console.Write($"Скорость: {State.SnakeSpeed}");
             }
         }
         #endregion

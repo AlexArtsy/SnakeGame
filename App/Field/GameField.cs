@@ -46,14 +46,18 @@ namespace SnakeGame.App.Field
 
         public void GenerateFood()
         {
+            var emptyCellValue = new FieldEmptiness().ToString();
+
             while (State.IsSnakeAlive)
             {
                 var x = RandomGen.GetRandomX(width);
                 var y = RandomGen.GetRandomY(height);
 
-                if (Field[x, y].Value.ToString() != "SnakeGame.FieldEmptiness")
+                var typeOfCellValue = Field[x, y].Value.ToString();
+                
+                if (typeOfCellValue != emptyCellValue)   //  Проверяем не попала ли еда на не пустую ячейку.
                 {
-                    GenerateFood();
+                    continue;
                 }
 
                 if (State.FoodPiecesValue <= 5)
@@ -61,8 +65,11 @@ namespace SnakeGame.App.Field
                     Field[x, y].Value = new SnakeFood(this);
                     State.FoodPiecesValue += 1;
                 }
-                //Field[x, y].UpdateCell(Field[x, y].Value);
-                Thread.Sleep(100 * new Random().Next(50, 1000 - State.SnakeSpeed));
+
+                if (State.FoodPiecesValue > 2)
+                {
+                    Thread.Sleep(100 * new Random().Next(50, 1000 - State.SnakeSpeed));
+                }
             }
         }
         #endregion

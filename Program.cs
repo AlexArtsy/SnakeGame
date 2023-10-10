@@ -1,5 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
-using NeuroCompote;
+using SnakeGame.App;
+using SnakeGame.App.Field;
+using SnakeGame.App.Gamer;
 
 namespace SnakeGame
 {
@@ -13,7 +15,7 @@ namespace SnakeGame
             var gamer = new Human(field);
             //var gamer = new AiGamer(field);
 
-            var game = new SnakeGame(gamer, field);
+            var game = new App.Game.SnakeGame(gamer, field);
             game.Run();
 
         }

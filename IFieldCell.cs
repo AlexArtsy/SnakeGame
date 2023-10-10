@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SnakeGame
 {
-    internal interface IFieldCell
+    internal interface IFieldCellValue
     {
         //FieldCoordinates Position { get; set; }
         string Figure { get; set; }

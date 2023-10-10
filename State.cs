@@ -49,10 +49,6 @@ namespace SnakeGame
         #endregion
 
         #region Методы
-        public static void KillSnake()
-        {
-            IsSnakeAlive = false;
-        }
 
         #endregion
 

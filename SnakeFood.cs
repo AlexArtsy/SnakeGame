@@ -1,6 +1,6 @@
 ﻿namespace SnakeGame
 {
-    internal class SnakeFood : IFieldCell
+    internal class SnakeFood : IFieldCellValue
     {
         #region Поля
         #endregion
@@ -16,9 +16,8 @@
         #region Методы
         public void Consume(Snake.Snake snake, FieldCell cell)
         {
-            cell.Value = snake.head;
+            //cell.Value = snake.head;    //  Выглядит не очень - переделать
             snake.RaiseSnake(cell);
-            //  cell.UpdateCell(snake.head);  //  Срабатывает событие перерисовки ячейки.
         }
         #endregion
 

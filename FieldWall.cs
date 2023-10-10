@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SnakeGame
 {
-    internal class FieldWall : IFieldCell
+    internal class FieldWall : IFieldCellValue
     {
         #region Поля
         #endregion

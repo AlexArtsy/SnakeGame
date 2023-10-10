@@ -16,13 +16,16 @@ namespace SnakeGame.Snake
         #endregion
 
         #region Методы
-        public void EatFood(FieldCell cell)
+        //public void EatFood(FieldCell cell)
+        //{
+        //    cell.Value = this;
+        //}
+
+        public void Eat(IFieldCellValue food, FieldCell cell, Snake snake)
         {
-            cell.Value = this;
-            State.FoodPiecesValue -= 1; //  Лучше бы вынести отсюда
-            State.Score += 100; //  И это тоже
-            //cell.UpdateCell(this);
-            //cell.Value.Consume(this);
+            //  Проверить порядок выполнения
+            food.Consume(snake, cell);
+            cell.Value = this;  
         }
         #endregion
 

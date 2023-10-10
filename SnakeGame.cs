@@ -46,11 +46,11 @@
             this.gameControl = new Control();
 
             this.snake = new Snake.Snake(5, 3, this.field, 100);
-            this.snake.RaisedSpeed += IncreaseSpeed;
+            this.snake.SnakeRised += IncreaseSpeed;
 
             this.Gamer.Snake = this.snake;
 
-            this.snake.SnakeDies += State.KillSnake;
+            this.snake.SnakeDies += Control.KillSnake;
         }
         #endregion
     }

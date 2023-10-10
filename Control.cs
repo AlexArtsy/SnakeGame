@@ -37,6 +37,25 @@ namespace SnakeGame
             }
         }
 
+        public static void IncreaseSpeed()
+        {
+            State.Score += 100;
+        }
+
+        public static void DecreaseFoodValue()
+        {
+            State.FoodPiecesValue -= 1;
+        }
+
+        public static void DecreaseScore()
+        {
+            State.Score -= 1;
+        }
+
+        public static void KillSnake()
+        {
+            State.IsSnakeAlive = false;
+        }
         #endregion
 
         #region Делегаты и события

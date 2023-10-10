@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.VisualBasic;
+
 namespace SnakeGame.Snake
 {
     internal class Snake
@@ -22,26 +24,39 @@ namespace SnakeGame.Snake
         {
             while (State.IsSnakeAlive)
             {
-                Move(); //  Самый первый шаг делаем вслепую?
-                var cell =  this.Mind.ExploreNextCell();    //  голова поглощает ячейки в любом случае каждый раз, просто реакция на содержимое - разная
-                cell.Value.Consume(this, cell);
+                //var cell = this.Mind.ExploreNextCell();    //  голова поглощает ячейки в любом случае каждый раз, просто реакция на содержимое - разная
+                //var cellValue = cell.Value;
+
+                this.Mind.ReadDirection();
+                this.Mind.SetSpeed();
+                this.Mind.SetNextHeadCoordinates(this.head.Direction);
+                this.Mind.CalculateBodyMovingCoordinates();
+
+                var cell = this.Mind.ExploreNextCell();    //  голова поглощает ячейки в любом случае каждый раз, просто реакция на содержимое - разная
+                //var cellValue = this.Mind.ExploreNextCell().Value;
+                var food = cell.Value;
+                
+                Move();
+                EatFood(food, cell);
+
+                SnakeMoved?.Invoke();
+
+                Thread.Sleep(1000 - State.SnakeSpeed);
+
+                
             }
         }
         public void Move()
         {
-            this.Mind.ReadDirection();
-            this.Mind.SetSpeed();
-            this.Mind.SetNextHeadCoordinates(this.head.Direction);
-            this.Mind.CalculateBodyMovingCoordinates();
-
             this.Body.ForEach(p =>
             {
                 p.Move(this.gameField);
             });
+        }
 
-            Thread.Sleep(1000 - State.SnakeSpeed);
-
-            State.Score -= 1;
+        private void EatFood(IFieldCellValue food, FieldCell cell)
+        {
+            this.head.Eat(food, cell, this);
         }
 
         public void RaiseSnake(FieldCell cell)
@@ -49,9 +64,9 @@ namespace SnakeGame.Snake
             this.Body.Insert(1, new SnakeBodyPart(this.head.Position));
             this.Mind.SetNextHeadCoordinates(this.head.Direction);
             this.head.Move(this.gameField);
-            this.head.EatFood(cell);
+            //this.head.EatFood(cell);
 
-            RaisedSpeed?.Invoke();
+            SnakeRised?.Invoke();
             Raised?.Invoke(cell, ConsoleColor.Green);
         }
 
@@ -70,7 +85,8 @@ namespace SnakeGame.Snake
         #region События
         public event SnakeVisualHandler Raised;
         public event SnakeVisualHandler Crashed;
-        public event SnakeHandler RaisedSpeed;
+        public event SnakeHandler SnakeRised;
+        public event SnakeHandler SnakeMoved;
         public event SnakeHandler SnakeDies;
         #endregion
 
@@ -87,8 +103,12 @@ namespace SnakeGame.Snake
 
             Raised += RenderProcessor.Blink;
             Crashed += RenderProcessor.Blink;
-            RaisedSpeed += RenderProcessor.ShowScore;
-            RaisedSpeed += RenderProcessor.ShowSpeed;
+            //SnakeRised += RenderProcessor.ShowScore;
+            SnakeRised += RenderProcessor.ShowSpeed;
+            SnakeRised += Control.DecreaseFoodValue;
+            SnakeRised += Control.IncreaseSpeed;
+            SnakeMoved += Control.DecreaseScore;
+            SnakeMoved += RenderProcessor.ShowScore;
         }
 
         #endregion

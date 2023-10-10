@@ -8,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace SnakeGame.Snake
 {
-    internal class SnakeMember : IMovable, IFieldCell, ISnakeable
+    internal class SnakeMember : IMovable, IFieldCellValue, ISnakeable
     {
         #region Поля
-        //private readonly State state;
         private ConsoleColor color;
         private ConsoleColor bgColor;
         #endregion
@@ -32,23 +31,18 @@ namespace SnakeGame.Snake
         public virtual void Move(GameField field)
         {
             UpdateCurrentPosition();
-            field.Field[this.Position.X, this.Position.Y].Value = this;
-            //CaptureCell(field); // поменять
-            //Moved?.Invoke(this);    //  а это как-то обрабатывается???
+            field.Field[this.Position.X, this.Position.Y].Value = this; //  Происходит перерисовка
         }
 
         private void UpdateCurrentPosition()
         {
             this.Position = this.NextPosition;
         }
+
         public void Consume(Snake snake, FieldCell cell)
         {
             snake.Die(cell);
         }
-        //private void CaptureCell(GameField field)
-        //{
-        //    field.Field[this.Position.X, this.Position.Y].UpdateCell(this);
-        //}
         #endregion
 
         #endregion

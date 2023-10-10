@@ -10,13 +10,13 @@ namespace SnakeGame
     internal class FieldCell
     {
         #region Поля
-        private IFieldCell cellValue;
+        private IFieldCellValue cellValue;
         #endregion
 
         #region Свойства
         public FieldCoordinates Position { get; set; }
 
-        public IFieldCell Value
+        public IFieldCellValue Value
         {
             get => this.cellValue;
             set
@@ -32,7 +32,7 @@ namespace SnakeGame
 
         #region Методы
 
-        public void UpdateCell(IFieldCell value)    //  надо переписать чтобы событие срабатывало когда устанавливается Value ячейки
+        public void UpdateCell(IFieldCellValue value)    //  надо переписать чтобы событие срабатывало когда устанавливается Value ячейки
         {
             Value = value;
             //this.Color = value.Color;

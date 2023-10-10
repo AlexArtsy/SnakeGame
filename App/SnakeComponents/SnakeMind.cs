@@ -1,8 +1,7 @@
-﻿
-using SnakeGame.App.Field;
+﻿using SnakeGame.App.Field;
 using SnakeGame.App.Game;
 
-namespace SnakeGame.App.Snake
+namespace SnakeGame.App.SnakeComponents
 {
     public class SnakeMind
     {

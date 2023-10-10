@@ -16,7 +16,7 @@ namespace SnakeGame
             var gamer = new Human(field);
             //var gamer = new AiGamer(field);
 
-            var game = new App.Game.SnakeGame(gamer, field);
+            var game = new Game(gamer, field);
             game.Run();
 
         }

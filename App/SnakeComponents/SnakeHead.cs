@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SnakeGame.App.Field;
+﻿using SnakeGame.App.Field;
 
-namespace SnakeGame.App.Snake
+namespace SnakeGame.App.SnakeComponents
 {
     public class SnakeHead : SnakeMember, ISnakeable
     {

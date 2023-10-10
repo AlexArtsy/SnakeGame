@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SnakeGame.App.SnakeComponents;
 
 namespace SnakeGame.App.Field
 {
@@ -13,7 +14,7 @@ namespace SnakeGame.App.Field
         ConsoleColor Color { get; set; }
         ConsoleColor BgColor { get; set; }
 
-        void Consume(Snake.Snake snake, FieldCell cell);
+        void Consume(Snake snake, FieldCell cell);
 
         //#region Делегаты
         //delegate void IFieldCellHandler(IFieldCell value);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SnakeGame.App.SnakeComponents;
 
 namespace SnakeGame.App.Field
 {
@@ -19,7 +20,7 @@ namespace SnakeGame.App.Field
         #endregion
 
         #region Методы
-        public void Consume(Snake.Snake snake, FieldCell cell)
+        public void Consume(Snake snake, FieldCell cell)
         {
             return;
         }

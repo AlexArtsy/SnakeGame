@@ -1,6 +1,6 @@
 ﻿using SnakeGame.App.Field;
 
-namespace SnakeGame.App
+namespace SnakeGame.App.SnakeComponents
 {
     internal class SnakeFood : IFieldCellValue
     {
@@ -16,7 +16,7 @@ namespace SnakeGame.App
         #endregion
 
         #region Методы
-        public void Consume(Snake.Snake snake, FieldCell cell)
+        public void Consume(Snake snake, FieldCell cell)
         {
             //cell.Value = snake.head;    //  Выглядит не очень - переделать
             snake.RaiseSnake(cell);

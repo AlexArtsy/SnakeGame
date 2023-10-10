@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SnakeGame.App.Field;
 using SnakeGame.App.Game;
+using SnakeGame.App.SnakeComponents;
 
 namespace SnakeGame.App.Gamer
 {
@@ -15,7 +16,7 @@ namespace SnakeGame.App.Gamer
         #endregion
 
         #region Свойства
-        public Snake.Snake Snake { get; set; }
+        public Snake Snake { get; set; }
         public GameField Field { get; set; }
         #endregion
 

@@ -1,7 +1,7 @@
 ﻿
 using SnakeGame.App.Field;
 
-namespace SnakeGame.App.Snake
+namespace SnakeGame.App.SnakeComponents
 {
     public class SnakeMember : IFieldCellValue, ISnakeable
     {

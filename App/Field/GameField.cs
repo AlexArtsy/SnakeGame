@@ -1,4 +1,5 @@
 ﻿using SnakeGame.App.Game;
+using SnakeGame.App.SnakeComponents;
 
 namespace SnakeGame.App.Field
 {

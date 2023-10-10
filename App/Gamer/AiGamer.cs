@@ -9,6 +9,7 @@ using SnakeGame.App.Field;
 using SnakeGame.App.Game;
 using SnakeGame.App.Gamer;
 using SnakeGame.App.Neural;
+using SnakeGame.App.SnakeComponents;
 
 namespace SnakeGame.App
 {
@@ -19,7 +20,7 @@ namespace SnakeGame.App
 
         #region Свойства
         public Network Network { get; set; }
-        public Snake.Snake Snake { get; set; }
+        public Snake Snake { get; set; }
         public GameField Field { get; set; }
         public FieldCell[,] Area { get; set; } = new FieldCell[3, 3];
         public List<Value> Inputs { get; set; }
@@ -300,7 +301,7 @@ namespace SnakeGame.App
 
         public AiGamer(GameField field)
         {
-            Field = field;
+            this.Field = field;
             Inputs = new List<Value>();
             InitInputList();
 

@@ -1,15 +1,16 @@
 ﻿using SnakeGame.App.Field;
 using SnakeGame.App.Gamer;
+using SnakeGame.App.SnakeComponents;
 
 namespace SnakeGame.App.Game
 {
-    public class SnakeGame
+    public class Game
     {
         #region Поля
         private readonly GameField field;
         private readonly Control gameControl;
         private RenderProcessor rendering;
-        private readonly Snake.Snake snake;
+        private readonly Snake snake;
         #endregion
 
         #region Свойства
@@ -39,7 +40,7 @@ namespace SnakeGame.App.Game
         #endregion
 
         #region Конструкторы
-        public SnakeGame(IGamer gamer, GameField field)
+        public Game(IGamer gamer, GameField field)
         {
             Gamer = gamer;
 
@@ -48,7 +49,7 @@ namespace SnakeGame.App.Game
             //RenderProcessor.SubscribeFieldCellChangingEvent(this.field);
             gameControl = new Control();
 
-            snake = new Snake.Snake(5, 3, this.field, 100);
+            snake = new Snake(5, 3, this.field, 100);
             snake.SnakeRised += IncreaseSpeed;
 
             Gamer.Snake = snake;

@@ -51,6 +51,11 @@ namespace SnakeGame
                 var x = RandomGen.GetRandomX(width);
                 var y = RandomGen.GetRandomY(height);
 
+                if (Field[x, y].Value.ToString() != "SnakeGame.FieldEmptiness")
+                {
+                    GenerateFood();
+                }
+
                 if (State.FoodPiecesValue <= 5)
                 {
                     Field[x, y].Value = new SnakeFood(this);

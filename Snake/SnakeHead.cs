@@ -16,13 +16,6 @@ namespace SnakeGame.Snake
         #endregion
 
         #region Методы
-        public override void Move(GameField field)
-        {
-            this.Direction = State.HeadDirection;
-            this.Speed = State.SnakeSpeed;
-
-            base.Move(field);
-        }
         public void EatFood(FieldCell cell)
         {
             cell.Value = this;

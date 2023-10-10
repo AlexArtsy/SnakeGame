@@ -29,8 +29,9 @@ namespace SnakeGame.Snake
         }
         public void Move()
         {
+            this.Mind.ReadDirection();
+            this.Mind.SetSpeed();
             this.Mind.SetNextHeadCoordinates(this.head.Direction);
-
             this.Mind.CalculateBodyMovingCoordinates();
 
             this.Body.ForEach(p =>

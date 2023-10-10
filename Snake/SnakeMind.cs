@@ -19,6 +19,18 @@ namespace SnakeGame.Snake
 
         #region Методы
 
+        public void ReadDirection()
+        {
+            this.head.Direction = CheckDirectionCorrectness(this.head.Direction, State.HeadDirection)
+                ? State.HeadDirection
+                : this.head.Direction;
+        }
+
+        public void SetSpeed()
+        {
+            this.head.Speed = State.SnakeSpeed;
+        }
+
         public FieldCell ExploreNextCell()
         {
             var nextPosition = GetNextPosition(this.head.Position, this.head.Direction);
@@ -62,14 +74,36 @@ namespace SnakeGame.Snake
 
         }
 
-        //public FieldCell SeeNextCell()
-        //{
-        //    var nextPosition = GetNextPosition(this.head.Position, this.head.Direction);
-        //    return this.field.Field[nextPosition.X, nextPosition.Y];
-        //}
+        private bool CheckDirectionCorrectness(string currentDirection, string nextDirection)
+        {
+            var isCorrect = false;
+            switch (nextDirection)
+            {
+                case "Up":
+                    isCorrect = currentDirection != "Down";
+                    break;
+                case "Down":
+                    isCorrect = currentDirection != "Up";
+                    break;
+                case "Right":
+                    isCorrect = currentDirection != "Left";
+                    break;
+                case "Left":
+                    isCorrect = currentDirection != "Right";
+                    break;
+            }
+
+            return isCorrect;
+        }
 
         public FieldCoordinates GetNextPosition(FieldCoordinates current, string direction)
         {
+            //if (!CheckDirectionCorrectness(this.head.Direction, direction))
+            //{
+            //    direction = this.head.Direction;
+            //    State.HeadDirection = this.head.Direction;  //  Как-то не красиво, но пусть пока будет так.
+            //}
+
             var x = 0;
             var y = 0;
 

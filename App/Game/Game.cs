@@ -33,10 +33,10 @@ namespace SnakeGame.App.Game
             task3.Wait();
         }
 
-        private void IncreaseSpeed()
-        {
-            State.SnakeSpeed += 50;
-        }
+        //private void IncreaseSpeed()
+        //{
+        //    State.SnakeSpeed += 50;
+        //}
         #endregion
 
         #region Конструкторы
@@ -50,10 +50,19 @@ namespace SnakeGame.App.Game
             gameControl = new Control();
 
             snake = new Snake(5, 3, this.field, 100);
-            snake.SnakeRised += IncreaseSpeed;
 
-            Gamer.Snake = snake;
+            Gamer.Snake = snake;    //  Как-то криво, переделать.
 
+            snake.Raised += RenderProcessor.Blink;
+            snake.Crashed += RenderProcessor.Blink;
+
+            snake.SnakeMoved += RenderProcessor.ShowSpeed;
+            snake.SnakeMoved += RenderProcessor.ShowScore;
+
+            snake.SnakeRised += Control.DecreaseFoodValue;
+            snake.SnakeRised += Control.IncreaseSpeed;
+            snake.SnakeRised += Control.IncreaseScore;
+            snake.SnakeMoved += Control.DecreaseScore;
             snake.SnakeDies += Control.KillSnake;
         }
         #endregion

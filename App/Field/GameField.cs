@@ -67,7 +67,7 @@ namespace SnakeGame.App.Field
                     State.FoodPiecesValue += 1;
                 }
 
-                if (State.FoodPiecesValue > 2)
+                if (State.FoodPiecesValue > 1)
                 {
                     Thread.Sleep(100 * new Random().Next(50, 1000 - State.SnakeSpeed));
                 }

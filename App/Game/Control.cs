@@ -39,6 +39,10 @@ namespace SnakeGame.App.Game
 
         public static void IncreaseSpeed()
         {
+            State.SnakeSpeed += 50;
+        }
+        public static void IncreaseScore()
+        {
             State.Score += 100;
         }
 

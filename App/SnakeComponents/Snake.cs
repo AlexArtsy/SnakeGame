@@ -24,16 +24,10 @@ namespace SnakeGame.App.SnakeComponents
         {
             while (State.IsSnakeAlive)
             {
-                //var cell = this.Mind.ExploreNextCell();    //  голова поглощает ячейки в любом случае каждый раз, просто реакция на содержимое - разная
-                //var cellValue = cell.Value;
 
-                Mind.ReadDirection();
-                Mind.SetSpeed();
-                Mind.SetNextHeadCoordinates(head.Direction);
-                Mind.CalculateBodyMovingCoordinates();
+                ThinkBeforeMoving();
 
-                var cell = Mind.ExploreNextCell();    //  голова поглощает ячейки в любом случае каждый раз, просто реакция на содержимое - разная
-                //var cellValue = this.Mind.ExploreNextCell().Value;
+                var cell = ExploreArea();
                 var food = cell.Value;
 
                 Move();
@@ -46,12 +40,31 @@ namespace SnakeGame.App.SnakeComponents
 
             }
         }
-        public void Move()
+
+        private FieldCell ExploreArea()
+        {
+            return Mind.ExploreNextCell();
+        }
+
+        private void ThinkBeforeMoving()
+        {
+            Mind.ReadDirection();
+            Mind.SetSpeed();
+            Mind.SetNextHeadCoordinates(head.Direction);
+            Mind.CalculateBodyMovingCoordinates();
+        }
+
+        private void Move()
         {
             Body.ForEach(p =>
             {
                 p.Move(gameField);
             });
+        }
+
+        private void GiveBirthToSnake()
+        {
+            this.Mind.CreateSnake();
         }
 
         private void EatFood(IFieldCellValue food, FieldCell cell)
@@ -61,13 +74,19 @@ namespace SnakeGame.App.SnakeComponents
 
         public void RaiseSnake(FieldCell cell)
         {
-            Body.Insert(1, new SnakeBodyPart(head.Position));
-            Mind.SetNextHeadCoordinates(head.Direction);
-            head.Move(gameField);
-            //this.head.EatFood(cell);
-
             SnakeRised?.Invoke();
             Raised?.Invoke(cell, ConsoleColor.Green);
+
+            var newBodyPart = new SnakeBodyPart(head.Position);
+            //cell.Value = newBodyPart;
+
+            Body.Insert(1, newBodyPart);
+            
+            Mind.SetNextHeadCoordinates(head.Direction);
+            
+            head.Move(gameField);
+
+            cell.Value = newBodyPart;
         }
 
         public void Die(FieldCell cell)
@@ -93,22 +112,13 @@ namespace SnakeGame.App.SnakeComponents
         #region Конструкторы
         public Snake(int x, int y, GameField gameField, int speed)
         {
-            head = new SnakeHead(new FieldCoordinates(x, y), State.HeadDirection);
-            Body = new List<SnakeMember>();
+            this.head = new SnakeHead(new FieldCoordinates(x, y), State.HeadDirection);
+            this.Body = new List<SnakeMember>();
             this.gameField = gameField;
-            Mind = new SnakeMind(Body, head, this.gameField);
-            Speed = speed;
+            this.Mind = new SnakeMind(Body, head, this.gameField);
+            this.Speed = speed;
 
-            Mind.CreateSnake();
-
-            Raised += RenderProcessor.Blink;
-            Crashed += RenderProcessor.Blink;
-            //SnakeRised += RenderProcessor.ShowScore;
-            SnakeRised += RenderProcessor.ShowSpeed;
-            SnakeRised += Control.DecreaseFoodValue;
-            SnakeRised += Control.IncreaseSpeed;
-            SnakeMoved += Control.DecreaseScore;
-            SnakeMoved += RenderProcessor.ShowScore;
+            GiveBirthToSnake();
         }
 
         #endregion

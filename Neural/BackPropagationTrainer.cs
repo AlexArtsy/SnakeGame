@@ -67,6 +67,11 @@ namespace SnakeGame.Neural
             });
         }
 
+        public bool Train(double[] target)
+        {
+            return false;
+        }
+
         public bool Train(double[] target, double fidelity)
         {
             this.Network.Calculate();

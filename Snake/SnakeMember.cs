@@ -43,7 +43,7 @@ namespace SnakeGame.Snake
         }
         public void Consume(Snake snake, FieldCell cell)
         {
-
+            snake.Die(cell);
         }
         //private void CaptureCell(GameField field)
         //{

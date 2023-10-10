@@ -12,7 +12,7 @@ namespace NeuroCompote
         public double[] Inputs { get; set; }
         public double[] Reference { get; set; }
 
-        public void Train()
+        public bool Train(double[] target)
         {
             Network.Layers.ForEach(layer =>
             {
@@ -24,6 +24,8 @@ namespace NeuroCompote
                     });
                 });
             });
+
+            return true;
         }
 
         public RandomWeightTrainer(Network network)

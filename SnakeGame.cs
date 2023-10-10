@@ -49,6 +49,8 @@
             this.snake.RaisedSpeed += IncreaseSpeed;
 
             this.Gamer.Snake = this.snake;
+
+            this.snake.SnakeDies += State.KillSnake;
         }
         #endregion
     }

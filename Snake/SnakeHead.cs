@@ -26,8 +26,8 @@ namespace SnakeGame.Snake
         public void EatFood(FieldCell cell)
         {
             cell.Value = this;
-            State.FoodPiecesValue -= 1;
-            State.Score += 100;
+            State.FoodPiecesValue -= 1; //  Лучше бы вынести отсюда
+            State.Score += 100; //  И это тоже
             //cell.UpdateCell(this);
             //cell.Value.Consume(this);
         }

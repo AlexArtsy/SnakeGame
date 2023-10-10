@@ -12,6 +12,6 @@ namespace NeuroCompote
         double[] Inputs { get; set; }
         double[] Reference { get; set; }
 
-        public void Train(double[] target);
+        public bool Train(double[] target);
     }
 }

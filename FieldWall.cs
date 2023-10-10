@@ -20,7 +20,7 @@ namespace SnakeGame
         #region Методы
         public void Consume(Snake.Snake snake, FieldCell cell)
         {
-            return;
+            snake.Die(cell);
         }
         #endregion
 

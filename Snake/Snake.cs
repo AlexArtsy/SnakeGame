@@ -53,6 +53,12 @@ namespace SnakeGame.Snake
             RaisedSpeed?.Invoke();
             Raised?.Invoke(cell, ConsoleColor.Green);
         }
+
+        public void Die(FieldCell cell)
+        {
+            Crashed?.Invoke(cell, ConsoleColor.Red);
+            SnakeDies?.Invoke();
+        }
         #endregion
 
         #region Делегаты
@@ -62,7 +68,9 @@ namespace SnakeGame.Snake
 
         #region События
         public event SnakeVisualHandler Raised;
+        public event SnakeVisualHandler Crashed;
         public event SnakeHandler RaisedSpeed;
+        public event SnakeHandler SnakeDies;
         #endregion
 
         #region Конструкторы
@@ -77,6 +85,7 @@ namespace SnakeGame.Snake
             this.Mind.CreateSnake();
 
             Raised += RenderProcessor.Blink;
+            Crashed += RenderProcessor.Blink;
             RaisedSpeed += RenderProcessor.ShowScore;
             RaisedSpeed += RenderProcessor.ShowSpeed;
         }

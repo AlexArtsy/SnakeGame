@@ -19,13 +19,28 @@ namespace SnakeGame
 
         private void InitGameField()
         {
-            for (int y = 0; y < width; y += 1)
+            for (int y = 0; y < height; y += 1)
             {
-                for (int x = 0; x < height; x += 1)
+                for (int x = 0; x < width; x += 1)
                 {
                     var newCell = new FieldCell(x + X, y + Y);
                     Field[x, y] = newCell;
                 }
+            }
+        }
+
+        private void SetBorders()
+        {
+            for (int x = 0; x < width; x += 1)
+            {
+                Field[x, 0].Value = new FieldWall();
+                Field[x, height - 1].Value = new FieldWall();
+            }
+
+            for (int y = 1; y < height - 1; y += 1)
+            {
+                Field[0, y].Value = new FieldWall();
+                Field[width - 1, y].Value = new FieldWall();
             }
         }
 
@@ -57,6 +72,7 @@ namespace SnakeGame
             Field = new FieldCell[this.width, this.height];
 
             InitGameField();
+            SetBorders();
             RenderProcessor.SubscribeFieldCellChangingEvent(this);
             //GenerateFood();
         }

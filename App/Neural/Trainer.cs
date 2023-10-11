@@ -24,18 +24,6 @@ namespace SnakeGame.App.Neural
         #endregion
 
         #region Методы
-        //public void InitInputList()
-        //{
-        //    var k = 0;
-        //    for (var j = 0; j < 3; j += 1)
-        //    {
-        //        for (var i = 0; i < 3; i += 1)
-        //        {
-        //            Inputs.Add(new Value(k, 0.0));
-        //            k += 1;
-        //        }
-        //    }
-        //}
 
         private void UpdateInputs(List<IFieldCellValue> input)
         {
@@ -50,6 +38,12 @@ namespace SnakeGame.App.Neural
                     case "SnakeGame.App.SnakeComponents.SnakeFood":
                         this.Network.Inputs[k].Double = 1;
                         break;
+                    case "SnakeGame.App.SnakeComponents.SnakeBodyPart":
+                        this.Network.Inputs[k].Double = -0.5;
+                        break;
+                    case "SnakeGame.App.SnakeComponents.SnakeHead":
+                        this.Network.Inputs[k].Double = 0.5;
+                        break;
                     default:
                         this.Network.Inputs[k].Double = -1;
                         break;
@@ -59,18 +53,18 @@ namespace SnakeGame.App.Neural
         }
         private Network GetNetwork(List<Value> inputs, int[] neuronsInLayer)
         {
-            //var dir = Directory.GetCurrentDirectory();
-            //var path = @$"{dir}\{this.NetworkName}.txt";
+            var dir = Directory.GetCurrentDirectory();
+            var path = @$"{dir}\{this.NetworkName}.txt";
 
-            //if (!File.Exists(path))
-            //{
-            //    File.Create(path).Close();
-            //    File.WriteAllText(path, JsonSerializer.Serialize(new Network(inputs, neuronsInLayer)));
-            //}
+            if (!File.Exists(path))
+            {
+                File.Create(path).Close();
+                File.WriteAllText(path, JsonSerializer.Serialize(new Network(9, neuronsInLayer)));
+            }
 
-            //var data = File.ReadAllText(path);
-            //return JsonSerializer.Deserialize<Network>(data);
-            return new Network(9, neuronsInLayer);
+            var data = File.ReadAllText(path);
+            return JsonSerializer.Deserialize<Network>(data);
+            //return new Network(9, neuronsInLayer);
         }
 
         public void UpdateDataFile()
@@ -84,6 +78,7 @@ namespace SnakeGame.App.Neural
         public void Train(List<DataSet> data, double fidelity)
         {
             double totalError = 10000;
+            var count = 0;
 
             while (totalError > fidelity)
             {
@@ -99,10 +94,12 @@ namespace SnakeGame.App.Neural
                         //Console.WriteLine($"{Network.Outputs[0].Double}  {Network.Outputs[1].Double}  {Network.Outputs[2].Double}  ");
                         //Console.WriteLine();
                     }
+                    count += 1;
                 });
 
             }
-
+            Console.SetCursorPosition(0, 1);
+            Console.WriteLine($"Число трерировок: {count}");
             //UpdateDataFile();
         }
         #endregion

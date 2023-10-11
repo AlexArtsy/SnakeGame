@@ -48,6 +48,12 @@ namespace SnakeGame.App
                         case "SnakeGame.App.SnakeComponents.SnakeFood":
                             this.Network.Inputs[k].Double = 1;
                             break;
+                        case "SnakeGame.App.SnakeComponents.SnakeBodyPart":
+                            this.Network.Inputs[k].Double = -0.5;
+                            break;
+                        case "SnakeGame.App.SnakeComponents.SnakeHead":
+                            this.Network.Inputs[k].Double = 0.5;
+                            break;
                         default:
                             this.Network.Inputs[k].Double = -1;
                             break;
@@ -64,7 +70,7 @@ namespace SnakeGame.App
 
             try
             {
-                if (State.HeadDirection == "Up")
+                if (this.Snake.head.Direction == "Up")
                 {
                     Area[0, 0].Value = Field.Field[xHead - 1, yHead - 1].Value ?? new FieldWall();
                     Area[1, 0].Value = Field.Field[xHead + 0, yHead - 1].Value ?? new FieldWall();
@@ -78,7 +84,7 @@ namespace SnakeGame.App
                     Area[1, 2].Value = Field.Field[xHead + 0, yHead + 1].Value ?? new FieldWall();
                     Area[2, 2].Value = Field.Field[xHead + 1, yHead + 1].Value ?? new FieldWall();
                 }
-                else if (State.HeadDirection == "Right")
+                else if (this.Snake.head.Direction == "Right")
                 {
                     Area[0, 0].Value = Field.Field[xHead + 1, yHead - 1].Value ?? new FieldWall();
                     Area[1, 0].Value = Field.Field[xHead + 1, yHead + 0].Value ?? new FieldWall();
@@ -92,7 +98,7 @@ namespace SnakeGame.App
                     Area[1, 2].Value = Field.Field[xHead - 1, yHead + 0].Value ?? new FieldWall();
                     Area[2, 2].Value = Field.Field[xHead - 1, yHead + 1].Value ?? new FieldWall();
                 }
-                else if (State.HeadDirection == "Down")
+                else if (this.Snake.head.Direction == "Down")
                 {
                     Area[0, 0].Value = Field.Field[xHead + 1, yHead + 1].Value ?? new FieldWall();
                     Area[1, 0].Value = Field.Field[xHead + 0, yHead + 1].Value ?? new FieldWall();
@@ -106,7 +112,7 @@ namespace SnakeGame.App
                     Area[1, 2].Value = Field.Field[xHead + 0, yHead - 1].Value ?? new FieldWall();
                     Area[2, 2].Value = Field.Field[xHead - 1, yHead - 1].Value ?? new FieldWall();
                 }
-                else if (State.HeadDirection == "Left")
+                else if (this.Snake.head.Direction == "Left")
                 {
                     Area[0, 0].Value = Field.Field[xHead - 1, yHead + 1].Value ?? new FieldWall();
                     Area[1, 0].Value = Field.Field[xHead - 1, yHead + 0].Value ?? new FieldWall();
@@ -140,13 +146,13 @@ namespace SnakeGame.App
                     switch (index)
                     {
                         case 0:
-                            direction = "Right";
+                            direction = "Left";
                             break;
                         case 1:
                             direction = "Up";
                             break;
                         case 2:
-                            direction = "Left";
+                            direction = "Right";
                             break;
                     }
                     break;
@@ -157,7 +163,7 @@ namespace SnakeGame.App
                             direction = "Down";
                             break;
                         case 1:
-                            direction = "Right";
+                            direction = "Left";
                             break;
                         case 2:
                             direction = "Up";
@@ -168,13 +174,13 @@ namespace SnakeGame.App
                     switch (index)
                     {
                         case 0:
-                            direction = "Left";
+                            direction = "Right";
                             break;
                         case 1:
                             direction = "Down";
                             break;
                         case 2:
-                            direction = "Right";
+                            direction = "Left";
                             break;
                     }
                     break;
@@ -211,16 +217,26 @@ namespace SnakeGame.App
                     lock (State.ConsoleWriterLock)
                     {
                         Console.SetCursorPosition(30, 2);
-                        Console.Write($"Direction:                  ");
+                        Console.Write($"Current Direction:                  ");
                         Console.SetCursorPosition(30, 2);
-                        Console.Write($"Direction: {GetDirection()}");
+                        Console.Write($"Current Direction: {Snake.head.Direction}");
                         Console.SetCursorPosition(30, 3);
-                        Console.Write($"Network.Outputs[0]: {Network.Outputs[0].Double}");
-                        Console.SetCursorPosition(30, 4);
-                        Console.Write($"Network.Outputs[1]: {Network.Outputs[1].Double}");
-                        Console.SetCursorPosition(30, 5);
-                        Console.Write($"Network.Outputs[2]: {Network.Outputs[2].Double}");
+                        Console.Write($"Next Direction:                  ");
+                        Console.SetCursorPosition(30, 3);
+                        Console.Write($"Next Direction: {GetDirection()}");
 
+                        Console.SetCursorPosition(30, 4);
+                        Console.Write($"[0]: {Math.Round(Network.Outputs[0].Double, 2)}");
+                        Console.SetCursorPosition(40, 4);
+                        Console.Write($"[1]: {Math.Round(Network.Outputs[1].Double, 2)}");
+                        Console.SetCursorPosition(50, 4);
+                        Console.Write($"[2]: {Math.Round(Network.Outputs[2].Double, 2)}");
+
+                        Console.SetCursorPosition(25, 8);
+                        Console.Write("Входа нейросети:");
+
+                        Console.SetCursorPosition(25, 19);
+                        Console.Write("Что видит змея:");
 
                         Console.SetCursorPosition(40, 9);
                         Console.Write($"               ");
@@ -231,23 +247,23 @@ namespace SnakeGame.App
 
                         Console.SetCursorPosition(40, 9);
                         Console.Write($"{Network.Layers[0].Neurons[0].Inputs[0].InputValue.Double}");
-                        Console.SetCursorPosition(44, 9);
+                        Console.SetCursorPosition(45, 9);
                         Console.Write($"{Network.Layers[0].Neurons[0].Inputs[1].InputValue.Double}");
-                        Console.SetCursorPosition(48, 9);
+                        Console.SetCursorPosition(50, 9);
                         Console.Write($"{Network.Layers[0].Neurons[0].Inputs[2].InputValue.Double}");
 
                         Console.SetCursorPosition(40, 10);
                         Console.Write($"{Network.Layers[0].Neurons[0].Inputs[3].InputValue.Double}");
-                        Console.SetCursorPosition(44, 10);
+                        Console.SetCursorPosition(45, 10);
                         Console.Write($"{Network.Layers[0].Neurons[0].Inputs[4].InputValue.Double}");
-                        Console.SetCursorPosition(48, 10);
+                        Console.SetCursorPosition(50, 10);
                         Console.Write($"{Network.Layers[0].Neurons[0].Inputs[5].InputValue.Double}");
 
                         Console.SetCursorPosition(40, 11);
                         Console.Write($"{Network.Layers[0].Neurons[0].Inputs[6].InputValue.Double}");
-                        Console.SetCursorPosition(44, 11);
+                        Console.SetCursorPosition(45, 11);
                         Console.Write($"{Network.Layers[0].Neurons[0].Inputs[7].InputValue.Double}");
-                        Console.SetCursorPosition(48, 11);
+                        Console.SetCursorPosition(50, 11);
                         Console.Write($"{Network.Layers[0].Neurons[0].Inputs[8].InputValue.Double}");
                     }
 

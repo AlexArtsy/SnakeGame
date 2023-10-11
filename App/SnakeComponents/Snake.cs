@@ -36,6 +36,7 @@ namespace SnakeGame.App.SnakeComponents
                 SnakeMoved?.Invoke();
 
                 Thread.Sleep(1000 - State.SnakeSpeed);
+                //var pressedKey = Console.ReadKey(true);
 
 
             }
@@ -117,6 +118,8 @@ namespace SnakeGame.App.SnakeComponents
             this.gameField = gameField;
             this.Mind = new SnakeMind(Body, head, this.gameField);
             this.Speed = speed;
+
+            State.SnakeSpeed = this.Speed; // Переделать!!!
 
             GiveBirthToSnake();
         }

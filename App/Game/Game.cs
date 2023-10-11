@@ -49,7 +49,7 @@ namespace SnakeGame.App.Game
             //RenderProcessor.SubscribeFieldCellChangingEvent(this.field);
             gameControl = new Control();
 
-            snake = new Snake(5, 3, this.field, 100);
+            snake = new Snake(5, 3, this.field, 400);
 
             Gamer.Snake = snake;    //  Как-то криво, переделать.
 

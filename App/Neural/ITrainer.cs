@@ -12,6 +12,6 @@ namespace SnakeGame.App.Neural
         double[] Inputs { get; set; }
         double[] Reference { get; set; }
 
-        public bool Train(double[] target);
+        public double Train(double[] target);
     }
 }

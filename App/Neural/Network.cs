@@ -3,14 +3,14 @@
     public class Network
     {
         public List<Layer> Layers { get; set; } = new List<Layer>();
-        //public Layer InputLayer { get; set; }
+        public List<Value> Inputs { get; set; } = new List<Value>();
         public List<Value> Outputs { get; set; } = new List<Value>();
 
-        private void CreateNetwork(List<Value> inputs, int[] neuronsInLayers)
+        private void CreateNetwork(int[] neuronsInLayers)
         {
             // this.InputLayer = new Layer(inputs, neuronsInLayers[0]);
 
-            Layers.Add(new Layer(inputs, neuronsInLayers[0]));
+            Layers.Add(new Layer(this.Inputs, neuronsInLayers[0]));
 
             for (var i = 1; i < neuronsInLayers.Length; i += 1)
             {
@@ -31,9 +31,18 @@
             });
         }
 
-        public Network(List<Value> inputs, int[] neuronsInLayers)
+        private void SetUpInputs(int valueOfInputs)
         {
-            CreateNetwork(inputs, neuronsInLayers);
+            for (var i = 0; i < valueOfInputs; i += 1)
+            {
+                this.Inputs.Add(new Value(i, 0.0));
+            }
+        }
+
+        public Network(int valueOfInputs, int[] neuronsInLayers)
+        {
+            SetUpInputs(valueOfInputs);
+            CreateNetwork(neuronsInLayers);
             InitializeOutputs();
         }
     }

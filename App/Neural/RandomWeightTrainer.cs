@@ -12,7 +12,7 @@ namespace SnakeGame.App.Neural
         public double[] Inputs { get; set; }
         public double[] Reference { get; set; }
 
-        public bool Train(double[] target)
+        public double Train(double[] target)
         {
             Network.Layers.ForEach(layer =>
             {
@@ -25,7 +25,7 @@ namespace SnakeGame.App.Neural
                 });
             });
 
-            return true;
+            return 0.0;
         }
 
         public RandomWeightTrainer(Network network)

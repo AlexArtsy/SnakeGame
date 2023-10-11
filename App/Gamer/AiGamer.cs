@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using SnakeGame.App.Field;
 using SnakeGame.App.Game;
@@ -30,19 +32,20 @@ namespace SnakeGame.App
 
         #region Методы
 
-        private void InitInputList()
-        {
-            var k = 0;
-            for (var j = 0; j < 3; j += 1)
-            {
-                for (var i = 0; i < 3; i += 1)
-                {
-                    Inputs.Add(new Value(k, 0.0));
-                    k += 1;
-                }
-            }
-        }
-        private void SetInputs()
+        //private void InitInputList()
+        //{
+        //    var k = 0;
+        //    for (var j = 0; j < 3; j += 1)
+        //    {
+        //        for (var i = 0; i < 3; i += 1)
+        //        {
+        //            this.Network.Layers[0]..Add(new Value(k, 0.0));
+        //            k += 1;
+        //        }
+        //    }
+        //}
+
+        private void UpdateInputs()
         {
             var k = 0;
             for (var j = 0; j < 3; j += 1)
@@ -52,14 +55,14 @@ namespace SnakeGame.App
                     var entity = Area[i, j].Value.ToString();
                     switch (entity)
                     {
-                        case "SnakeGame.FieldEmptiness":
-                            Inputs[k].Double = 0;
+                        case "SnakeGame.App.Field.FieldEmptiness":
+                            this.Network.Inputs[k].Double = 0;
                             break;
-                        case "SnakeGame.SnakeFood":
-                            Inputs[k].Double = 1;
+                        case "SnakeGame.App.SnakeComponents.SnakeFood":
+                            this.Network.Inputs[k].Double = 1;
                             break;
                         default:
-                            Inputs[k].Double = -1;
+                            this.Network.Inputs[k].Double = -1;
                             break;
                     }
 
@@ -213,7 +216,7 @@ namespace SnakeGame.App
                 while (true)
                 {
                     ScanArea();
-                    SetInputs();
+                    UpdateInputs();
                     Network.Calculate();
 
                     lock (State.ConsoleWriterLock)
@@ -226,8 +229,35 @@ namespace SnakeGame.App
                         Console.Write($"Network.Outputs[1]: {Network.Outputs[1].Double}");
                         Console.SetCursorPosition(30, 5);
                         Console.Write($"Network.Outputs[2]: {Network.Outputs[2].Double}");
-                        Console.SetCursorPosition(30, 6);
-                        Console.Write($"Network.Outputs[3]: {Network.Outputs[3].Double}");
+
+
+                        Console.SetCursorPosition(40, 9);
+                        Console.Write($"               ");
+                        Console.SetCursorPosition(40, 10);
+                        Console.Write($"               ");
+                        Console.SetCursorPosition(40, 11);
+                        Console.Write($"               ");
+
+                        Console.SetCursorPosition(40, 9);
+                        Console.Write($"{Network.Layers[0].Neurons[0].Inputs[0].InputValue.Double}");
+                        Console.SetCursorPosition(44, 9);
+                        Console.Write($"{Network.Layers[0].Neurons[0].Inputs[1].InputValue.Double}");
+                        Console.SetCursorPosition(48, 9);
+                        Console.Write($"{Network.Layers[0].Neurons[0].Inputs[2].InputValue.Double}");
+
+                        Console.SetCursorPosition(40, 10);
+                        Console.Write($"{Network.Layers[0].Neurons[0].Inputs[3].InputValue.Double}");
+                        Console.SetCursorPosition(44, 10);
+                        Console.Write($"{Network.Layers[0].Neurons[0].Inputs[4].InputValue.Double}");
+                        Console.SetCursorPosition(48, 10);
+                        Console.Write($"{Network.Layers[0].Neurons[0].Inputs[5].InputValue.Double}");
+
+                        Console.SetCursorPosition(40, 11);
+                        Console.Write($"{Network.Layers[0].Neurons[0].Inputs[6].InputValue.Double}");
+                        Console.SetCursorPosition(44, 11);
+                        Console.Write($"{Network.Layers[0].Neurons[0].Inputs[7].InputValue.Double}");
+                        Console.SetCursorPosition(48, 11);
+                        Console.Write($"{Network.Layers[0].Neurons[0].Inputs[8].InputValue.Double}");
                     }
 
                     for (int y = 0; y < 3; y += 1)
@@ -299,11 +329,11 @@ namespace SnakeGame.App
 
         #region Конструкторы
 
-        public AiGamer(GameField field)
+        public AiGamer(Network net, GameField field)
         {
             this.Field = field;
             Inputs = new List<Value>();
-            InitInputList();
+            //InitInputList();
 
 
             for (int y = 0; y < 3; y += 1)
@@ -315,8 +345,9 @@ namespace SnakeGame.App
                 }
             }
 
-            SetInputs();
-            Network = new Network(Inputs, new int[] { 20, 40, 4 });
+            //SetInputs();
+            this.Network = net;
+            //Network = new Network(Inputs, new int[] { 20, 40, 4 });
 
         }
         #endregion

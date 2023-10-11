@@ -63,7 +63,7 @@ namespace SnakeGame.App.Field
 
                 if (State.FoodPiecesValue <= 5)
                 {
-                    Field[x, y].Value = new SnakeFood(this);
+                    Field[x, y].Value = new SnakeFood();
                     State.FoodPiecesValue += 1;
                 }
 

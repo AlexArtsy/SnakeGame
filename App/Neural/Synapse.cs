@@ -32,7 +32,7 @@ namespace SnakeGame.App.Neural
         //}
         public void UpdateWeight(double learningSpeed)
         {
-            Weight = Weight - learningSpeed * DeltaW;
+            Weight -= learningSpeed * DeltaW;
         }
         private void InitializeWeight()
         {

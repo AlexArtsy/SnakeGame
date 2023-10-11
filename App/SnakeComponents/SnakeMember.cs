@@ -60,6 +60,13 @@ namespace SnakeGame.App.SnakeComponents
             Color = ConsoleColor.Black;
             BgColor = ConsoleColor.White;
         }
+
+        public SnakeMember()
+        {
+            Figure = "O";
+            Color = ConsoleColor.Black;
+            BgColor = ConsoleColor.White;
+        }
         #endregion
     }
 }

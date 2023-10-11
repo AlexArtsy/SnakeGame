@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SnakeGame.App.Neural
 {
-    internal class BackPropagationTrainer : ITrainer
+    public class BackPropagationTrainer : ITrainer
     {
         public Network Network { get; set; }
         public double[] Inputs { get; set; }
@@ -16,6 +16,7 @@ namespace SnakeGame.App.Neural
 
         private void CalculateTotalError(double[] target)
         {
+            ETotal = 0;
 
             for (var i = 0; i < Network.Outputs.Count; i += 1)
             {
@@ -49,7 +50,7 @@ namespace SnakeGame.App.Neural
             });
         }
 
-        private void CalculateInnerLayerWeightsError(Layer layer, Layer nextLayer)
+        private void CalculateInnerLayerWeightsDelta(Layer layer, Layer nextLayer)
         {
             layer.Neurons.ForEach(neuron =>
             {
@@ -66,24 +67,26 @@ namespace SnakeGame.App.Neural
             });
         }
 
-        public bool Train(double[] target)
+        public double Train(double[] target)
         {
-            return false;
-        }
-
-        public bool Train(double[] target, double fidelity)
-        {
-            Network.Calculate();
+            Calculate();
             CalculateTotalError(target);
+            CalculateLastLayerWeightsDelta(Network.Layers.Last(), target);
 
-            if (ETotal < fidelity)
+            for (var i = Network.Layers.Count - 2; i >= 0; i -= 1)
             {
-                return true;
+                CalculateInnerLayerWeightsDelta(Network.Layers[i], Network.Layers[i + 1]);
             }
 
+            Network.Layers.ForEach(layer =>
+            {
+                layer.Neurons.ForEach(neuron =>
+                {
+                    neuron.Inputs.ForEach(input => input.UpdateWeight(this.Speed));
+                });
+            });
 
-
-            return false;
+            return ETotal;
         }
 
         public BackPropagationTrainer(Network net, double speed = 0.5)

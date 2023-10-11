@@ -33,10 +33,15 @@ namespace SnakeGame.App.SnakeComponents
 
         #region Конструкторы
 
-        public SnakeFood(GameField field)
+        //public SnakeFood(GameField field)
+        //{
+        //    Figure = "F";
+        //    Color = ConsoleColor.White;
+        //    BgColor = ConsoleColor.Black;
+        //}
+
+        public SnakeFood()
         {
-            //Cell = field.Field[position.X, position.Y];
-            //Position = position;
             Figure = "F";
             Color = ConsoleColor.White;
             BgColor = ConsoleColor.Black;

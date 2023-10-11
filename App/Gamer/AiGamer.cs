@@ -32,19 +32,6 @@ namespace SnakeGame.App
 
         #region Методы
 
-        //private void InitInputList()
-        //{
-        //    var k = 0;
-        //    for (var j = 0; j < 3; j += 1)
-        //    {
-        //        for (var i = 0; i < 3; i += 1)
-        //        {
-        //            this.Network.Layers[0]..Add(new Value(k, 0.0));
-        //            k += 1;
-        //        }
-        //    }
-        //}
-
         private void UpdateInputs()
         {
             var k = 0;
@@ -65,12 +52,9 @@ namespace SnakeGame.App
                             this.Network.Inputs[k].Double = -1;
                             break;
                     }
-
                     k += 1;
                 }
             }
-
-
         }
 
         private void ScanArea()
@@ -136,48 +120,6 @@ namespace SnakeGame.App
                     Area[1, 2].Value = Field.Field[xHead + 1, yHead + 0].Value ?? new FieldWall();
                     Area[2, 2].Value = Field.Field[xHead + 1, yHead - 1].Value ?? new FieldWall();
                 }
-
-                //if (State.HeadDirection == "Up")
-                //{
-                //    for (int y = 0; y < 3; y += 1)
-                //    {
-                //        for (int x = 0; x < 3; x += 1)
-                //        {
-                //            this.Area[x, y].Value = this.Field.Field[xHead - 1, yHead - 1].Value ?? new FieldWall();
-                //        }
-                //    }
-                //}
-                //else if (State.HeadDirection == "Right")
-                //{
-                //    for (int x = 2; x >= 0; x -= 1)
-                //    {
-                //        for (int y = 0; y < 3; y += 1)
-                //        {
-                //            this.Area[x, y].Value = this.Field.Field[xHead - 1, yHead - 1].Value ?? new FieldWall();
-                //        }
-                //    }
-                //}
-                //else if (State.HeadDirection == "Down")
-                //{
-                //    for (int y = 2; y >= 0; y -= 1)
-                //    {
-                //        for (int x = 2; x >= 0; x -= 1)
-                //        {
-                //            this.Area[x, y].Value = this.Field.Field[xHead - 1, yHead - 1].Value ?? new FieldWall();
-                //        }
-                //    }
-                //}
-                //else if (State.HeadDirection == "Left")
-                //{
-                //    for (int x = 0; x < 3; x += 1)
-                //    {
-                //        for (int y = 2; y >= 0; y -= 1)
-                //        {
-                //            this.Area[x, y].Value = this.Field.Field[xHead - 1, yHead - 1].Value ?? new FieldWall();
-                //        }
-                //    }
-                //}
-
             }
             catch (IndexOutOfRangeException ex)
             {
@@ -189,21 +131,66 @@ namespace SnakeGame.App
         private string GetDirection()
         {
             var direction = "";
-            var index = 0;//this.Network.Outputs.FindIndex(output => output == this.Network.Outputs.Max()); // выцепить максимум!!
+            var outs = new double[] { this.Network.Outputs[0].Double, this.Network.Outputs[1].Double, this.Network.Outputs[2].Double, };
+            var index = Array.IndexOf(outs, outs.Max());
 
-            switch (index)
+            switch (this.Snake.head.Direction)
             {
-                case 1:
-                    direction = "Up";
+                case "Up":
+                    switch (index)
+                    {
+                        case 0:
+                            direction = "Right";
+                            break;
+                        case 1:
+                            direction = "Up";
+                            break;
+                        case 2:
+                            direction = "Left";
+                            break;
+                    }
                     break;
-                case 2:
-                    direction = "Right";
+                case "Left":
+                    switch (index)
+                    {
+                        case 0:
+                            direction = "Down";
+                            break;
+                        case 1:
+                            direction = "Right";
+                            break;
+                        case 2:
+                            direction = "Up";
+                            break;
+                    }
                     break;
-                case 3:
-                    direction = "Down";
+                case "Down":
+                    switch (index)
+                    {
+                        case 0:
+                            direction = "Left";
+                            break;
+                        case 1:
+                            direction = "Down";
+                            break;
+                        case 2:
+                            direction = "Right";
+                            break;
+                    }
                     break;
-                case 4:
-                    direction = "Left";
+                case "Right":
+                    switch (index)
+                    {
+                        case 0:
+                            direction = "Up";
+                            break;
+                        case 1:
+                            direction = "Right";
+                            break;
+                        case 2:
+                            direction = "Down";
+                            break;
+                    }
                     break;
             }
 
@@ -218,9 +205,13 @@ namespace SnakeGame.App
                     ScanArea();
                     UpdateInputs();
                     Network.Calculate();
+                    var newDirection = GetDirection();
+                    Control.DirectionListener(newDirection);
 
                     lock (State.ConsoleWriterLock)
                     {
+                        Console.SetCursorPosition(30, 2);
+                        Console.Write($"Direction:                  ");
                         Console.SetCursorPosition(30, 2);
                         Console.Write($"Direction: {GetDirection()}");
                         Console.SetCursorPosition(30, 3);
@@ -264,7 +255,6 @@ namespace SnakeGame.App
                     {
                         for (int x = 0; x < 3; x += 1)
                         {
-                            // this.Area[x, y] = new FieldCell(x, y);
                             testField.Field[x, y].Value = Area[x, y].Value;
                         }
                     }
@@ -275,52 +265,30 @@ namespace SnakeGame.App
             renderTestField.Start();
 
 
-            while (State.IsSnakeAlive)
-            {
-                //ScanArea();
-                //SetInputs();
-                //Network.Calculate();
+            //while (State.IsSnakeAlive)
+            //{
+            //    var pressedKey = Console.ReadKey(true);
+            //    switch (pressedKey.Key)
+            //    {
+            //        case ConsoleKey.Tab:
+            //            break;
+            //        case ConsoleKey.LeftArrow:
+            //            Control.DirectionListener("Left");
+            //            break;
+            //        case ConsoleKey.RightArrow:
+            //            Control.DirectionListener("Right");
+            //            break;
+            //        case ConsoleKey.UpArrow:
+            //            Control.DirectionListener("Up");
+            //            break;
+            //        case ConsoleKey.DownArrow:
+            //            Control.DirectionListener("Down");
+            //            break;
+            //        default:
+            //            break;
+            //    }
 
-
-                //switch (GetDirection())
-                //{
-                //    case "Left":
-                //        Control.DirectionListener("Left");
-                //        break;
-                //    case "Right":
-                //        Control.DirectionListener("Right");
-                //        break;
-                //    case "Up":
-                //        Control.DirectionListener("Up");
-                //        break;
-                //    case "Down":
-                //        Control.DirectionListener("Down");
-                //        break;
-                //}
-                //Thread.Sleep(500);
-
-                var pressedKey = Console.ReadKey(true);
-                switch (pressedKey.Key)
-                {
-                    case ConsoleKey.Tab:
-                        break;
-                    case ConsoleKey.LeftArrow:
-                        Control.DirectionListener("Left");
-                        break;
-                    case ConsoleKey.RightArrow:
-                        Control.DirectionListener("Right");
-                        break;
-                    case ConsoleKey.UpArrow:
-                        Control.DirectionListener("Up");
-                        break;
-                    case ConsoleKey.DownArrow:
-                        Control.DirectionListener("Down");
-                        break;
-                    default:
-                        break;
-                }
-
-            }
+            //}
         }
         #endregion
 

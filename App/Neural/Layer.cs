@@ -2,39 +2,71 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SnakeGame.App.Neural
 {
     public class Layer
     {
-        public List<Neuron> Neurons { get; set; } = new List<Neuron>();
-        //public List<double> Outputs { get; set; } = new List<double>();
+        public List<Neuron> Neurons { get; set; }
+        [JsonIgnore]
+        public List<Value> Outputs { get; set; }
 
         private void InitializeNeurons(List<Value> inputs, int valueOfNeurons)
         {
             for (var i = 0; i < valueOfNeurons; i += 1)
             {
-                Neurons.Add(new Neuron(i, inputs, new Sigmoid(0.5)));
+                var neuron = new Neuron(i, inputs, new Sigmoid(0.5));
+                this.Outputs.Add(neuron.OutputValue);
+                Neurons.Add(neuron);
             }
         }
-        private void InitializeNeurons(Layer inputLayer, int valueOfNeurons)
+
+        public void InitializeNeuronsSynapses(List<Value> inputs)
         {
-            for (var i = 0; i < valueOfNeurons; i += 1)
+            this.Neurons.ForEach(n =>
             {
-                Neurons.Add(new Neuron(i, inputLayer, new Sigmoid(0.5)));
-            }
+                n.InitializeSynapses(inputs);
+                //this.Outputs.Add(n.OutputValue);
+            });
         }
 
-        public Layer(Layer inputLayer, int valueOfNeurons)
+        private void InitializeOutputs()
         {
-            InitializeNeurons(inputLayer, valueOfNeurons);
-            //this.Neurons.ForEach(neuron => this.Outputs.Add(neuron.OutputValue));
+            this.Outputs = new List<Value>();
+            this.Neurons.ForEach(n =>
+            {
+                this.Outputs.Add(n.OutputValue);
+            });
         }
+        //private void InitializeNeurons(Layer inputLayer, int valueOfNeurons)
+        //{
+        //    for (var i = 0; i < valueOfNeurons; i += 1)
+        //    {
+        //        Neurons.Add(new Neuron(i, inputLayer, new Sigmoid(0.5)));
+        //    }
+        //}
 
-        public Layer(List<Value> inputs, int valueOfNeurons)   //  Входной слой (без нейронов)
+        //public Layer(Layer inputLayer, int valueOfNeurons)
+        //{
+        //    InitializeNeurons(inputLayer, valueOfNeurons);
+        //    //this.Neurons.ForEach(neuron => this.Outputs.Add(neuron.OutputValue));
+        //}
+
+        public Layer(List<Value> inputs, int valueOfNeurons)
         {
+            this.Neurons = new List<Neuron>();
+            this.Outputs = new List<Value>();
+
             InitializeNeurons(inputs, valueOfNeurons);
+        }
+
+        [JsonConstructor]
+        public Layer(List<Neuron> neurons)
+        {
+            this.Neurons = neurons;
+            InitializeOutputs();
         }
     }
 }

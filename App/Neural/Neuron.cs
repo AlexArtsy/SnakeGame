@@ -3,44 +3,49 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SnakeGame.App.Neural
 {
     public class Neuron
     {
-        public readonly int layerId;
-
         public int Id { get; set; }
-        public Value OutputValue { get; set; } = new Value(0, 0);   //  пересмотреть айди
+        public List<Synapse> Synapses { get; set; }
+        [JsonIgnore]
+        public List<Value> Inputs { get; set; }
+        [JsonIgnore]
+        public Value OutputValue { get; set; }
+        [JsonIgnore]
         public IActivation ActivationFunc { get; set; }
-        public List<Synapse> Inputs { get; set; } = new List<Synapse>();
+        [JsonIgnore]
         public double DeltaOut { get; set; }
+        
 
-
-        private void InitializeSynapses(List<Value> inputs)    //  inputs - выхода предидущего слоя
+        private void InitializeSynapses()    //  inputs - выхода предидущего слоя
         {
             var i = 0;
-            inputs.ForEach(input =>
+            this.Inputs.ForEach(input =>
             {
-                Inputs.Add(new Synapse(i, input));
+                Synapses.Add(new Synapse(i, input));
                 i += 1;
             });
         }
-        private void InitializeSynapses(Layer inputLayer)
+        public void InitializeSynapses(List<Value> inputs)
         {
-            var i = 0;
-            inputLayer.Neurons.ForEach(neuron =>
+            this.Inputs = inputs;
+
+            for (var i = 0; i < inputs.Count; i += 1)
             {
-                Inputs.Add(new Synapse(i, neuron.OutputValue));
-                i += 1;
-            });
+                this.Synapses[i].InitializeInput(inputs[i]);
+            }
         }
 
         public void AdjustSynapsesWithRandom(double maxValue = 0.05)
         {
-            Inputs.ForEach(s => s.AdjustWeightWithRandom());
+            Synapses.ForEach(s => s.AdjustWeightWithRandom());
         }
+
         public void CalculateValue()
         {
             OutputValue.Double = ActivationFunc.Calculate(GetWeightedSum());
@@ -53,7 +58,7 @@ namespace SnakeGame.App.Neural
         private Value GetWeightedSum()
         {
             double sum = 0;
-            Inputs.ForEach(s =>
+            Synapses.ForEach(s =>
             {
                 sum += s.Weight * s.InputValue.Double;
             });
@@ -61,22 +66,24 @@ namespace SnakeGame.App.Neural
         }
 
         #region Constructors
-        public Neuron(int id, Layer inputLayer, IActivation activationFunc)
-        {
-            Id = id;
-            //this.layerId = layerId;
-            ActivationFunc = activationFunc;
-            InitializeSynapses(inputLayer);
-            CalculateValue();
-        }
-
         public Neuron(int id, List<Value> inputs, IActivation activationFunc)    //  Для входного слоя
         {
             Id = id;
-            ActivationFunc = activationFunc;
-            InitializeSynapses(inputs);
+            this.Inputs = inputs;
+            this.Synapses = new List<Synapse>();
+            this.OutputValue = new Value(0, 0);
+            this.ActivationFunc = activationFunc;
+            InitializeSynapses();
             CalculateValue();
+        }
 
+        [JsonConstructor]
+        public Neuron(int id, List<Synapse> synapses)
+        {
+            this.Id = id;
+            this.Synapses = synapses;
+            this.OutputValue = new Value(0, 0);
+            this.ActivationFunc = new Sigmoid(0.5);
         }
         #endregion
     }

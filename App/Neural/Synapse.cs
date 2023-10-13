@@ -2,34 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SnakeGame.App.Neural
 {
     public class Synapse
     {
-        private Value inputValue;
-        //public double InitializedWeight { get; set; }
-        //public double InitializedValue { get; set; }
-        public double Weight { get; set; }
-        public double DeltaW { get; set; }
         public int Id { get; set; }
-
+        public double Weight { get; set; }
+        [JsonIgnore]
+        public double DeltaW { get; set; }
+        [JsonIgnore]
         public Value InputValue { get; set; }
-        //{
-        //    get => inputValue;
-        //    set
-        //    {
-        //        if (inputValue.Double >= 0 & inputValue.Double <= 1.0)
-        //        {
-        //            this.inputValue = value;
-        //        }
-        //        else
-        //        {
-        //            throw new Exception($"Value of synapse must be between 0 and 1, value = {value}");
-        //        }
-        //    }
-        //}
+
         public void UpdateWeight(double learningSpeed)
         {
             Weight -= learningSpeed * DeltaW;
@@ -37,6 +23,11 @@ namespace SnakeGame.App.Neural
         private void InitializeWeight()
         {
             Weight = RndGen.GetWeight();
+        }
+
+        public void InitializeInput(Value input)
+        {
+            this.InputValue = input;
         }
 
         public void AdjustWeightWithRandom()
@@ -49,6 +40,13 @@ namespace SnakeGame.App.Neural
             Id = id;
             InputValue = value;
             InitializeWeight();
+        }
+
+        [JsonConstructor]
+        public Synapse(int id, double weight)
+        {
+            this.Id = id;
+            this.Weight = weight;
         }
     }
 }

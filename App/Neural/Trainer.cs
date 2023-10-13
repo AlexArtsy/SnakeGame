@@ -28,8 +28,6 @@ namespace SnakeGame.App.Neural
         //public List<Value> Inputs { get; set; }
         public BackPropagationTrainer BackTrainer { get; set; }
         public double TotalError { get; set; } = 1;
-        public int Count { get; set; } = 0;
-        public double AvgError { get; set; } = 1;
         #endregion
 
         #region Методы
@@ -71,11 +69,13 @@ namespace SnakeGame.App.Neural
             {
                 File.Create(path).Close();
                 File.WriteAllText(path, JsonSerializer.Serialize(new Network(name,209, neuronsInLayer)));
+                //File.WriteAllText(path, JsonSerializer.Serialize(new Network(name, 209, neuronsInLayer).Layers));
             }
 
             var data = File.ReadAllText(path);
-            return JsonSerializer.Deserialize<Network>(data);
-            //return new Network(9, neuronsInLayer);
+            //JsonSerializer.Deserialize<Layer[]>(data);
+            var network = JsonSerializer.Deserialize<Network>(data);
+            return network;
         }
 
         public void UpdateDataFile()
@@ -88,8 +88,6 @@ namespace SnakeGame.App.Neural
 
         public void Train(GameField field, double fidelity)
         {
-            double sum = 0;
-
             SetUpDataSet(field);
 
             State.TrainingMode = true;
@@ -102,7 +100,7 @@ namespace SnakeGame.App.Neural
             progressRendering.Start();
 
             //while (totalError > fidelity & errorAvg > 0.341)
-            while (this.AvgError > 0.1 & isTrainingRun)
+            while (this.Network.AvgError > 0.1 & isTrainingRun)
             {
                 this.DataSet.ForEach(d =>
                 {
@@ -112,11 +110,11 @@ namespace SnakeGame.App.Neural
                     var randomData = CreateRandomEmptinessTemplate(new GameField(field.X, field.Y, field.width, field.height));
                     UpdateInputs(randomData.InputData);
                     this.TotalError = this.BackTrainer.Train(randomData.Target);
-                    sum += this.TotalError;
+                    this.Network.SumForAvgError += this.TotalError;
 
-                    this.Count += 1;
+                    this.Network.ValueOfLearningCycles += 1;
 
-                    this.AvgError = sum / this.Count;
+                    this.Network.AvgError = this.Network.SumForAvgError / this.Network.ValueOfLearningCycles;
                 });
 
             }
@@ -488,9 +486,9 @@ namespace SnakeGame.App.Neural
                     Console.WriteLine($"Ошибка за цикл: {this.TotalError}");
 
                     Console.SetCursorPosition(40, 20);
-                    Console.WriteLine($"Средняя ошибка: {this.AvgError}");
+                    Console.WriteLine($"Средняя ошибка: {this.Network.AvgError}");
 
-                    Console.WriteLine($"Количество циклов обучения: {this.Count}");
+                    Console.WriteLine($"Количество циклов обучения: {this.Network.ValueOfLearningCycles}");
                     Console.WriteLine($"Скорость обучения: {this.BackTrainer.Speed}");
                 }
                 //Thread.Sleep(500);

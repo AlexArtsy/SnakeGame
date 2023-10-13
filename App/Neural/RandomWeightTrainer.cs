@@ -18,7 +18,7 @@ namespace SnakeGame.App.Neural
             {
                 layer.Neurons.ForEach(neuron =>
                 {
-                    neuron.Inputs.ForEach(input =>
+                    neuron.Synapses.ForEach(input =>
                     {
                         input.AdjustWeightWithRandom();
                     });

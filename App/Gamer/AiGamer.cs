@@ -246,25 +246,25 @@ namespace SnakeGame.App
                         Console.Write($"               ");
 
                         Console.SetCursorPosition(40, 9);
-                        Console.Write($"{Network.Layers[0].Neurons[0].Inputs[0].InputValue.Double}");
+                        Console.Write($"{Network.Layers[0].Neurons[0].Synapses[0].InputValue.Double}");
                         Console.SetCursorPosition(45, 9);
-                        Console.Write($"{Network.Layers[0].Neurons[0].Inputs[1].InputValue.Double}");
+                        Console.Write($"{Network.Layers[0].Neurons[0].Synapses[1].InputValue.Double}");
                         Console.SetCursorPosition(50, 9);
-                        Console.Write($"{Network.Layers[0].Neurons[0].Inputs[2].InputValue.Double}");
+                        Console.Write($"{Network.Layers[0].Neurons[0].Synapses[2].InputValue.Double}");
 
                         Console.SetCursorPosition(40, 10);
-                        Console.Write($"{Network.Layers[0].Neurons[0].Inputs[3].InputValue.Double}");
+                        Console.Write($"{Network.Layers[0].Neurons[0].Synapses[3].InputValue.Double}");
                         Console.SetCursorPosition(45, 10);
-                        Console.Write($"{Network.Layers[0].Neurons[0].Inputs[4].InputValue.Double}");
+                        Console.Write($"{Network.Layers[0].Neurons[0].Synapses[4].InputValue.Double}");
                         Console.SetCursorPosition(50, 10);
-                        Console.Write($"{Network.Layers[0].Neurons[0].Inputs[5].InputValue.Double}");
+                        Console.Write($"{Network.Layers[0].Neurons[0].Synapses[5].InputValue.Double}");
 
                         Console.SetCursorPosition(40, 11);
-                        Console.Write($"{Network.Layers[0].Neurons[0].Inputs[6].InputValue.Double}");
+                        Console.Write($"{Network.Layers[0].Neurons[0].Synapses[6].InputValue.Double}");
                         Console.SetCursorPosition(45, 11);
-                        Console.Write($"{Network.Layers[0].Neurons[0].Inputs[7].InputValue.Double}");
+                        Console.Write($"{Network.Layers[0].Neurons[0].Synapses[7].InputValue.Double}");
                         Console.SetCursorPosition(50, 11);
-                        Console.Write($"{Network.Layers[0].Neurons[0].Inputs[8].InputValue.Double}");
+                        Console.Write($"{Network.Layers[0].Neurons[0].Synapses[8].InputValue.Double}");
                     }
 
                     for (int y = 0; y < 3; y += 1)

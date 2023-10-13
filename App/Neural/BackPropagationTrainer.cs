@@ -41,7 +41,7 @@ namespace SnakeGame.App.Neural
             {
                 n.DeltaOut = CalculateNeuronOutputDelta(n.OutputValue.Double, target[i]);
 
-                n.Inputs.ForEach(input =>
+                n.Synapses.ForEach(input =>
                 {
                     input.DeltaW = input.InputValue.Double * n.DeltaOut;
                 });
@@ -55,9 +55,9 @@ namespace SnakeGame.App.Neural
             layer.Neurons.ForEach(neuron =>
             {
                 double sum = 0;
-                nextLayer.Neurons.ForEach(neuronFromNextLayer => sum += neuronFromNextLayer.DeltaOut * neuronFromNextLayer.Inputs[neuron.Id].Weight);  //  проверить согласованы ли Id нейронов и Id синапсов!
+                nextLayer.Neurons.ForEach(neuronFromNextLayer => sum += neuronFromNextLayer.DeltaOut * neuronFromNextLayer.Synapses[neuron.Id].Weight);  //  проверить согласованы ли Id нейронов и Id синапсов!
 
-                neuron.Inputs.ForEach(synapse =>
+                neuron.Synapses.ForEach(synapse =>
                 {
                     synapse.DeltaW = sum
                                      * neuron.OutputValue.Double
@@ -82,7 +82,7 @@ namespace SnakeGame.App.Neural
             {
                 layer.Neurons.ForEach(neuron =>
                 {
-                    neuron.Inputs.ForEach(input => input.UpdateWeight(this.Speed));
+                    neuron.Synapses.ForEach(synaps => synaps.UpdateWeight(this.Speed));
                 });
             });
 

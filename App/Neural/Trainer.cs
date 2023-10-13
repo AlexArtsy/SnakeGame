@@ -111,10 +111,11 @@ namespace SnakeGame.App.Neural
                     UpdateInputs(randomData.InputData);
                     this.TotalError = this.BackTrainer.Train(randomData.Target);
                     this.Network.SumForAvgError += this.TotalError;
-
+                    
                     this.Network.ValueOfLearningCycles += 1;
 
                     this.Network.AvgError = this.Network.SumForAvgError / this.Network.ValueOfLearningCycles;
+                    this.Network.HistoryOfAvgError.Add(this.Network.AvgError);
                 });
 
             }

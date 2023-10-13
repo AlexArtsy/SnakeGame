@@ -27,7 +27,7 @@ namespace SnakeGame.App
         public FieldCell[,] Area { get; set; } = new FieldCell[3, 3];
         public List<Value> Inputs { get; set; }
 
-        public GameField testField { get; set; } = new GameField(40, 20, 3, 3);
+        //public GameField testField { get; set; } = new GameField(40, 15, 3, 3);
         #endregion
 
         #region Методы
@@ -204,107 +204,61 @@ namespace SnakeGame.App
         }
         public void Play()
         {
+            Task running = new Task(Run);
             Task renderTestField = new Task(() =>
             {
-                while (true)
+                while (State.IsSnakeAlive)
                 {
-                    ScanArea();
-                    UpdateInputs();
-                    Network.Calculate();
-                    var newDirection = GetDirection();
-                    Control.DirectionListener(newDirection);
-
-                    lock (State.ConsoleWriterLock)
-                    {
-                        Console.SetCursorPosition(30, 2);
-                        Console.Write($"Current Direction:                  ");
-                        Console.SetCursorPosition(30, 2);
-                        Console.Write($"Current Direction: {Snake.head.Direction}");
-                        Console.SetCursorPosition(30, 3);
-                        Console.Write($"Next Direction:                  ");
-                        Console.SetCursorPosition(30, 3);
-                        Console.Write($"Next Direction: {GetDirection()}");
-
-                        Console.SetCursorPosition(30, 4);
-                        Console.Write($"[0]: {Math.Round(Network.Outputs[0].Double, 2)}");
-                        Console.SetCursorPosition(40, 4);
-                        Console.Write($"[1]: {Math.Round(Network.Outputs[1].Double, 2)}");
-                        Console.SetCursorPosition(50, 4);
-                        Console.Write($"[2]: {Math.Round(Network.Outputs[2].Double, 2)}");
-
-                        Console.SetCursorPosition(25, 8);
-                        Console.Write("Входа нейросети:");
-
-                        Console.SetCursorPosition(25, 19);
-                        Console.Write("Что видит змея:");
-
-                        Console.SetCursorPosition(40, 9);
-                        Console.Write($"               ");
-                        Console.SetCursorPosition(40, 10);
-                        Console.Write($"               ");
-                        Console.SetCursorPosition(40, 11);
-                        Console.Write($"               ");
-
-                        Console.SetCursorPosition(40, 9);
-                        Console.Write($"{Network.Layers[0].Neurons[0].Synapses[0].InputValue.Double}");
-                        Console.SetCursorPosition(45, 9);
-                        Console.Write($"{Network.Layers[0].Neurons[0].Synapses[1].InputValue.Double}");
-                        Console.SetCursorPosition(50, 9);
-                        Console.Write($"{Network.Layers[0].Neurons[0].Synapses[2].InputValue.Double}");
-
-                        Console.SetCursorPosition(40, 10);
-                        Console.Write($"{Network.Layers[0].Neurons[0].Synapses[3].InputValue.Double}");
-                        Console.SetCursorPosition(45, 10);
-                        Console.Write($"{Network.Layers[0].Neurons[0].Synapses[4].InputValue.Double}");
-                        Console.SetCursorPosition(50, 10);
-                        Console.Write($"{Network.Layers[0].Neurons[0].Synapses[5].InputValue.Double}");
-
-                        Console.SetCursorPosition(40, 11);
-                        Console.Write($"{Network.Layers[0].Neurons[0].Synapses[6].InputValue.Double}");
-                        Console.SetCursorPosition(45, 11);
-                        Console.Write($"{Network.Layers[0].Neurons[0].Synapses[7].InputValue.Double}");
-                        Console.SetCursorPosition(50, 11);
-                        Console.Write($"{Network.Layers[0].Neurons[0].Synapses[8].InputValue.Double}");
-                    }
-
-                    for (int y = 0; y < 3; y += 1)
-                    {
-                        for (int x = 0; x < 3; x += 1)
-                        {
-                            testField.Field[x, y].Value = Area[x, y].Value;
-                        }
-                    }
+                    RenderProcessor.RenderDiagnisticInfo(this.Network, this.Snake, this.Area);
                     Thread.Sleep(400);
                 }
             });
+            Task manualControl = new Task(ManualControl);
 
+            running.Start();
             renderTestField.Start();
+            manualControl.Start();
 
+        }
 
-            //while (State.IsSnakeAlive)
-            //{
-            //    var pressedKey = Console.ReadKey(true);
-            //    switch (pressedKey.Key)
-            //    {
-            //        case ConsoleKey.Tab:
-            //            break;
-            //        case ConsoleKey.LeftArrow:
-            //            Control.DirectionListener("Left");
-            //            break;
-            //        case ConsoleKey.RightArrow:
-            //            Control.DirectionListener("Right");
-            //            break;
-            //        case ConsoleKey.UpArrow:
-            //            Control.DirectionListener("Up");
-            //            break;
-            //        case ConsoleKey.DownArrow:
-            //            Control.DirectionListener("Down");
-            //            break;
-            //        default:
-            //            break;
-            //    }
+        private void Run()
+        {
+            while (State.IsSnakeAlive)
+            {
+                ScanArea();
+                UpdateInputs();
+                Network.Calculate();
+                var newDirection = GetDirection();
+                Control.DirectionListener(newDirection);
+            }
+        }
 
-            //}
+        private void ManualControl()
+        {
+            while (State.IsSnakeAlive)
+            {
+                var pressedKey = Console.ReadKey(true);
+                switch (pressedKey.Key)
+                {
+                    case ConsoleKey.Tab:
+                        break;
+                    case ConsoleKey.LeftArrow:
+                        Control.DirectionListener("Left");
+                        break;
+                    case ConsoleKey.RightArrow:
+                        Control.DirectionListener("Right");
+                        break;
+                    case ConsoleKey.UpArrow:
+                        Control.DirectionListener("Up");
+                        break;
+                    case ConsoleKey.DownArrow:
+                        Control.DirectionListener("Down");
+                        break;
+                    default:
+                        break;
+                }
+
+            }
         }
         #endregion
 
@@ -317,7 +271,6 @@ namespace SnakeGame.App
         {
             this.Field = field;
             Inputs = new List<Value>();
-            //InitInputList();
 
 
             for (int y = 0; y < 3; y += 1)
@@ -325,14 +278,10 @@ namespace SnakeGame.App
                 for (int x = 0; x < 3; x += 1)
                 {
                     Area[x, y] = new FieldCell(x, y);
-                    testField.Field[x, y].Value = Area[x, y].Value;
                 }
             }
-
-            //SetInputs();
+            
             this.Network = net;
-            //Network = new Network(Inputs, new int[] { 20, 40, 4 });
-
         }
         #endregion
     }

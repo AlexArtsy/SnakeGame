@@ -124,6 +124,14 @@ namespace SnakeGame.App.SnakeComponents
             GiveBirthToSnake();
         }
 
+        public Snake(SnakeHead head, SnakeBodyPart part)
+        {
+            this.head = head;
+            this.Body = new List<SnakeMember>();
+            this.Body.Add(head);
+            this.Body.Add(part);
+        }
+
         #endregion
     }
 }

@@ -2,7 +2,7 @@
 
 namespace SnakeGame.App.SnakeComponents
 {
-    internal class SnakeBodyPart : SnakeMember
+    public class SnakeBodyPart : SnakeMember
     {
         #region Поля
         #endregion

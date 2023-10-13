@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SnakeGame.App.Neural
 {
@@ -64,6 +65,22 @@ namespace SnakeGame.App.Neural
             Layers.Last().Neurons.ForEach(neuron => Outputs.Add(neuron.OutputValue));
         }
 
+        public static Network ReadNetworkFromFileOrCreate(string name, int valueOfInputs, int[] neuronsInLayer)
+        {
+            var dir = Directory.GetCurrentDirectory();
+            var path = @$"{dir}\{name}.txt";
+
+            if (!File.Exists(path))
+            {
+                File.Create(path).Close();
+                File.WriteAllText(path, JsonSerializer.Serialize(new Network(name, valueOfInputs, neuronsInLayer)));
+            }
+
+            var data = File.ReadAllText(path);
+            var network = JsonSerializer.Deserialize<Network>(data);
+            return network;
+        }
+
         public Network(string name, int valueOfInputs, int[] neuronsInLayers)
         {
             this.Name = name;
@@ -72,7 +89,8 @@ namespace SnakeGame.App.Neural
             this.Layers = new List<Layer>();
             this.SumForAvgError = 0;
             this.AvgError = 1;
-            this.ValueOfLearningCycles = 0;
+            this.ValueOfLearningCycles = 1;
+            this.HistoryOfAvgError = new List<double>();
 
             InitializeInputs(valueOfInputs);
             InitializeLayers(neuronsInLayers);

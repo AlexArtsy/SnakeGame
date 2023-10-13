@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -15,24 +16,18 @@ namespace SnakeGame.App.Neural
     public class Trainer
     {
         #region Поля
-
-        private bool isTrainingRun;
         #endregion
 
         #region Свойства
-        public Network Network { get; set; }
-        public string NetworkName { get; set; }
         public List<DataSet> DataSet { get; set; } = new List<DataSet>();
         public GameField FieldForRendering { get; set; }
-        //public FieldCell[,] Area { get; set; } = new FieldCell[3, 3];
-        //public List<Value> Inputs { get; set; }
         public BackPropagationTrainer BackTrainer { get; set; }
         public double TotalError { get; set; } = 1;
         #endregion
 
         #region Методы
 
-        private void UpdateInputs(List<IFieldCellValue> input)
+        private void UpdateInputs(Network network, List<IFieldCellValue> input)
         {
             var k = 0;
             input.ForEach(i =>
@@ -40,93 +35,81 @@ namespace SnakeGame.App.Neural
                 switch (i.ToString())
                 {
                     case "SnakeGame.App.Field.FieldEmptiness":
-                        this.Network.Inputs[k].Double = 0;
+                        network.Inputs[k].Double = 0;
                         break;
                     case "SnakeGame.App.SnakeComponents.SnakeFood":
-                        this.Network.Inputs[k].Double = 1;
+                        network.Inputs[k].Double = 1;
                         break;
                     case "SnakeGame.App.SnakeComponents.SnakeBodyPart":
-                        this.Network.Inputs[k].Double = -0.5;
+                        network.Inputs[k].Double = -0.5;
                         break;
                     case "SnakeGame.App.SnakeComponents.SnakeHead":
-                        this.Network.Inputs[k].Double = 0.5;
+                        network.Inputs[k].Double = 0.5;
                         break;
                     default:
-                        this.Network.Inputs[k].Double = -1;
+                        network.Inputs[k].Double = -1;
                         break;
                 }
                 k += 1;
             });
         }
-        public Network GetNetwork(string name, int[] neuronsInLayer)
-        {
-            this.NetworkName = name;
 
-            var dir = Directory.GetCurrentDirectory();
-            var path = @$"{dir}\{name}.txt";
-
-            if (!File.Exists(path))
-            {
-                File.Create(path).Close();
-                File.WriteAllText(path, JsonSerializer.Serialize(new Network(name,209, neuronsInLayer)));
-                //File.WriteAllText(path, JsonSerializer.Serialize(new Network(name, 209, neuronsInLayer).Layers));
-            }
-
-            var data = File.ReadAllText(path);
-            //JsonSerializer.Deserialize<Layer[]>(data);
-            var network = JsonSerializer.Deserialize<Network>(data);
-            return network;
-        }
-
-        public void UpdateDataFile()
+        public void UpdateDataFile(Network network)
         {
             var dir = Directory.GetCurrentDirectory();
-            var path = @$"{dir}\{this.NetworkName}.txt";
-            var data = JsonSerializer.Serialize(Network);
+            var path = @$"{dir}\{network.Name}.txt";
+            var data = JsonSerializer.Serialize(network);
             File.WriteAllText(path, data);
         }
 
-        public void Train(GameField field, double fidelity)
+        private void Train(Network network, DataSet data)
         {
-            SetUpDataSet(field);
+            UpdateInputs(network, data.InputData);
+            this.TotalError = this.BackTrainer.Train(data.Target);
+
+            network.SumForAvgError += this.TotalError;
+
+            network.ValueOfLearningCycles += 1;
+
+            network.AvgError = network.SumForAvgError / network.ValueOfLearningCycles;
+
+            network.HistoryOfAvgError.Add(network.AvgError);
+
+            //RenderProcessor.DiagnosisInfoRendering(network);
+            //Console.ReadKey(true);
+        }
+
+        public void Run(Network network, GameField field, double fidelity)
+        {
+            SetUpManualDataSet(field);
 
             State.TrainingMode = true;
-            isTrainingRun = true;
 
             Task keyControl = new Task(ProcessKeyControl);
+            Task progressRendering = new Task(() => RenderProcessor.TrainingProgressRendering(network, TotalError, BackTrainer));
+            
+            progressRendering.Start();
             keyControl.Start();
 
-            Task progressRendering = new Task(TrainingProgressRendering);
-            progressRendering.Start();
 
-            //while (totalError > fidelity & errorAvg > 0.341)
-            while (this.Network.AvgError > 0.1 & isTrainingRun)
+            while (network.AvgError > fidelity & State.TrainingMode)
             {
-                this.DataSet.ForEach(d =>
+                this.DataSet.ForEach(manualData =>
                 {
-                    UpdateInputs(d.InputData);
-                    this.TotalError = this.BackTrainer.Train(d.Target);
+                    Train(network, manualData);
 
-                    var randomData = CreateRandomEmptinessTemplate(new GameField(field.X, field.Y, field.width, field.height));
-                    UpdateInputs(randomData.InputData);
-                    this.TotalError = this.BackTrainer.Train(randomData.Target);
-                    this.Network.SumForAvgError += this.TotalError;
-                    
-                    this.Network.ValueOfLearningCycles += 1;
+                    var randomData = CreateRandomEmptinessTemplate(new GameField(field.X, field.Y, field.width, field.height), network);
+                    Train(network, randomData);
 
-                    this.Network.AvgError = this.Network.SumForAvgError / this.Network.ValueOfLearningCycles;
-                    this.Network.HistoryOfAvgError.Add(this.Network.AvgError);
                 });
-
             }
 
             State.TrainingMode = false;
-            isTrainingRun = false;
-            UpdateDataFile();
+            UpdateDataFile(network);
         }
 
         #region DataSet Management
-        public void SetUpDataSet(GameField field)
+        public void SetUpManualDataSet(GameField field)
         {
             FieldEmptiness emptiness = new FieldEmptiness();
             SnakeBodyPart snake = new SnakeBodyPart(new FieldCoordinates(0, 0));
@@ -285,64 +268,31 @@ namespace SnakeGame.App.Neural
             #endregion
         }
 
-        public List<IFieldCellValue> AddFieldToTemplate(GameField field, List<IFieldCellValue> template)
-        {
-            for (var y = 0; y < field.height; y += 1)
-            {
-                for (var x = 0; x < field.width; x += 1)
-                {
-                    template.Add(field.Field[x, y].Value);
-                }
-            }
-            return template;
-        }
-        public List<IFieldCellValue> AddNearAreaToTemplate(List<IFieldCellValue> template, IFieldCellValue[] nearAreaValues)
-        {
-            for (var i = 0; i < nearAreaValues.Length; i += 1)
-            {
-                template.Add(nearAreaValues[i]);
-            }
-            return template;
-        }
-
-        public void AddDataToDataSet(IFieldCellValue[] template, double[] reference, GameField field)
-        {
-            var dataTemplate = new List<IFieldCellValue>();
-            dataTemplate = AddNearAreaToTemplate(dataTemplate, template);
-            dataTemplate = AddFieldToTemplate(field, dataTemplate);
-
-            this.FieldForRendering = field;
-
-            this.DataSet.Add(new DataSet(dataTemplate, reference));
-        }
-
-        public DataSet CreateRandomEmptinessTemplate(GameField field)
+        public DataSet CreateRandomEmptinessTemplate(GameField field, Network network)
         {
             var halfWidth = field.width / 2;
             var halfHeight = field.height / 2;
 
             FieldEmptiness emptiness = new FieldEmptiness();
-            SnakeBodyPart snake = new SnakeBodyPart(new FieldCoordinates(0, 0));
+            SnakeBodyPart snakeBody = new SnakeBodyPart(new FieldCoordinates(0, 0));
             SnakeHead head = new SnakeHead(new FieldCoordinates(0, 0), "Up");
+            head.Figure = "1";
             SnakeFood food = new SnakeFood();
+
+            var snake = new Snake(head, snakeBody);
+
 
             var referenceLeft = new double[] { 1, 0, 0 };
             //var referenceCenter = new double[] { 0, 1, 0 };
             var referenceRight = new double[] { 0, 0, 1 };
             var reference = new double[] { };
 
-            var nearAreaTemplate = new IFieldCellValue[]
-            {
-                emptiness, emptiness, emptiness,
-                emptiness, head, emptiness,
-                emptiness, snake, emptiness,
-            };
 
-            var randomXHeadPosition = RandomGen.GetRandomX(field.width - 2);
-            randomXHeadPosition = randomXHeadPosition == 0 ? randomXHeadPosition + 1 : randomXHeadPosition;
+            var randomXHeadPosition = RandomGen.GetRandomX(field.width - 3) + 1;
+            randomXHeadPosition = randomXHeadPosition == 0 ? randomXHeadPosition + 2 : randomXHeadPosition;
 
-            var randomYHeadPosition = RandomGen.GetRandomY(field.height - 2);
-            randomYHeadPosition = randomYHeadPosition == 0 ? randomYHeadPosition + 1 : randomYHeadPosition;
+            var randomYHeadPosition = RandomGen.GetRandomY(field.height - 3) + 1;
+            randomYHeadPosition = randomYHeadPosition == 0 ? randomYHeadPosition + 2 : randomYHeadPosition;
 
             field.Field[randomXHeadPosition, randomYHeadPosition].Value = head;
 
@@ -362,7 +312,7 @@ namespace SnakeGame.App.Neural
             }
             else
             {
-                randomXFoodPosition = RandomGen.GetRandomX(halfWidth);
+                randomXFoodPosition = RandomGen.GetRandomX(halfWidth) + 1;
                 xFoodPosition = "Left";
             }
 
@@ -373,7 +323,7 @@ namespace SnakeGame.App.Neural
             }
             else
             {
-                randomYFoodPosition = RandomGen.GetRandomX(halfHeight);
+                randomYFoodPosition = RandomGen.GetRandomX(halfHeight) + 1;
                 yFoodPosition = "Up";
             }
 
@@ -382,7 +332,7 @@ namespace SnakeGame.App.Neural
             switch (randomDirection)
             {
                 case "Up":
-                    field.Field[randomXHeadPosition, randomYHeadPosition + 1].Value = snake;
+                    field.Field[randomXHeadPosition, randomYHeadPosition + 1].Value = snakeBody;
                     switch (xFoodPosition)
                     {
                         case "Right":
@@ -394,7 +344,7 @@ namespace SnakeGame.App.Neural
                     }
                     break;
                 case "Down":
-                    field.Field[randomXHeadPosition, randomYHeadPosition - 1].Value = snake;
+                    field.Field[randomXHeadPosition, randomYHeadPosition - 1].Value = snakeBody;
                     switch (xFoodPosition)
                     {
                         case "Right":
@@ -406,7 +356,7 @@ namespace SnakeGame.App.Neural
                     }
                     break;
                 case "Right":
-                    field.Field[randomXHeadPosition - 1, randomYHeadPosition].Value = snake;
+                    field.Field[randomXHeadPosition - 1, randomYHeadPosition].Value = snakeBody;
                     switch (yFoodPosition)
                     {
                         case "Up":
@@ -418,7 +368,7 @@ namespace SnakeGame.App.Neural
                     }
                     break;
                 case "Left":
-                    field.Field[randomXHeadPosition + 1, randomYHeadPosition].Value = snake;
+                    field.Field[randomXHeadPosition + 1, randomYHeadPosition].Value = snakeBody;
                     switch (yFoodPosition)
                     {
                         case "Up":
@@ -433,31 +383,68 @@ namespace SnakeGame.App.Neural
 
             var template = new List<IFieldCellValue>();
 
-            for (var i = 0; i < nearAreaTemplate.Length; i += 1)
-            {
-                template.Add(nearAreaTemplate[i]);
-            }
+            var nearArea = ScanArea(field, randomDirection, randomXHeadPosition, randomYHeadPosition);
 
-            for (var y = 0; y < field.height; y += 1)
-            {
-                for (var x = 0; x < field.width; x += 1)
-                {
-                    template.Add(field.Field[x, y].Value);
-                }
-            }
+            AddFieldToTemplate(template, nearArea, 3, 3);
+            AddFieldToTemplate(template, field.Field, field.width, field.height);
+
+
+            RenderProcessor.RenderDiagnisticInfo(network, snake, nearArea);
+            RenderProcessor.UpdateField(field);
 
             return new DataSet(template, reference);
+        }
+
+        public void AddDataToDataSet(IFieldCellValue[] template, double[] reference, GameField field)
+        {
+            var dataTemplate = new List<IFieldCellValue>();
+            dataTemplate = AddNearAreaToTemplate(dataTemplate, template);
+            AddFieldToTemplate(dataTemplate, field.Field, field.width, field.height);
+
+            //his.FieldForRendering = field;
+
+            this.DataSet.Add(new DataSet(dataTemplate, reference));
+        }
+
+        private void AddFieldToTemplate(List<IFieldCellValue>  template, FieldCell[,] field, int width, int height)
+        {
+            for (var y = 0; y < height; y += 1)
+            {
+                for (var x = 0; x < width; x += 1)
+                {
+                    template.Add(field[x, y].Value);
+                }
+            }
+        }
+        //public List<IFieldCellValue> AddFieldToTemplate(GameField field, List<IFieldCellValue> template)
+        //{
+        //    for (var y = 0; y < field.height; y += 1)
+        //    {
+        //        for (var x = 0; x < field.width; x += 1)
+        //        {
+        //            template.Add(field.Field[x, y].Value);
+        //        }
+        //    }
+        //    return template;
+        //}
+        public List<IFieldCellValue> AddNearAreaToTemplate(List<IFieldCellValue> template, IFieldCellValue[] nearAreaValues)
+        {
+            for (var i = 0; i < nearAreaValues.Length; i += 1)
+            {
+                template.Add(nearAreaValues[i]);
+            }
+            return template;
         }
         #endregion
 
         public void ProcessKeyControl()
         {
-            while (isTrainingRun)
+            while (State.TrainingMode)
             {
                 switch (Console.ReadKey(true).Key)
                 {
                     case ConsoleKey.Spacebar:
-                        isTrainingRun = false;
+                        State.TrainingMode = false;
                         break;
                     case ConsoleKey.UpArrow:
                         this.BackTrainer.Speed += 0.01;
@@ -471,30 +458,114 @@ namespace SnakeGame.App.Neural
             }
         }
 
-        public void TrainingProgressRendering()
+        private FieldCell[,] ScanArea(GameField field, string direction, int xHeadPos, int yHeadPos)
         {
-            while (isTrainingRun)
+            var area = new FieldCell[3, 3];
+
+            for (int y = 0; y < 3; y += 1)
             {
-                lock (State.ConsoleWriterLock)
+                for (int x = 0; x < 3; x += 1)
                 {
-                    //Console.SetCursorPosition(0, 0);
-                    //RenderProcessor.UpdateField(this.FieldForRendering);
-
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.Black;
-
-                    Console.SetCursorPosition(0, 20);
-                    Console.WriteLine($"Ошибка за цикл: {this.TotalError}");
-
-                    Console.SetCursorPosition(40, 20);
-                    Console.WriteLine($"Средняя ошибка: {this.Network.AvgError}");
-
-                    Console.WriteLine($"Количество циклов обучения: {this.Network.ValueOfLearningCycles}");
-                    Console.WriteLine($"Скорость обучения: {this.BackTrainer.Speed}");
+                    area[x, y] = new FieldCell(x, y);
+                    area[x, y].Value = new FieldEmptiness();
                 }
-                //Thread.Sleep(500);
             }
+
+            try
+            {
+                switch (direction)
+                {
+                    case "Up":
+                        area = GetUpOrientedNearArea(field, area, xHeadPos, yHeadPos);
+                        break;
+                    case "Right":
+                        area = GetRightOrientedNearArea(field, area, xHeadPos, yHeadPos);
+                        break;
+                    case "Down":
+                        area = GetDownOrientedNearArea(field, area, xHeadPos, yHeadPos);
+                        break;
+                    case "Left":
+                        area = GetLeftOrientedNearArea(field, area, xHeadPos, yHeadPos);
+                        break;
+                }
+
+                return area;
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                return area;
+            }
+
         }
+
+        private FieldCell[,] GetUpOrientedNearArea(GameField field, FieldCell[,] area, int x, int y)
+        {
+            area[0, 0].Value = field.Field[x - 1, y - 1].Value ?? new FieldWall();
+            area[1, 0].Value = field.Field[x + 0, y - 1].Value ?? new FieldWall();
+            area[2, 0].Value = field.Field[x + 1, y - 1].Value ?? new FieldWall();
+            area[0, 1].Value = field.Field[x - 1, y + 0].Value ?? new FieldWall();
+
+            area[1, 1].Value = field.Field[x + 0, y + 0].Value ?? new FieldWall();
+
+            area[2, 1].Value = field.Field[x + 1, y + 0].Value ?? new FieldWall();
+            area[0, 2].Value = field.Field[x - 1, y + 1].Value ?? new FieldWall();
+            area[1, 2].Value = field.Field[x + 0, y + 1].Value ?? new FieldWall();
+            area[2, 2].Value = field.Field[x + 1, y + 1].Value ?? new FieldWall();
+
+            return area;
+        }
+
+        private FieldCell[,] GetDownOrientedNearArea(GameField field, FieldCell[,] area, int x, int y)
+        {
+            area[0, 0].Value = field.Field[x + 1, y + 1].Value ?? new FieldWall();
+            area[1, 0].Value = field.Field[x + 0, y + 1].Value ?? new FieldWall();
+            area[2, 0].Value = field.Field[x - 1, y + 1].Value ?? new FieldWall();
+            area[0, 1].Value = field.Field[x + 1, y + 0].Value ?? new FieldWall();
+
+            area[1, 1].Value = field.Field[x + 0, y + 0].Value ?? new FieldWall();
+
+            area[2, 1].Value = field.Field[x - 1, y + 0].Value ?? new FieldWall();
+            area[0, 2].Value = field.Field[x + 1, y - 1].Value ?? new FieldWall();
+            area[1, 2].Value = field.Field[x + 0, y - 1].Value ?? new FieldWall();
+            area[2, 2].Value = field.Field[x - 1, y - 1].Value ?? new FieldWall();
+
+            return area;
+        }
+
+        private FieldCell[,] GetRightOrientedNearArea(GameField field, FieldCell[,] area, int x, int y)
+        {
+            area[0, 0].Value = field.Field[x + 1, y - 1].Value ?? new FieldWall();
+            area[1, 0].Value = field.Field[x + 1, y + 0].Value ?? new FieldWall();
+            area[2, 0].Value = field.Field[x + 1, y + 1].Value ?? new FieldWall();
+            area[0, 1].Value = field.Field[x + 0, y - 1].Value ?? new FieldWall();
+
+            area[1, 1].Value = field.Field[x + 0, y + 0].Value ?? new FieldWall();
+
+            area[2, 1].Value = field.Field[x + 0, y + 1].Value ?? new FieldWall();
+            area[0, 2].Value = field.Field[x - 1, y - 1].Value ?? new FieldWall();
+            area[1, 2].Value = field.Field[x - 1, y + 0].Value ?? new FieldWall();
+            area[2, 2].Value = field.Field[x - 1, y + 1].Value ?? new FieldWall();
+
+            return area;
+        }
+
+        private FieldCell[,] GetLeftOrientedNearArea(GameField field, FieldCell[,] area, int x, int y)
+        {
+            area[0, 0].Value = field.Field[x - 1, y + 1].Value ?? new FieldWall();
+            area[1, 0].Value = field.Field[x - 1, y + 0].Value ?? new FieldWall();
+            area[2, 0].Value = field.Field[x - 1, y - 1].Value ?? new FieldWall();
+            area[0, 1].Value = field.Field[x + 0, y + 1].Value ?? new FieldWall();
+
+            area[1, 1].Value = field.Field[x + 0, y + 0].Value ?? new FieldWall();
+
+            area[2, 1].Value = field.Field[x + 0, y - 1].Value ?? new FieldWall();
+            area[0, 2].Value = field.Field[x + 1, y + 1].Value ?? new FieldWall();
+            area[1, 2].Value = field.Field[x + 1, y + 0].Value ?? new FieldWall();
+            area[2, 2].Value = field.Field[x + 1, y - 1].Value ?? new FieldWall();
+
+            return area;
+        }
+
         #endregion
 
         #region Делегаты и события
@@ -502,14 +573,8 @@ namespace SnakeGame.App.Neural
 
         #region Конструкторы
 
-        public Trainer(int[] neuronsInLayer)
+        public Trainer()
         {
-            //Inputs = new List<Value>();
-            //InitInputList();
-
-            //this.Network = net;
-
-            //this.BackTrainer = new BackPropagationTrainer(this.Network);
 
         }
         #endregion

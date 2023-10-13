@@ -14,7 +14,10 @@ namespace SnakeGame.App.Game
         public static string HeadDirection = RandomGen.GetDirection();
         public static readonly object ConsoleWriterLock = new object();
         private static int speed = 0;
-
+        public static int Score = 0;
+        public static int SnakeLength = 0;
+        public static int FoodPiecesValue = 0;
+        public static bool IsSnakeAlive = false;
         #endregion
 
         #region Свойства
@@ -42,10 +45,8 @@ namespace SnakeGame.App.Game
                 }
             }
         }
-        public static int Score = 0;
-        public static int SnakeLength = 0;
-        public static int FoodPiecesValue = 0;
-        public static bool IsSnakeAlive = false;
+
+        public static bool TrainingMode { get; set; } = false;
         #endregion
 
         #region Методы

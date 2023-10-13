@@ -5,6 +5,9 @@
         public List<Layer> Layers { get; set; } = new List<Layer>();
         public List<Value> Inputs { get; set; } = new List<Value>();
         public List<Value> Outputs { get; set; } = new List<Value>();
+        public int ValueOfInput { get; set; }
+        public int[] NeuronsInLayer { get; set; }
+        public string Name { get; set; }
 
         private void CreateNetwork(int[] neuronsInLayers)
         {
@@ -39,8 +42,11 @@
             }
         }
 
-        public Network(int valueOfInputs, int[] neuronsInLayers)
+        public Network(string name, int valueOfInputs, int[] neuronsInLayers)
         {
+            this.Name = name;
+            this.ValueOfInput = valueOfInputs;
+            this.NeuronsInLayer = neuronsInLayers;
             SetUpInputs(valueOfInputs);
             CreateNetwork(neuronsInLayers);
             InitializeOutputs();

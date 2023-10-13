@@ -23,10 +23,11 @@ namespace SnakeGame
 
             var trainer = new Trainer(new int[] {100, 150, 3});
 
-            var net = new Network(209,new int[] { 100, 150, 3 });
+            var net = trainer.GetNetwork("test1", new int[] { 100, 150, 3 });
+            //var net = new Network("test1",209,new int[] { 100, 150, 3 });
 
             trainer.Network = net;
-            trainer.BackTrainer = new BackPropagationTrainer(net);
+            trainer.BackTrainer = new BackPropagationTrainer(net, 0.5);
 
             var field = new GameField(3, 5, 20, 10);
 

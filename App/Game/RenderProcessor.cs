@@ -28,8 +28,20 @@ namespace SnakeGame.App.Game
             }
         }
 
+        public static void UpdateField(GameField field)
+        {
+            for (var y = 0; y < field.height; y += 1)
+            {
+                for (var x = 0; x < field.width; x += 1)
+                {
+                    UpdateFieldCell(field.Field[x,y]);
+                }
+            }
+        }
+
         public static void UpdateFieldCell(FieldCell cell)
         {
+            
             lock (State.ConsoleWriterLock)
             {
                 ClearCell(cell.Position.X, cell.Position.Y);
@@ -43,12 +55,15 @@ namespace SnakeGame.App.Game
 
         public static void SubscribeFieldCellChangingEvent(GameField gameField)
         {
-            for (int y = 0; y < gameField.height; y += 1)
+            if (!State.TrainingMode)
             {
-                for (int x = 0; x < gameField.width; x += 1)
+                for (int y = 0; y < gameField.height; y += 1)
                 {
-                    gameField.Field[x, y].Changed += UpdateFieldCell;
-                    UpdateFieldCell(gameField.Field[x, y]);
+                    for (int x = 0; x < gameField.width; x += 1)
+                    {
+                        gameField.Field[x, y].Changed += UpdateFieldCell;
+                        UpdateFieldCell(gameField.Field[x, y]);
+                    }
                 }
             }
         }

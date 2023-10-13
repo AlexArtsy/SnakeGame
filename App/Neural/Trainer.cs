@@ -15,15 +15,21 @@ namespace SnakeGame.App.Neural
     public class Trainer
     {
         #region Поля
+
+        private bool isTrainingRun;
         #endregion
 
         #region Свойства
         public Network Network { get; set; }
         public string NetworkName { get; set; }
         public List<DataSet> DataSet { get; set; } = new List<DataSet>();
+        public GameField FieldForRendering { get; set; }
         //public FieldCell[,] Area { get; set; } = new FieldCell[3, 3];
         //public List<Value> Inputs { get; set; }
         public BackPropagationTrainer BackTrainer { get; set; }
+        public double TotalError { get; set; } = 1;
+        public int Count { get; set; } = 0;
+        public double AvgError { get; set; } = 1;
         #endregion
 
         #region Методы
@@ -54,15 +60,17 @@ namespace SnakeGame.App.Neural
                 k += 1;
             });
         }
-        private Network GetNetwork(List<Value> inputs, int[] neuronsInLayer)
+        public Network GetNetwork(string name, int[] neuronsInLayer)
         {
+            this.NetworkName = name;
+
             var dir = Directory.GetCurrentDirectory();
-            var path = @$"{dir}\{this.NetworkName}.txt";
+            var path = @$"{dir}\{name}.txt";
 
             if (!File.Exists(path))
             {
                 File.Create(path).Close();
-                File.WriteAllText(path, JsonSerializer.Serialize(new Network(9, neuronsInLayer)));
+                File.WriteAllText(path, JsonSerializer.Serialize(new Network(name,209, neuronsInLayer)));
             }
 
             var data = File.ReadAllText(path);
@@ -80,53 +88,42 @@ namespace SnakeGame.App.Neural
 
         public void Train(GameField field, double fidelity)
         {
-            double totalError = 1;
             double sum = 0;
-            double errorAvg = 0;
-            var count = 0;
 
             SetUpDataSet(field);
 
-            while (totalError > fidelity)
+            State.TrainingMode = true;
+            isTrainingRun = true;
+
+            Task keyControl = new Task(ProcessKeyControl);
+            keyControl.Start();
+
+            Task progressRendering = new Task(TrainingProgressRendering);
+            progressRendering.Start();
+
+            //while (totalError > fidelity & errorAvg > 0.341)
+            while (this.AvgError > 0.1 & isTrainingRun)
             {
                 this.DataSet.ForEach(d =>
                 {
                     UpdateInputs(d.InputData);
-                    totalError = this.BackTrainer.Train(d.Target);
-
-                    lock (State.ConsoleWriterLock)
-                    {
-                        Console.SetCursorPosition(0,0);
-                        Console.Write("                 ");
-                        Console.SetCursorPosition(0, 0);
-                        Console.WriteLine(totalError);
-
-                        Console.SetCursorPosition(30, 0);
-                        Console.Write("                 ");
-                        Console.SetCursorPosition(30, 0);
-                        Console.WriteLine(errorAvg);
-                    }
-                    
+                    this.TotalError = this.BackTrainer.Train(d.Target);
 
                     var randomData = CreateRandomEmptinessTemplate(new GameField(field.X, field.Y, field.width, field.height));
                     UpdateInputs(randomData.InputData);
-                    totalError = this.BackTrainer.Train(randomData.Target);
-                    sum += totalError;
-                    if (totalError < 0.07)
-                    {
-                        //Console.WriteLine($"{d.InputData[0]}  {d.InputData[1]}   {d.InputData[2]}  ");
-                        //Console.WriteLine($"{Network.Outputs[0].Double}  {Network.Outputs[1].Double}  {Network.Outputs[2].Double}  ");
-                        //Console.WriteLine();
-                    }
-                    count += 1;
+                    this.TotalError = this.BackTrainer.Train(randomData.Target);
+                    sum += this.TotalError;
 
-                    errorAvg = sum / count;
+                    this.Count += 1;
+
+                    this.AvgError = sum / this.Count;
                 });
 
             }
-            Console.SetCursorPosition(0, 1);
-            Console.WriteLine($"Число трерировок: {count}");
-            //UpdateDataFile();
+
+            State.TrainingMode = false;
+            isTrainingRun = false;
+            UpdateDataFile();
         }
 
         #region DataSet Management
@@ -315,6 +312,8 @@ namespace SnakeGame.App.Neural
             dataTemplate = AddNearAreaToTemplate(dataTemplate, template);
             dataTemplate = AddFieldToTemplate(field, dataTemplate);
 
+            this.FieldForRendering = field;
+
             this.DataSet.Add(new DataSet(dataTemplate, reference));
         }
 
@@ -451,6 +450,52 @@ namespace SnakeGame.App.Neural
             return new DataSet(template, reference);
         }
         #endregion
+
+        public void ProcessKeyControl()
+        {
+            while (isTrainingRun)
+            {
+                switch (Console.ReadKey(true).Key)
+                {
+                    case ConsoleKey.Spacebar:
+                        isTrainingRun = false;
+                        break;
+                    case ConsoleKey.UpArrow:
+                        this.BackTrainer.Speed += 0.01;
+                        break;
+                    case ConsoleKey.DownArrow:
+                        this.BackTrainer.Speed -= 0.01;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        public void TrainingProgressRendering()
+        {
+            while (isTrainingRun)
+            {
+                lock (State.ConsoleWriterLock)
+                {
+                    //Console.SetCursorPosition(0, 0);
+                    //RenderProcessor.UpdateField(this.FieldForRendering);
+
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.BackgroundColor = ConsoleColor.Black;
+
+                    Console.SetCursorPosition(0, 20);
+                    Console.WriteLine($"Ошибка за цикл: {this.TotalError}");
+
+                    Console.SetCursorPosition(40, 20);
+                    Console.WriteLine($"Средняя ошибка: {this.AvgError}");
+
+                    Console.WriteLine($"Количество циклов обучения: {this.Count}");
+                    Console.WriteLine($"Скорость обучения: {this.BackTrainer.Speed}");
+                }
+                //Thread.Sleep(500);
+            }
+        }
         #endregion
 
         #region Делегаты и события

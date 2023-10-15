@@ -26,6 +26,7 @@ namespace SnakeGame.App
         public GameField Field { get; set; }
         public FieldCell[,] Area { get; set; } = new FieldCell[3, 3];
         public List<Value> Inputs { get; set; }
+        public double[] Outs { get; set; }
 
         //public GameField testField { get; set; } = new GameField(40, 15, 3, 3);
         #endregion
@@ -46,16 +47,43 @@ namespace SnakeGame.App
                             this.Network.Inputs[k].Double = 0;
                             break;
                         case "SnakeGame.App.SnakeComponents.SnakeFood":
-                            this.Network.Inputs[k].Double = 1;
+                            this.Network.Inputs[k].Double = 10;
                             break;
                         case "SnakeGame.App.SnakeComponents.SnakeBodyPart":
-                            this.Network.Inputs[k].Double = -0.5;
+                            this.Network.Inputs[k].Double = -5;
                             break;
                         case "SnakeGame.App.SnakeComponents.SnakeHead":
-                            this.Network.Inputs[k].Double = 0.5;
+                            this.Network.Inputs[k].Double = -5;
                             break;
                         default:
-                            this.Network.Inputs[k].Double = -1;
+                            this.Network.Inputs[k].Double = -10;
+                            break;
+                    }
+                    k += 1;
+                }
+            }
+
+            for (var j = 3; j < this.Field.height; j += 1)
+            {
+                for (var i = 3; i < this.Field.width; i += 1)
+                {
+                    var entity = this.Field.Field[i, j].Value.ToString();
+                    switch (entity)
+                    {
+                        case "SnakeGame.App.Field.FieldEmptiness":
+                            this.Network.Inputs[k].Double = 0;
+                            break;
+                        case "SnakeGame.App.SnakeComponents.SnakeFood":
+                            this.Network.Inputs[k].Double = 10;
+                            break;
+                        case "SnakeGame.App.SnakeComponents.SnakeBodyPart":
+                            this.Network.Inputs[k].Double = -5;
+                            break;
+                        case "SnakeGame.App.SnakeComponents.SnakeHead":
+                            this.Network.Inputs[k].Double = -5;
+                            break;
+                        default:
+                            this.Network.Inputs[k].Double = -10;
                             break;
                     }
                     k += 1;
@@ -137,8 +165,12 @@ namespace SnakeGame.App
         private string GetDirection()
         {
             var direction = "";
-            var outs = new double[] { this.Network.Outputs[0].Double, this.Network.Outputs[1].Double, this.Network.Outputs[2].Double, };
-            var index = Array.IndexOf(outs, outs.Max());
+            this.Outs = new double[] { 
+                this.Network.Outputs[0].Double + this.Network.Outputs[1].Double ,
+                this.Network.Outputs[2].Double + this.Network.Outputs[3].Double + this.Network.Outputs[4].Double,
+                this.Network.Outputs[5].Double + this.Network.Outputs[6].Double, 
+            };
+            var index = Array.IndexOf(this.Outs, this.Outs.Max());
 
             switch (this.Snake.head.Direction)
             {

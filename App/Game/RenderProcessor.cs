@@ -126,6 +126,11 @@ namespace SnakeGame.App.Game
         public static void RenderDiagnisticInfo(Network network, Snake snake, FieldCell[,] area)
         {
             var field = new GameField(40, 15, 3, 3).Field;
+            var outs = new double[] {
+                network.Outputs[0].Double + network.Outputs[1].Double ,
+                network.Outputs[2].Double + network.Outputs[3].Double + network.Outputs[4].Double,
+                network.Outputs[5].Double + network.Outputs[6].Double,
+            };
 
             lock (State.ConsoleWriterLock)
             {
@@ -133,17 +138,13 @@ namespace SnakeGame.App.Game
                 Console.Write($"Current Direction:                  ");
                 Console.SetCursorPosition(30, 2);
                 Console.Write($"Current Direction: {snake.head.Direction}");
-                //Console.SetCursorPosition(30, 3);
-                //Console.Write($"Next Direction:                  ");
-                //Console.SetCursorPosition(30, 3);
-                //Console.Write($"Next Direction: {GetDirection()}");
 
                 Console.SetCursorPosition(30, 4);
-                Console.Write($"[0]: {Math.Round(network.Outputs[0].Double, 2)}");
+                Console.Write($"[0]: {Math.Round(outs[0], 2)}");
                 Console.SetCursorPosition(40, 4);
-                Console.Write($"[1]: {Math.Round(network.Outputs[1].Double, 2)}");
+                Console.Write($"[1]: {Math.Round(outs[1], 2)}");
                 Console.SetCursorPosition(50, 4);
-                Console.Write($"[2]: {Math.Round(network.Outputs[2].Double, 2)}");
+                Console.Write($"[2]: {Math.Round(outs[2], 2)}");
 
                 Console.SetCursorPosition(25, 8);
                 Console.Write("Входа нейросети:");
@@ -178,20 +179,19 @@ namespace SnakeGame.App.Game
                 Console.Write($"{network.Layers[0].Neurons[0].Synapses[7].InputValue.Double}");
                 Console.SetCursorPosition(50, 11);
                 Console.Write($"{network.Layers[0].Neurons[0].Synapses[8].InputValue.Double}");
-            }
 
-
-            for (int y = 0; y < 3; y += 1)
-            {
-                for (int x = 0; x < 3; x += 1)
+                for (int y = 0; y < 3; y += 1)
                 {
-                    field[x, y].Value = area[x, y].Value;
+                    for (int x = 0; x < 3; x += 1)
+                    {
+                        field[x, y].Value = area[x, y].Value;
+                    }
                 }
-            }
 
-            foreach (var fieldCell in field)
-            {
-                UpdateFieldCell(fieldCell);
+                foreach (var fieldCell in field)
+                {
+                    UpdateFieldCell(fieldCell);
+                }
             }
         }
 
@@ -219,19 +219,19 @@ namespace SnakeGame.App.Game
                 //Thread.Sleep(500);
             }
         }
-        public static void DiagnosisInfoRendering(Network network)
-        {
-            lock (State.ConsoleWriterLock)
-            {
-                Console.SetCursorPosition(30, 4);
-                Console.Write($"[0]: {Math.Round(network.Outputs[0].Double, 2)}");
-                Console.SetCursorPosition(40, 4);
-                Console.Write($"[1]: {Math.Round(network.Outputs[1].Double, 2)}");
-                Console.SetCursorPosition(50, 4);
-                Console.Write($"[2]: {Math.Round(network.Outputs[2].Double, 2)}");
-            }
+        //public static void DiagnosisInfoRendering(Network network)
+        //{
+        //    lock (State.ConsoleWriterLock)
+        //    {
+        //        Console.SetCursorPosition(30, 4);
+        //        Console.Write($"[0]: {Math.Round(network.Outputs[0].Double, 2)}");
+        //        Console.SetCursorPosition(40, 4);
+        //        Console.Write($"[1]: {Math.Round(network.Outputs[1].Double, 2)}");
+        //        Console.SetCursorPosition(50, 4);
+        //        Console.Write($"[2]: {Math.Round(network.Outputs[2].Double, 2)}");
+        //    }
 
-        }
+        //}
         #endregion
 
         #region Конструкторы

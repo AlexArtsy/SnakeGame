@@ -49,22 +49,22 @@ namespace SnakeGame.App.SnakeComponents
             var direction = head.Direction;
 
             var body1 = new SnakeBodyPart(GetNextBodiesPartPosition(head.Position, direction));
-            var body2 = new SnakeBodyPart(GetNextBodiesPartPosition(body1.Position, direction));
-            var body3 = new SnakeBodyPart(GetNextBodiesPartPosition(body2.Position, direction));
-            var tail = new SnakeTail(GetNextBodiesPartPosition(body3.Position, direction));
+            //var body2 = new SnakeBodyPart(GetNextBodiesPartPosition(body1.Position, direction));
+            //var body3 = new SnakeBodyPart(GetNextBodiesPartPosition(body2.Position, direction));
+            var tail = new SnakeTail(GetNextBodiesPartPosition(body1.Position, direction));
 
 
             head.Figure = "1";
             body1.Figure = "2";
-            body2.Figure = "3";
-            body3.Figure = "4";
+            //body2.Figure = "3";
+            //body3.Figure = "4";
             tail.Figure = " ";
 
 
             body.Add(head);
             body.Add(body1);
-            body.Add(body2);
-            body.Add(body3);
+            //body.Add(body2);
+            //body.Add(body3);
             body.Add(tail);
 
             State.IsSnakeAlive = true;

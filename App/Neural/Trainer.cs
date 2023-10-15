@@ -27,10 +27,10 @@ namespace SnakeGame.App.Neural
 
         #region Методы
 
-        private void UpdateInputs(Network network, List<IFieldCellValue> input)
+        private void UpdateInputs(Network network, List<IFieldCellValue> inputs)
         {
             var k = 0;
-            input.ForEach(i =>
+            inputs.ForEach(i =>
             {
                 switch (i.ToString())
                 {
@@ -38,16 +38,16 @@ namespace SnakeGame.App.Neural
                         network.Inputs[k].Double = 0;
                         break;
                     case "SnakeGame.App.SnakeComponents.SnakeFood":
-                        network.Inputs[k].Double = 1;
+                        network.Inputs[k].Double = 10;
                         break;
                     case "SnakeGame.App.SnakeComponents.SnakeBodyPart":
-                        network.Inputs[k].Double = -0.5;
+                        network.Inputs[k].Double = -5;
                         break;
                     case "SnakeGame.App.SnakeComponents.SnakeHead":
-                        network.Inputs[k].Double = 0.5;
+                        network.Inputs[k].Double = -5;
                         break;
                     default:
-                        network.Inputs[k].Double = -1;
+                        network.Inputs[k].Double = -10;
                         break;
                 }
                 k += 1;
@@ -86,7 +86,7 @@ namespace SnakeGame.App.Neural
             State.TrainingMode = true;
 
             Task keyControl = new Task(ProcessKeyControl);
-            Task progressRendering = new Task(() => RenderProcessor.TrainingProgressRendering(network, TotalError, BackTrainer));
+            Task progressRendering = new Task(() => RenderProcessor.TrainingProgressRendering(network, this.TotalError, BackTrainer));
             
             progressRendering.Start();
             keyControl.Start();
@@ -98,14 +98,22 @@ namespace SnakeGame.App.Neural
                 {
                     Train(network, manualData);
 
-                    var randomData = CreateRandomEmptinessTemplate(new GameField(field.X, field.Y, field.width, field.height), network);
+                    var randomData = CreateRandomTemplate(new GameField(field.X, field.Y, field.width, field.height), network);
                     Train(network, randomData);
 
                 });
+
+                //var randomData = CreateRandomTemplate(new GameField(field.X, field.Y, field.width, field.height), network);
+                //Train(network, randomData);
             }
 
             State.TrainingMode = false;
             UpdateDataFile(network);
+
+            keyControl.Wait();
+            progressRendering.Wait();
+
+            //Console.Clear();
         }
 
         #region DataSet Management
@@ -117,11 +125,13 @@ namespace SnakeGame.App.Neural
             FieldWall wall = new FieldWall();
             SnakeFood food = new SnakeFood();
 
-            var referenceLeft = new double[] { 1, 0, 0 };
-            var referenceCenter = new double[] { 0, 1, 0 };
-            var referenceRight = new double[] { 0, 0, 1 };
+            var referenceLeftFree = new double[] { 0, 1, 0, 0, 0, 0, 0 };
+            var referenceLeftFreeExsactement = new double[] { 1, 1, 0, 0, 0, 0, 0 };
+            var referenceCenterFree = new double[] { 0, 0, 0, 1, 0, 0, 0 };
+            var referenceCenterExsactement = new double[] { 0, 0, 1, 1, 1, 0, 0 };
+            var referenceRightFree = new double[] { 0, 0, 0, 0, 0, 1, 0 };
+            var referenceRightExactement = new double[] { 0, 0, 0, 0, 0, 1, 1 };
 
-            //var templateList = new List<IFieldCellValue[]>();
 
             #region Движение в пустоте
             var template = new IFieldCellValue[]
@@ -130,7 +140,7 @@ namespace SnakeGame.App.Neural
                 emptiness, head, emptiness,
                 emptiness, snake, emptiness,
             };
-            AddDataToDataSet(template, referenceCenter, field);
+            AddDataToDataSet(template, referenceCenterFree, field);
 
             template = new IFieldCellValue[]
             {
@@ -138,7 +148,7 @@ namespace SnakeGame.App.Neural
                 emptiness, head, emptiness,
                 emptiness, snake, snake,
             };
-            AddDataToDataSet(template, referenceCenter, field);
+            AddDataToDataSet(template, referenceCenterFree, field);
 
             template = new IFieldCellValue[]
             {
@@ -146,7 +156,7 @@ namespace SnakeGame.App.Neural
                 emptiness, head, emptiness,
                 snake, snake, emptiness,
             };
-            AddDataToDataSet(template, referenceCenter, field);
+            AddDataToDataSet(template, referenceCenterFree, field);
             #endregion
 
             #region Движение к еде
@@ -157,7 +167,7 @@ namespace SnakeGame.App.Neural
                 emptiness, head, emptiness,
                 emptiness, snake, emptiness,
             };
-            AddDataToDataSet(template, referenceCenter, field);
+            AddDataToDataSet(template, referenceCenterExsactement, field);
 
             template = new IFieldCellValue[]
             {
@@ -165,7 +175,7 @@ namespace SnakeGame.App.Neural
                 emptiness, head, emptiness,
                 emptiness, snake, emptiness,
             };
-            AddDataToDataSet(template, referenceRight, field);
+            AddDataToDataSet(template, referenceRightFree, field);
 
             template = new IFieldCellValue[]
             {
@@ -173,7 +183,7 @@ namespace SnakeGame.App.Neural
                 emptiness, head, food,
                 emptiness, snake, emptiness,
             };
-            AddDataToDataSet(template, referenceRight, field);
+            AddDataToDataSet(template, referenceRightExactement, field);
 
             template = new IFieldCellValue[]
             {
@@ -181,7 +191,7 @@ namespace SnakeGame.App.Neural
                 emptiness, head, emptiness,
                 emptiness, snake, emptiness,
             };
-            AddDataToDataSet(template, referenceLeft, field);
+            AddDataToDataSet(template, referenceLeftFree, field);
 
             template = new IFieldCellValue[]
             {
@@ -189,7 +199,7 @@ namespace SnakeGame.App.Neural
                 food, head, emptiness,
                 emptiness, snake, emptiness,
             };
-            AddDataToDataSet(template, referenceLeft, field);
+            AddDataToDataSet(template, referenceLeftFreeExsactement, field);
 
             #endregion
 
@@ -200,7 +210,15 @@ namespace SnakeGame.App.Neural
                 emptiness, head, emptiness,
                 emptiness, snake, emptiness,
             };
-            AddDataToDataSet(template, referenceRight, field);
+            AddDataToDataSet(template, referenceRightFree, field);
+
+            template = new IFieldCellValue[]
+            {
+                wall, wall, wall,
+                emptiness, head, emptiness,
+                emptiness, snake, emptiness,
+            };
+            AddDataToDataSet(template, referenceLeftFree, field);
 
             template = new IFieldCellValue[]
             {
@@ -208,7 +226,7 @@ namespace SnakeGame.App.Neural
                 emptiness, head, wall,
                 emptiness, snake, wall,
             };
-            AddDataToDataSet(template, referenceLeft, field);
+            AddDataToDataSet(template, referenceLeftFree, field);
 
             template = new IFieldCellValue[]
             {
@@ -216,7 +234,7 @@ namespace SnakeGame.App.Neural
                 wall, head, emptiness,
                 wall, snake, emptiness,
             };
-            AddDataToDataSet(template, referenceRight, field);
+            AddDataToDataSet(template, referenceRightFree, field);
 
             template = new IFieldCellValue[]
             {
@@ -224,7 +242,7 @@ namespace SnakeGame.App.Neural
                 wall, head, emptiness,
                 wall, snake, emptiness,
             };
-            AddDataToDataSet(template, referenceRight, field);
+            AddDataToDataSet(template, referenceRightExactement, field);
 
             template = new IFieldCellValue[]
             {
@@ -232,7 +250,7 @@ namespace SnakeGame.App.Neural
                 emptiness, head, wall,
                 emptiness, snake, wall,
             };
-            AddDataToDataSet(template, referenceLeft, field);
+            AddDataToDataSet(template, referenceLeftFreeExsactement, field);
 
             template = new IFieldCellValue[]
             {
@@ -240,7 +258,7 @@ namespace SnakeGame.App.Neural
                 wall, head, snake,
                 wall, snake, snake,
             };
-            AddDataToDataSet(template, referenceCenter, field);
+            AddDataToDataSet(template, referenceCenterExsactement, field);
 
             template = new IFieldCellValue[]
             {
@@ -248,7 +266,7 @@ namespace SnakeGame.App.Neural
                 snake, head, wall,
                 snake, snake, wall,
             };
-            AddDataToDataSet(template, referenceCenter, field);
+            AddDataToDataSet(template, referenceCenterExsactement, field);
 
             template = new IFieldCellValue[]
             {
@@ -256,7 +274,7 @@ namespace SnakeGame.App.Neural
                 wall, head, snake,
                 wall, snake, snake,
             };
-            AddDataToDataSet(template, referenceCenter, field);
+            AddDataToDataSet(template, referenceCenterExsactement, field);
 
             template = new IFieldCellValue[]
             {
@@ -264,11 +282,11 @@ namespace SnakeGame.App.Neural
                 snake, head, wall,
                 snake, snake, wall,
             };
-            AddDataToDataSet(template, referenceCenter, field);
+            AddDataToDataSet(template, referenceCenterExsactement, field);
             #endregion
         }
 
-        public DataSet CreateRandomEmptinessTemplate(GameField field, Network network)
+        public DataSet CreateRandomTemplate(GameField field, Network network)
         {
             var halfWidth = field.width / 2;
             var halfHeight = field.height / 2;
@@ -282,9 +300,9 @@ namespace SnakeGame.App.Neural
             var snake = new Snake(head, snakeBody);
 
 
-            var referenceLeft = new double[] { 1, 0, 0 };
+            var referenceLeftFree = new double[] { 0, 1, 0, 0, 0, 0, 0 };
             //var referenceCenter = new double[] { 0, 1, 0 };
-            var referenceRight = new double[] { 0, 0, 1 };
+            var referenceRightFree = new double[] { 0, 0, 0, 0, 0, 1, 0 };
             var reference = new double[] { };
 
 
@@ -336,10 +354,10 @@ namespace SnakeGame.App.Neural
                     switch (xFoodPosition)
                     {
                         case "Right":
-                            reference = referenceRight;
+                            reference = referenceRightFree;
                             break;
                         case "Left":
-                            reference = referenceLeft;
+                            reference = referenceLeftFree;
                             break;
                     }
                     break;
@@ -348,10 +366,10 @@ namespace SnakeGame.App.Neural
                     switch (xFoodPosition)
                     {
                         case "Right":
-                            reference = referenceLeft;
+                            reference = referenceLeftFree;
                             break;
                         case "Left":
-                            reference = referenceRight;
+                            reference = referenceRightFree;
                             break;
                     }
                     break;
@@ -360,10 +378,10 @@ namespace SnakeGame.App.Neural
                     switch (yFoodPosition)
                     {
                         case "Up":
-                            reference = referenceLeft;
+                            reference = referenceLeftFree;
                             break;
                         case "Down":
-                            reference = referenceRight;
+                            reference = referenceRightFree;
                             break;
                     }
                     break;
@@ -372,10 +390,10 @@ namespace SnakeGame.App.Neural
                     switch (yFoodPosition)
                     {
                         case "Up":
-                            reference = referenceRight;
+                            reference = referenceRightFree;
                             break;
                         case "Down":
-                            reference = referenceLeft;
+                            reference = referenceLeftFree;
                             break;
                     }
                     break;
@@ -389,8 +407,8 @@ namespace SnakeGame.App.Neural
             AddFieldToTemplate(template, field.Field, field.width, field.height);
 
 
-            RenderProcessor.RenderDiagnisticInfo(network, snake, nearArea);
-            RenderProcessor.UpdateField(field);
+            //RenderProcessor.RenderDiagnisticInfo(network, snake, nearArea);
+            //RenderProcessor.UpdateField(field);
 
             return new DataSet(template, reference);
         }

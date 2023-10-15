@@ -12,14 +12,36 @@ namespace SnakeGame
     {
         static void Main(string[] args)
         {
-            var trainer = new Trainer();    //  Добавить тип обучения ITrainer
-            var network = Network.ReadNetworkFromFileOrCreate("409-450-9", 409, new int[] { 409, 450, 7 });
-            trainer.BackTrainer = new BackPropagationTrainer(network, 0.5);
-            var field = new GameField(3, 5, 20, 20);
+            //string networkname = "409-300-9";
+            string networkname = "209-400-300-7";
+            var network = Network.ReadNetworkFromFileOrCreate(networkname, 209, new int[] { 400, 300, 7 });
+            var field = new GameField(3, 5, 20, 10);
+            //RunHumanGame(field);
+            RunTrainer(networkname, field, network);
+            //RunAIGamer(networkname, field, network);
+        }
+        public static void RunHumanGame(GameField field)
+        {
+            var gamer = new Human(field);
+            var game = new Game(gamer, field);
+            game.Run();
+        }
+
+        public static void RunTrainer(string networkname, GameField field, Network network)
+        {
+            var trainer = new Trainer();
+            trainer.BackTrainer = new BackPropagationTrainer(network, 0.05);
             trainer.Run(network, field, 0.01);
 
-            //var gamer = new Robot(field);
-            //var gamer = new Human(field);
+            var gamer = new AiGamer(network, field);
+
+            var game = new Game(gamer, field);
+            game.Run();
+        }
+
+        public static void RunAIGamer(string networkname, GameField field, Network network)
+        {
+            
             var gamer = new AiGamer(network, field);
 
             var game = new Game(gamer, field);

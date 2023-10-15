@@ -63,9 +63,9 @@ namespace SnakeGame.App
                 }
             }
 
-            for (var j = 3; j < this.Field.height; j += 1)
+            for (var j = 0; j < this.Field.height; j += 1)
             {
-                for (var i = 3; i < this.Field.width; i += 1)
+                for (var i = 0; i < this.Field.width; i += 1)
                 {
                     var entity = this.Field.Field[i, j].Value.ToString();
                     switch (entity)
@@ -74,16 +74,16 @@ namespace SnakeGame.App
                             this.Network.Inputs[k].Double = 0;
                             break;
                         case "SnakeGame.App.SnakeComponents.SnakeFood":
-                            this.Network.Inputs[k].Double = 10;
+                            this.Network.Inputs[k].Double = 1;
                             break;
                         case "SnakeGame.App.SnakeComponents.SnakeBodyPart":
-                            this.Network.Inputs[k].Double = -5;
+                            this.Network.Inputs[k].Double = -0.5;
                             break;
                         case "SnakeGame.App.SnakeComponents.SnakeHead":
-                            this.Network.Inputs[k].Double = -5;
+                            this.Network.Inputs[k].Double = -0.5;
                             break;
                         default:
-                            this.Network.Inputs[k].Double = -10;
+                            this.Network.Inputs[k].Double = -1;
                             break;
                     }
                     k += 1;

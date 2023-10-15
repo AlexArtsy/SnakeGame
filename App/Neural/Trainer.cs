@@ -32,25 +32,51 @@ namespace SnakeGame.App.Neural
             var k = 0;
             inputs.ForEach(i =>
             {
-                switch (i.ToString())
+                if( k < 3)
                 {
-                    case "SnakeGame.App.Field.FieldEmptiness":
-                        network.Inputs[k].Double = 0;
-                        break;
-                    case "SnakeGame.App.SnakeComponents.SnakeFood":
-                        network.Inputs[k].Double = 10;
-                        break;
-                    case "SnakeGame.App.SnakeComponents.SnakeBodyPart":
-                        network.Inputs[k].Double = -5;
-                        break;
-                    case "SnakeGame.App.SnakeComponents.SnakeHead":
-                        network.Inputs[k].Double = -5;
-                        break;
-                    default:
-                        network.Inputs[k].Double = -10;
-                        break;
+                    switch (i.ToString())
+                    {
+                        case "SnakeGame.App.Field.FieldEmptiness":
+                            network.Inputs[k].Double = 10;
+                            break;
+                        case "SnakeGame.App.SnakeComponents.SnakeFood":
+                            network.Inputs[k].Double = 10;
+                            break;
+                        case "SnakeGame.App.SnakeComponents.SnakeBodyPart":
+                            network.Inputs[k].Double = -5;
+                            break;
+                        case "SnakeGame.App.SnakeComponents.SnakeHead":
+                            network.Inputs[k].Double = -5;
+                            break;
+                        default:
+                            network.Inputs[k].Double = -10;
+                            break;
+                    }
+                    k += 1;
                 }
-                k += 1;
+                else
+                {
+                    switch (i.ToString())
+                    {
+                        case "SnakeGame.App.Field.FieldEmptiness":
+                            network.Inputs[k].Double = 0;
+                            break;
+                        case "SnakeGame.App.SnakeComponents.SnakeFood":
+                            network.Inputs[k].Double = 1;
+                            break;
+                        case "SnakeGame.App.SnakeComponents.SnakeBodyPart":
+                            network.Inputs[k].Double = -0.5;
+                            break;
+                        case "SnakeGame.App.SnakeComponents.SnakeHead":
+                            network.Inputs[k].Double = -0.5;
+                            break;
+                        default:
+                            network.Inputs[k].Double = -1;
+                            break;
+                    }
+                    k += 1;
+                }
+                
             });
         }
 

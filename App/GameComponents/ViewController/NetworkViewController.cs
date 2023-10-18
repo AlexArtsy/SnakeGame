@@ -11,12 +11,15 @@ namespace SnakeGame.App.GameComponents.ViewController
 {
     public class NetworkViewController : IViewer
     {
+        //private FieldEmptiness emptiness = new FieldEmptiness();
+        //private FieldWall wall = new FieldWall();
         #region Свойства
 
         public State State { get; set; }
         public Network Network { get; set; }
         public IViewer Rendering { get; set; }
         public double[] NetworkInputsVector { get; set; }
+
         #endregion
 
         #region Методы
@@ -56,25 +59,25 @@ namespace SnakeGame.App.GameComponents.ViewController
             var k = 0;
             inputs.ForEach(i =>
             {
-                if (i.Equals(new FieldEmptiness()))
+                if (i.GetType().Equals(typeof(FieldEmptiness)))
                 {
                     networkInputsValues[k] = 0;
                 }
-                else if (i.Equals(new SnakeFood()))
-                {
-                    networkInputsValues[k] = 1;
-                }
-                else if (i.Equals(new SnakeBodyPart(new FieldCoordinates(0, 0))))
-                {
-                    networkInputsValues[k] = -0.5;
-                }
-                else if (i.Equals(new SnakeHead(new FieldCoordinates(0, 0), "Up")))
-                {
-                    networkInputsValues[k] = -0.5;
-                }
-                else if (i.Equals(new FieldWall()))
+                else if (i.GetType().Equals(typeof(FieldWall)))
                 {
                     networkInputsValues[k] = -1;
+                }
+                else if (i.GetType().Equals(typeof(SnakeHead)))
+                {
+                    networkInputsValues[k] = -0.5;
+                }
+                else if (i.GetType().Equals(typeof(SnakeBodyPart)))
+                {
+                    networkInputsValues[k] = -0.5;
+                }
+                else if (i.GetType().Equals(typeof(SnakeFood)))
+                {
+                    networkInputsValues[k] = 1;
                 }
                 else
                 {
@@ -205,7 +208,7 @@ namespace SnakeGame.App.GameComponents.ViewController
         {
             foreach (var fieldCell in field.Field)
             {
-                if (fieldCell.Value.Equals(new SnakeHead(new FieldCoordinates(0, 0), "Up")))
+                if (fieldCell.GetType().Equals(typeof(SnakeHead)))
                 {
                     return fieldCell.Value;
                 }

@@ -18,6 +18,7 @@ namespace SnakeGame.App.Neural.Training
         private void CalculateTotalError(double[] target)
         {
             ETotal = 0;
+            this.Reference = target;
 
             for (var i = 0; i < Network.Outputs.Count; i += 1)
             {

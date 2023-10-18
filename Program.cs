@@ -15,8 +15,8 @@ namespace SnakeGame
     {
         static void Main(string[] args)
         {
-            string networkname = "209-400-200-7";
-            var network = Network.ReadNetworkFromFileOrCreate(networkname, 209, new int[] { 400, 200, 7 });
+            string networkname = "209-300-2";
+            var network = Network.ReadNetworkFromFileOrCreate(networkname, 209, new int[] { 300, 2 });
             
 
             var gameState = new State();

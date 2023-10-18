@@ -56,7 +56,7 @@ namespace SnakeGame.App.Field
 
                 var typeOfCellValue = Field[x, y].Value;
 
-                if (!typeOfCellValue.Equals(new FieldEmptiness()))   //  Проверяем не попала ли еда на не пустую ячейку.
+                if (!typeOfCellValue.GetType().Equals(typeof(FieldEmptiness)))   //  Проверяем не попала ли еда на не пустую ячейку.
                 {
                     continue;
                 }

@@ -49,9 +49,7 @@ namespace SnakeGame.App.Neural.Training
             network.AvgError = network.SumForAvgError / network.ValueOfLearningCycles;
 
             network.HistoryOfAvgError.Add(network.AvgError);
-
-            //RenderProcessor.DiagnosisInfoRendering(network);
-            //Console.ReadKey(true);
+            
         }
 
         public void Run(Network network, GameField field, double fidelity)
@@ -61,7 +59,6 @@ namespace SnakeGame.App.Neural.Training
             SetUpManualDataSet(field);
 
             Task keyControl = new Task(() => ProcessKeyControl(network));
-            //Task progressRendering = new Task(() => RenderProcessor.TrainingProgressRendering(network, TotalError, BackTrainer));
 
             //progressRendering.Start();
             keyControl.Start();
@@ -77,9 +74,6 @@ namespace SnakeGame.App.Neural.Training
                     Train(network, randomData);
 
                 });
-
-                //var randomData = CreateRandomTemplate(new GameField(field.X, field.Y, field.width, field.height), network);
-                //Train(network, randomData);
             }
 
             network.isTrainingMode = false;
@@ -279,7 +273,6 @@ namespace SnakeGame.App.Neural.Training
             field.Field[randomSnake.head.Position.X, randomSnake.head.Position.Y].Value = randomSnake.head;
             field.Field[randomSnake.Body[1].Position.X, randomSnake.Body[1].Position.Y].Value = randomSnake.Body[1];
 
-            //var randomDirection = randomSnake.head.Direction;
             
 
             var randomXFoodPosition = 0;
@@ -368,10 +361,6 @@ namespace SnakeGame.App.Neural.Training
             AddFieldToTemplate(template, nearArea, 3, 3);
             AddFieldToTemplate(template, field.Field, field.width, field.height);
 
-
-            //RenderProcessor.RenderDiagnisticInfo(network, snake, nearArea);
-            //RenderProcessor.UpdateField(field);
-
             return new DataSet(template, reference);
         }
 
@@ -380,8 +369,7 @@ namespace SnakeGame.App.Neural.Training
             var dataTemplate = new List<IFieldCellValue>();
             dataTemplate = AddNearAreaToTemplate(dataTemplate, template);
             AddFieldToTemplate(dataTemplate, field.Field, field.width, field.height);
-
-            //his.FieldForRendering = field;
+            
 
             DataSet.Add(new DataSet(dataTemplate, reference));
         }
@@ -396,17 +384,6 @@ namespace SnakeGame.App.Neural.Training
                 }
             }
         }
-        //public List<IFieldCellValue> AddFieldToTemplate(GameField field, List<IFieldCellValue> template)
-        //{
-        //    for (var y = 0; y < field.height; y += 1)
-        //    {
-        //        for (var x = 0; x < field.width; x += 1)
-        //        {
-        //            template.Add(field.Field[x, y].Value);
-        //        }
-        //    }
-        //    return template;
-        //}
         public List<IFieldCellValue> AddNearAreaToTemplate(List<IFieldCellValue> template, IFieldCellValue[] nearAreaValues)
         {
             for (var i = 0; i < nearAreaValues.Length; i += 1)
@@ -491,11 +468,7 @@ namespace SnakeGame.App.Neural.Training
 
         #endregion
 
-        #region Делегаты и события
-        #endregion
-
         #region Конструкторы
-
         public Trainer(NetworkController networkControl)
         {
             this.NetworkControl = networkControl;

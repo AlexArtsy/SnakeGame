@@ -17,15 +17,6 @@ namespace SnakeGame.App.GameComponents.ViewController
         #endregion
 
         #region Методы
-        //private void ClearCell(int x, int y)
-        //{
-        //    lock (State.ConsoleWriterLock)
-        //    {
-        //        Console.SetCursorPosition(x, y);
-        //        Console.Write(new string(' ', 1));
-        //        Console.SetCursorPosition(x, y);
-        //    }
-        //}
 
         public void UpdateField(GameField field)
         {
@@ -46,7 +37,6 @@ namespace SnakeGame.App.GameComponents.ViewController
         {
             lock (ConsoleWriterLock)
             {
-                //ClearCell(cell.Position.X, cell.Position.Y);
                 Console.SetCursorPosition(cell.Position.X, cell.Position.Y);
                 Console.ForegroundColor = cell.Value.Color;
                 Console.BackgroundColor = cell.Value.BgColor;

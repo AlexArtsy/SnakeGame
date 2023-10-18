@@ -88,12 +88,6 @@ namespace SnakeGame.App.SnakeComponents
 
         public FieldCoordinates GetNextPosition(FieldCoordinates current, string direction)
         {
-            //if (!CheckDirectionCorrectness(this.head.Direction, direction))
-            //{
-            //    direction = this.head.Direction;
-            //    State.HeadDirection = this.head.Direction;  //  Как-то не красиво, но пусть пока будет так.
-            //}
-
             var x = 0;
             var y = 0;
 

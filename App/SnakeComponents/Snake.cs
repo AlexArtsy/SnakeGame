@@ -7,6 +7,7 @@ namespace SnakeGame.App.SnakeComponents
     {
         #region Поля
         private readonly GameField gameField;
+        private bool isSnakeRised = false;
         public SnakeHead head;
         #endregion
 
@@ -28,11 +29,6 @@ namespace SnakeGame.App.SnakeComponents
 
             Move();
             EatFood(food, cell);
-
-            //SnakeMoved?.Invoke();
-
-            //Thread.Sleep(1000 - State.SnakeSpeed);
-            //var pressedKey = Console.ReadKey(true);
         }
 
         private FieldCell ExploreArea()
@@ -50,10 +46,21 @@ namespace SnakeGame.App.SnakeComponents
 
         private void Move()
         {
-            Body.ForEach(p =>
+            if (!isSnakeRised)  //  Для более красивой отрисовки при поедании еды
             {
-                p.Move(gameField);
-            });
+                Body.ForEach(p =>
+                {
+                    p.Figure = p.Figure == "O" ? "o" : "O";
+                    p.Move(gameField);
+                });
+                this.isSnakeRised = false;
+                this.head.Figure = this.Body[1].Figure == "O" ? "s" : "S";
+                return;
+            }
+
+            this.head.Move(gameField);
+            this.head.Figure = this.Body[1].Figure == "O" ?  "s" : "S";
+            this.isSnakeRised = false;
         }
 
         private void GiveBirthToSnake()
@@ -69,15 +76,16 @@ namespace SnakeGame.App.SnakeComponents
         public void RaiseSnake(FieldCell cell)
         {
             var newBodyPart = new SnakeBodyPart(head.Position);
-            //cell.Value = newBodyPart;
+            newBodyPart.Figure = this.Body[1].Figure == "O" ? "o" : "O";
 
             Body.Insert(1, newBodyPart);
             
-            Mind.SetNextHeadCoordinates(head.Direction);
+            //Mind.SetNextHeadCoordinates(head.Direction);
             
-            head.Move(gameField);
+            //head.Move(gameField);
 
             cell.Value = newBodyPart;
+            this.isSnakeRised = true;
         }
 
         public void Die(FieldCell cell)

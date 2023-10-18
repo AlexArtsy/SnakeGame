@@ -22,6 +22,8 @@ namespace SnakeGame.App.GameComponents
         #region Методы
         public void Run()
         {
+            this.Rendering.Clear(); //  Спорный момент, но допустим...
+
             var runSnake = new Task(RunSnake);
             var generateFood = new Task(() => this.GameField.GenerateFood(this.State));
 

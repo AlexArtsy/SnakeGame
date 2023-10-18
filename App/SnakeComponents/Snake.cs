@@ -46,6 +46,8 @@ namespace SnakeGame.App.SnakeComponents
 
         private void Move()
         {
+            this.State.GameScore = this.State.GameScore == 0 ? 0: this.State.GameScore - 1;
+
             if (!isSnakeRised)  //  Для более красивой отрисовки при поедании еды
             {
                 Body.ForEach(p =>
@@ -79,13 +81,13 @@ namespace SnakeGame.App.SnakeComponents
             newBodyPart.Figure = this.Body[1].Figure == "O" ? "o" : "O";
 
             Body.Insert(1, newBodyPart);
-            
-            //Mind.SetNextHeadCoordinates(head.Direction);
-            
-            //head.Move(gameField);
 
             cell.Value = newBodyPart;
             this.isSnakeRised = true;
+
+            this.State.GameTickTimeValue -= 50;
+            this.State.SnakeSpeed += 50;
+            this.State.GameScore += 100;
         }
 
         public void Die(FieldCell cell)

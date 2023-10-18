@@ -6,6 +6,9 @@ namespace SnakeGame.App.GameComponents.ViewController
     {
         public State State { get; set; }
         #region Методы
+        public void Clear()
+        {
+        }
         public void UpdateField(GameField field)
         {
         }

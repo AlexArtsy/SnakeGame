@@ -12,6 +12,7 @@ namespace SnakeGame.App.Neural.NetworkComponents
         public int ValueOfInput { get; set; }
         public int ValueOfLearningCycles { get; set; }
         public double SumForAvgError { get; set; }
+        public double TotalError { get; set; }
         public double AvgError { get; set; }
         public List<double> HistoryOfAvgError { get; set; }
         [JsonIgnore]

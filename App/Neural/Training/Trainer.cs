@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using SnakeGame.App.GameComponents;
 using SnakeGame.App.GameComponents.OperationController;
+using SnakeGame.App.GameComponents.ViewController;
 using SnakeGame.App.Neural.NetworkComponents;
 
 namespace SnakeGame.App.Neural.Training
@@ -23,8 +24,8 @@ namespace SnakeGame.App.Neural.Training
         #region Свойства
         public List<DataSet> DataSet { get; set; } = new List<DataSet>();
         public NetworkController NetworkControl { get; set; }
+        public NetworkViewController FieldViewer { get; set; }
         public BackPropagationTrainer BackTrainer { get; set; }
-        public double TotalError { get; set; } = 1;
         #endregion
 
         #region Методы
@@ -38,11 +39,11 @@ namespace SnakeGame.App.Neural.Training
 
         private void Train(Network network, DataSet data)
         {
-            var inputsVector = NetworkControl.GetNetworkInputsVector(network, data.InputData);
+            var inputsVector = this.FieldViewer.GetNetworkInputsVector(network, data.InputData);
             network.Calculate(inputsVector);
-            TotalError = BackTrainer.Train(data.Target);
+            network.TotalError = BackTrainer.Train(data.Target);
 
-            network.SumForAvgError += TotalError;
+            network.SumForAvgError += network.TotalError;
 
             network.ValueOfLearningCycles += 1;
 
@@ -59,8 +60,15 @@ namespace SnakeGame.App.Neural.Training
             SetUpManualDataSet(field);
 
             Task keyControl = new Task(() => ProcessKeyControl(network));
-
-            //progressRendering.Start();
+            //Task render = new Task(() =>
+            //{
+            //    while (network.isTrainingMode)
+            //    {
+            //        this.FieldViewer.UpdateField(field);
+            //    }
+            //});
+            
+            //render.Start();
             keyControl.Start();
 
 
@@ -70,9 +78,10 @@ namespace SnakeGame.App.Neural.Training
                 {
                     Train(network, manualData);
 
-                    var randomData = CreateRandomTemplate(new GameField(field.X, field.Y, field.width, field.height), network);
+                    var randomData = CreateRandomTemplate(new GameField(field.X, field.Y, field.width, field.height, new State()), network);
                     Train(network, randomData);
 
+                    this.FieldViewer.UpdateField(field); // Фигня какая-то получается
                 });
             }
 
@@ -356,7 +365,7 @@ namespace SnakeGame.App.Neural.Training
 
             var template = new List<IFieldCellValue>();
 
-            var nearArea = this.NetworkControl.ScanArea(field.Field, randomSnake.head, randomSnake.head.Direction);
+            var nearArea = this.FieldViewer.ScanArea(field.Field, randomSnake.head, randomSnake.head.Direction);
 
             AddFieldToTemplate(template, nearArea, 3, 3);
             AddFieldToTemplate(template, field.Field, field.width, field.height);
@@ -469,8 +478,9 @@ namespace SnakeGame.App.Neural.Training
         #endregion
 
         #region Конструкторы
-        public Trainer(NetworkController networkControl)
+        public Trainer(NetworkController networkControl, NetworkViewController fieldViewer)
         {
+            this.FieldViewer = fieldViewer;
             this.NetworkControl = networkControl;
         }
         #endregion

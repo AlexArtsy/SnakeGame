@@ -19,6 +19,8 @@ namespace SnakeGame.App.GameComponents.ViewController
         void BlinkFieldCell(FieldCell cell);
         void ShowScore();
         void ShowSpeed();
+        void Clear();
+
         #endregion
     }
 }

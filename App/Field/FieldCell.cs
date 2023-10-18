@@ -1,4 +1,7 @@
 ﻿
+
+using SnakeGame.App.SnakeComponents;
+
 namespace SnakeGame.App.Field
 {
     public class FieldCell
@@ -9,6 +12,9 @@ namespace SnakeGame.App.Field
 
         #region Свойства
         public FieldCoordinates Position { get; set; }
+        public bool IsChanged { get; set; }
+        public bool IsBlinked { get; set; }
+        public ConsoleColor BlinkColor { get; set; }
 
         public IFieldCellValue Value
         {
@@ -16,7 +22,20 @@ namespace SnakeGame.App.Field
             set
             {
                 cellValue = value;
-                Changed?.Invoke(this);  //  Перерисовываем ячейку.
+                //Changed?.Invoke(this);  //  Перерисовываем ячейку.
+                this.IsChanged = true;
+
+                if (value.Equals(new FieldWall()))
+                {
+                    this.IsBlinked = true;
+                    this.BlinkColor = ConsoleColor.Red;
+                }
+
+                if (value.Equals(new SnakeFood()))
+                {
+                    this.IsBlinked = true;
+                    this.BlinkColor = ConsoleColor.Green;
+                }
             }
         }
 
@@ -26,14 +45,14 @@ namespace SnakeGame.App.Field
 
         #region Методы
 
-        public void UpdateCell(IFieldCellValue value)    //  надо переписать чтобы событие срабатывало когда устанавливается Value ячейки
-        {
-            Value = value;
-            //this.Color = value.Color;
-            //this.BgColor = value.BgColor;
+        //public void UpdateCell(IFieldCellValue value)    //  надо переписать чтобы событие срабатывало когда устанавливается Value ячейки
+        //{
+        //    Value = value;
+        //    //this.Color = value.Color;
+        //    //this.BgColor = value.BgColor;
 
-            Changed?.Invoke(this);
-        }
+        //    Changed?.Invoke(this);
+        //}
         #endregion
 
         #region Делегаты

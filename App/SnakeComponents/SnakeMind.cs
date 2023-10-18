@@ -1,5 +1,5 @@
 ﻿using SnakeGame.App.Field;
-using SnakeGame.App.Game;
+using SnakeGame.App.GameComponents;
 
 namespace SnakeGame.App.SnakeComponents
 {
@@ -12,15 +12,16 @@ namespace SnakeGame.App.SnakeComponents
         #endregion
 
         #region Свойства
+        public State State { get; set; }
         #endregion
 
         #region Методы
 
         public void ReadDirection()
         {
-            head.Direction = CheckDirectionCorrectness(head.Direction, State.HeadDirection)
-                ? State.HeadDirection
-                : head.Direction;
+            head.Direction = CheckDirectionCorrectness(this.head.Direction, this.State.HeadDirection)
+                ? this.State.HeadDirection
+                : this.head.Direction;
         }
 
         public void SetSpeed()
@@ -32,14 +33,6 @@ namespace SnakeGame.App.SnakeComponents
         {
             var nextPosition = GetNextPosition(head.Position, head.Direction);
             var nextCell = field.Field[nextPosition.X, nextPosition.Y];
-
-            lock (State.ConsoleWriterLock)
-            {
-                Console.SetCursorPosition(0, 0);
-                Console.Write("                                                           ");
-                Console.SetCursorPosition(0, 0);
-                Console.Write($"Содержимое ячейки: {nextCell.Value.GetType()}");
-            }
 
             return nextCell;
         }
@@ -169,11 +162,12 @@ namespace SnakeGame.App.SnakeComponents
         #endregion
 
         #region Конструкторы
-        public SnakeMind(List<SnakeMember> body, SnakeHead head, GameField field)
+        public SnakeMind(List<SnakeMember> body, SnakeHead head, GameField field, State state)
         {
             this.body = body;
             this.head = head;    //  исключение, боди пустая
             this.field = field;
+            this.State = state;
         }
         #endregion
     }

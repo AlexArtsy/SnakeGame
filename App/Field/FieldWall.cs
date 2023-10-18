@@ -21,6 +21,8 @@ namespace SnakeGame.App.Field
         #region Методы
         public void Consume(Snake snake, FieldCell cell)
         {
+            cell.IsBlinked = true;
+            cell.BlinkColor = ConsoleColor.Red;
             snake.Die(cell);
         }
         #endregion

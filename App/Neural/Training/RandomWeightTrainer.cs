@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SnakeGame.App.Neural.NetworkComponents;
 
-namespace SnakeGame.App.Neural
+namespace SnakeGame.App.Neural.Training
 {
     internal class RandomWeightTrainer : ITrainer
     {

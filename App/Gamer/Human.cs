@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SnakeGame.App.Field;
-using SnakeGame.App.Game;
+using SnakeGame.App.GameComponents;
+using SnakeGame.App.GameComponents.OperationController;
+using SnakeGame.App.GameComponents.ViewController;
 using SnakeGame.App.SnakeComponents;
 
 namespace SnakeGame.App.Gamer
@@ -15,37 +17,38 @@ namespace SnakeGame.App.Gamer
         #endregion
 
         #region Свойства
-        public Snake Snake { get; set; }
-        public GameField Field { get; set; }
         #endregion
 
         #region Методы
         public void Play()
         {
-            while (State.IsSnakeAlive)
-            {
-                var pressedKey = Console.ReadKey(true);
-                switch (pressedKey.Key)
-                {
-                    case ConsoleKey.Tab:
-                        break;
-                    case ConsoleKey.LeftArrow:
-                        Control.DirectionListener("Left");
-                        break;
-                    case ConsoleKey.RightArrow:
-                        Control.DirectionListener("Right");
-                        break;
-                    case ConsoleKey.UpArrow:
-                        Control.DirectionListener("Up");
-                        break;
-                    case ConsoleKey.DownArrow:
-                        Control.DirectionListener("Down");
-                        break;
-                    default:
-                        break;
-                }
-            }
+            this.Game.Run();
+            //Task rendering = new Task(RunRendering);
+            //Task runGame = new Task(this.Game.Run);
+            //Task runControl = new Task(RunControlListener);
+
+            //rendering.Start();
+            //runGame.Start();
+            //runControl.Start();
         }
+
+        //public void RunRendering()
+        //{
+        //    while (Game.State.IsSnakeAlive)
+        //    {
+        //        this.RenderProcessor.RenderGameField(this.Game.GameField);
+
+        //        Thread.Sleep(this.Game.State.GameTickTimeValue);    //  Возможно нужно засинхронизировать с потоком игры
+        //    }
+        //}
+
+        //public void RunControlListener()
+        //{
+        //    while (Game.State.IsSnakeAlive)
+        //    {
+        //        this.Game.GameControl.UpdateHeadDirection(this.Control.DirectionGenerator());
+        //    }
+        //}
         #endregion
 
         #region Делегаты и события
@@ -53,10 +56,11 @@ namespace SnakeGame.App.Gamer
 
         #region Конструкторы
 
-        public Human(GameField field)
+        public Human(Game game) : base(game)
         {
-            //Field = field;
+ 
         }
+
         #endregion
     }
 }

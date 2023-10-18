@@ -1,6 +1,6 @@
-﻿using SnakeGame.App.Field;
+﻿using SnakeGame.App.SnakeComponents;
 
-namespace SnakeGame.App.SnakeComponents
+namespace SnakeGame.App.Field
 {
     internal class SnakeFood : IFieldCellValue
     {
@@ -19,6 +19,8 @@ namespace SnakeGame.App.SnakeComponents
         public void Consume(Snake snake, FieldCell cell)
         {
             //cell.Value = snake.head;    //  Выглядит не очень - переделать
+            cell.IsBlinked = true;
+            cell.BlinkColor = ConsoleColor.Green;
             snake.RaiseSnake(cell);
         }
         #endregion

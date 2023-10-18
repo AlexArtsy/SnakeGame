@@ -1,4 +1,4 @@
-﻿using SnakeGame.App.Game;
+﻿using SnakeGame.App.GameComponents;
 using SnakeGame.App.SnakeComponents;
 
 namespace SnakeGame.App.Field
@@ -25,6 +25,7 @@ namespace SnakeGame.App.Field
                 for (int x = 0; x < width; x += 1)
                 {
                     var newCell = new FieldCell(x + X, y + Y);
+                    newCell.IsChanged = true;
                     Field[x, y] = newCell;
                 }
             }
@@ -45,11 +46,11 @@ namespace SnakeGame.App.Field
             }
         }
 
-        public void GenerateFood()
+        public void GenerateFood(State state)
         {
             var emptyCellValue = new FieldEmptiness().ToString();
 
-            while (State.IsSnakeAlive)
+            while (state.IsSnakeAlive)
             {
                 var x = RandomGen.GetRandomX(width);
                 var y = RandomGen.GetRandomY(height);
@@ -61,15 +62,15 @@ namespace SnakeGame.App.Field
                     continue;
                 }
 
-                if (State.FoodPiecesValue <= 25)
+                if (state.FoodPiecesValue <= 25)
                 {
                     Field[x, y].Value = new SnakeFood();
-                    State.FoodPiecesValue += 1;
+                    state.FoodPiecesValue += 1;
                 }
 
-                if (State.FoodPiecesValue > 1)
+                if (state.FoodPiecesValue > 1)
                 {
-                    Thread.Sleep(100 * new Random().Next(50, 1000 - State.SnakeSpeed));
+                    Thread.Sleep(100 * new Random().Next(50, 1000 - state.SnakeSpeed));
                 }
             }
         }
@@ -86,8 +87,6 @@ namespace SnakeGame.App.Field
 
             InitGameField();
             SetBorders();
-            RenderProcessor.SubscribeFieldCellChangingEvent(this);
-            //GenerateFood();
         }
         #endregion
     }

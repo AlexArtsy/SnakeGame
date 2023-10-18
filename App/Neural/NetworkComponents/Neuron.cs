@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
-namespace SnakeGame.App.Neural
+namespace SnakeGame.App.Neural.NetworkComponents
 {
     public class Neuron
     {
@@ -20,12 +14,12 @@ namespace SnakeGame.App.Neural
         public IActivation ActivationFunc { get; set; }
         [JsonIgnore]
         public double DeltaOut { get; set; }
-        
+
 
         private void InitializeSynapses()    //  inputs - выхода предидущего слоя
         {
             var i = 0;
-            this.Inputs.ForEach(input =>
+            Inputs.ForEach(input =>
             {
                 Synapses.Add(new Synapse(i, input));
                 i += 1;
@@ -33,11 +27,11 @@ namespace SnakeGame.App.Neural
         }
         public void InitializeSynapses(List<Value> inputs)
         {
-            this.Inputs = inputs;
+            Inputs = inputs;
 
             for (var i = 0; i < inputs.Count; i += 1)
             {
-                this.Synapses[i].InitializeInput(inputs[i]);
+                Synapses[i].InitializeInput(inputs[i]);
             }
         }
 
@@ -69,10 +63,10 @@ namespace SnakeGame.App.Neural
         public Neuron(int id, List<Value> inputs, IActivation activationFunc)    //  Для входного слоя
         {
             Id = id;
-            this.Inputs = inputs;
-            this.Synapses = new List<Synapse>();
-            this.OutputValue = new Value(0, 0);
-            this.ActivationFunc = activationFunc;
+            Inputs = inputs;
+            Synapses = new List<Synapse>();
+            OutputValue = new Value(0, 0);
+            ActivationFunc = activationFunc;
             InitializeSynapses();
             CalculateValue();
         }
@@ -80,10 +74,10 @@ namespace SnakeGame.App.Neural
         [JsonConstructor]
         public Neuron(int id, List<Synapse> synapses)
         {
-            this.Id = id;
-            this.Synapses = synapses;
-            this.OutputValue = new Value(0, 0);
-            this.ActivationFunc = new Sigmoid(0.5);
+            Id = id;
+            Synapses = synapses;
+            OutputValue = new Value(0, 0);
+            ActivationFunc = new Sigmoid(0.5);
         }
         #endregion
     }

@@ -1,19 +1,19 @@
-﻿namespace SnakeGame.App.Gamer;
+﻿using SnakeGame.App.GameComponents;
+using SnakeGame.App.GameComponents.OperationController;
+using SnakeGame.App.GameComponents.ViewController;
 
-public class Gamer : IPlayable
+namespace SnakeGame.App.Gamer;
+
+public class Gamer
 {
     #region Поля
     #endregion
 
     #region Свойства
-    public string Direction { get; set; }
+    public Game Game { get; set; }
     #endregion
 
     #region Методы
-    public void ChangeDirection()
-    {
-
-    }
 
     #endregion
 
@@ -22,6 +22,11 @@ public class Gamer : IPlayable
     #endregion
 
     #region Конструкторы
+
+    public Gamer(Game game)
+    {
+        this.Game = game;
+    }
 
     #endregion
 }

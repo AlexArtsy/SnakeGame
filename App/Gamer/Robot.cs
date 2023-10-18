@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SnakeGame.App.Field;
-using SnakeGame.App.Game;
+using SnakeGame.App.GameComponents;
+using SnakeGame.App.GameComponents.OperationController;
+using SnakeGame.App.GameComponents.ViewController;
 using SnakeGame.App.SnakeComponents;
 
 namespace SnakeGame.App.Gamer
 {
-    internal class Robot : Gamer, IGamer
+    public class Robot : Gamer, IGamer
     {
         #region Поля
         public int vision = 5;
@@ -27,10 +29,10 @@ namespace SnakeGame.App.Gamer
         }
         public void Play()
         {
-            while (State.IsSnakeAlive)
+            while (this.Game.State.IsSnakeAlive)
             {
-                Control.DirectionListener(RandomGen.GetDirection()); //  ну например
-                Thread.Sleep(1000 - State.SnakeSpeed);
+                //Control.DirectionListener(RandomGen.GetDirection()); //  ну например
+                Thread.Sleep(1000 - this.Game.State.SnakeSpeed);
             }
         }
         #endregion
@@ -40,9 +42,9 @@ namespace SnakeGame.App.Gamer
 
         #region Конструкторы
 
-        public Robot(GameField field)
+        public Robot(Game game) : base(game)
         {
-            Field = field;
+
         }
         #endregion
     }

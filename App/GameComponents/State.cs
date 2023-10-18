@@ -1,28 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SnakeGame.App.Field;
 
-namespace SnakeGame.App.Game
+namespace SnakeGame.App.GameComponents
 {
-    internal class State
+    public class State
     {
         #region Поля
-        public static string HeadDirection = RandomGen.GetDirection();
-        public static readonly object ConsoleWriterLock = new object();
-        private static int speed = 0;
-        public static int Score = 0;
-        public static int SnakeLength = 0;
-        public static int FoodPiecesValue = 0;
-        public static bool IsSnakeAlive = false;
+
+        private int speed = 50;
+        public string HeadDirection = RandomGen.GetDirection();
+        public int FoodPiecesValue = 0;
+        public bool IsSnakeAlive = false;
         #endregion
 
         #region Свойства
-
-        public static int SnakeSpeed
+        //public bool TrainingMode { get; set; } = false;
+        //public GameField Field { get; set; }
+        public int GameScore { get; set; } = 0;
+        public int GameTickTimeValue { get; set; } = 500;
+        //public bool TickFront { get; set; } = false;
+        public int SnakeSpeed
         {
             get => speed;
             set
@@ -45,8 +41,6 @@ namespace SnakeGame.App.Game
                 }
             }
         }
-
-        public static bool TrainingMode { get; set; } = false;
         #endregion
 
         #region Методы

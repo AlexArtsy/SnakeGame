@@ -1,5 +1,5 @@
 ﻿using SnakeGame.App.Field;
-using SnakeGame.App.Game;
+using SnakeGame.App.GameComponents;
 
 namespace SnakeGame.App.SnakeComponents
 {
@@ -11,9 +11,8 @@ namespace SnakeGame.App.SnakeComponents
         #endregion
 
         #region Свойства
-        public int Speed { get; set; }
-        //  public string HeadDirection { get; set; }
         public SnakeMind Mind { get; set; }
+        public State State { get; set; }
         public List<SnakeMember> Body { get; set; }
 
         #endregion
@@ -22,24 +21,18 @@ namespace SnakeGame.App.SnakeComponents
 
         public void RunSnake()
         {
-            while (State.IsSnakeAlive)
-            {
+            ThinkBeforeMoving();
 
-                ThinkBeforeMoving();
+            var cell = ExploreArea();
+            var food = cell.Value;
 
-                var cell = ExploreArea();
-                var food = cell.Value;
+            Move();
+            EatFood(food, cell);
 
-                Move();
-                EatFood(food, cell);
+            //SnakeMoved?.Invoke();
 
-                SnakeMoved?.Invoke();
-
-                Thread.Sleep(1000 - State.SnakeSpeed);
-                //var pressedKey = Console.ReadKey(true);
-
-
-            }
+            //Thread.Sleep(1000 - State.SnakeSpeed);
+            //var pressedKey = Console.ReadKey(true);
         }
 
         private FieldCell ExploreArea()
@@ -75,9 +68,6 @@ namespace SnakeGame.App.SnakeComponents
 
         public void RaiseSnake(FieldCell cell)
         {
-            SnakeRised?.Invoke();
-            Raised?.Invoke(cell, ConsoleColor.Green);
-
             var newBodyPart = new SnakeBodyPart(head.Position);
             //cell.Value = newBodyPart;
 
@@ -92,8 +82,7 @@ namespace SnakeGame.App.SnakeComponents
 
         public void Die(FieldCell cell)
         {
-            Crashed?.Invoke(cell, ConsoleColor.Red);
-            SnakeDies?.Invoke();
+            this.State.IsSnakeAlive = false;
         }
         #endregion
 
@@ -111,15 +100,13 @@ namespace SnakeGame.App.SnakeComponents
         #endregion
 
         #region Конструкторы
-        public Snake(int x, int y, GameField gameField, int speed)
+        public Snake(int x, int y, GameField gameField, State state)
         {
-            this.head = new SnakeHead(new FieldCoordinates(x, y), State.HeadDirection);
+            this.State = state;
+                this.head = new SnakeHead(new FieldCoordinates(x, y), State.HeadDirection);
             this.Body = new List<SnakeMember>();
             this.gameField = gameField;
-            this.Mind = new SnakeMind(Body, head, this.gameField);
-            this.Speed = speed;
-
-            State.SnakeSpeed = this.Speed; // Переделать!!!
+            this.Mind = new SnakeMind(Body, head, this.gameField, this.State);
 
             GiveBirthToSnake();
         }

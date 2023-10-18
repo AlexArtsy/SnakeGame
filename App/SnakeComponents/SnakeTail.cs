@@ -25,7 +25,8 @@ namespace SnakeGame.App.SnakeComponents
 
         private void CaptureCell(GameField field)
         {
-            field.Field[Position.X, Position.Y].UpdateCell(new FieldEmptiness()); //  Передаем в ячейку пустоту вместо себя.
+            //field.Field[Position.X, Position.Y].UpdateCell(new FieldEmptiness()); //  Передаем в ячейку пустоту вместо себя.
+            field.Field[Position.X, Position.Y].Value = new FieldEmptiness();
         }
 
         #endregion

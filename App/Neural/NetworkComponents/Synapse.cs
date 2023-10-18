@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
-namespace SnakeGame.App.Neural
+namespace SnakeGame.App.Neural.NetworkComponents
 {
     public class Synapse
     {
@@ -27,7 +22,7 @@ namespace SnakeGame.App.Neural
 
         public void InitializeInput(Value input)
         {
-            this.InputValue = input;
+            InputValue = input;
         }
 
         public void AdjustWeightWithRandom()
@@ -45,8 +40,8 @@ namespace SnakeGame.App.Neural
         [JsonConstructor]
         public Synapse(int id, double weight)
         {
-            this.Id = id;
-            this.Weight = weight;
+            Id = id;
+            Weight = weight;
         }
     }
 }

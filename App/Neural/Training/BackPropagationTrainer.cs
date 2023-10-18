@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SnakeGame.App.Neural.NetworkComponents;
 
-namespace SnakeGame.App.Neural
+namespace SnakeGame.App.Neural.Training
 {
     public class BackPropagationTrainer : ITrainer
     {
@@ -22,11 +23,6 @@ namespace SnakeGame.App.Neural
             {
                 ETotal += 0.5 * Math.Pow(target[i] - Network.Outputs[i].Double, 2);
             }
-        }
-
-        public void Calculate()
-        {
-            Network.Calculate();
         }
 
         private double CalculateNeuronOutputDelta(double output, double target)
@@ -69,7 +65,7 @@ namespace SnakeGame.App.Neural
 
         public double Train(double[] target)
         {
-            Calculate();
+            //Calculate();
             CalculateTotalError(target);
             CalculateLastLayerWeightsDelta(Network.Layers.Last(), target);
 
@@ -82,7 +78,7 @@ namespace SnakeGame.App.Neural
             {
                 layer.Neurons.ForEach(neuron =>
                 {
-                    neuron.Synapses.ForEach(synaps => synaps.UpdateWeight(this.Speed));
+                    neuron.Synapses.ForEach(synaps => synaps.UpdateWeight(Speed));
                 });
             });
 

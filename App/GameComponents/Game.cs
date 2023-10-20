@@ -17,19 +17,25 @@ namespace SnakeGame.App.GameComponents
         public IViewer Rendering { get; set; }
         public IController GameControl { get; set; }
         public Snake Snake { get; set; }
+        public static object ConsoleWriterLock = new object();
         #endregion
 
         #region Методы
         public void Run()
         {
             this.Rendering.Clear(); //  Спорный момент, но допустим...
+            this.Rendering.UpdateField(this.GameField);
+            //this.GameControl.Run();
+
 
             var runSnake = new Task(RunSnake);
+            runSnake.Start();
+           
             var generateFood = new Task(() => this.GameField.GenerateFood(this.State));
-
+            //this.GameControl.Run();
             var controlling = new Task(this.GameControl.Run);
 
-            runSnake.Start();
+            
             generateFood.Start();
             controlling.Start();
 
@@ -45,31 +51,13 @@ namespace SnakeGame.App.GameComponents
                 this.Snake.RunSnake();
                 this.Rendering.UpdateField(this.GameField);
 
+                //Console.ReadKey(true);
+
                 Thread.Sleep(this.State.GameTickTimeValue);
             }
         }
 
         #region GameControl
-        //public void UpdateHeadDirection(string direction)
-        //{
-        //    switch (direction)
-        //    {
-        //        case "Left":
-        //            State.HeadDirection = State.HeadDirection == "Right" ? "Right" : "Left";
-        //            break;
-        //        case "Right":
-        //            State.HeadDirection = State.HeadDirection == "Left" ? "Left" : "Right";
-        //            break;
-        //        case "Up":
-        //            State.HeadDirection = State.HeadDirection == "Down" ? "Down" : "Up";
-        //            break;
-        //        case "Down":
-        //            State.HeadDirection = State.HeadDirection == "Up" ? "Up" : "Down";
-        //            break;
-        //        default:
-        //            break;
-        //    }
-        //}
         public void IncreaseSpeed()
         {
             State.SnakeSpeed += 50;

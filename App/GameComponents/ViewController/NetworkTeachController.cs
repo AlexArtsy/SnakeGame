@@ -6,15 +6,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SnakeGame.App.Neural.Training;
+using System.Reflection;
+using System.Text.Json;
 
 namespace SnakeGame.App.GameComponents.ViewController
 {
-    public class NetworkViewController : IViewer
-    {
-        //private FieldEmptiness emptiness = new FieldEmptiness();
+    public class NetworkTeachController : IViewer
+    {//private FieldEmptiness emptiness = new FieldEmptiness();
         //private FieldWall wall = new FieldWall();
+
+        private string previousDirection = "";
         #region Свойства
 
+        public List<DataSet> DataSet { get; set; }
         public State State { get; set; }
         public Network Network { get; set; }
         public IViewer Rendering { get; set; }
@@ -204,9 +209,99 @@ namespace SnakeGame.App.GameComponents.ViewController
 
             this.NetworkInputsVector = GetNetworkInputsVector(this.Network, fieldCellValuesVector);
 
+            var target = new double[] { 0, 0 };
+
+            if (!this.previousDirection.Equals(this.State.HeadDirection))
+            {
+                target = ConvertDirection(this.previousDirection, this.State.HeadDirection);
+            }
+            
+            this.DataSet.Add(new DataSet(fieldCellValuesVector, target));
+
             this.Rendering.UpdateField(field);  //  прокидываем отрисовку дальше
+
+            if (!this.State.IsSnakeAlive)
+            {
+                UpdateDataFile(this.Network, this.DataSet);
+            }
+        }
+        public List<DataSet> ReadDataSetsFromFileOrCreate(string name)
+        {
+            var dir = Directory.GetCurrentDirectory();
+            var path = @$"{dir}\{name}_DataSet.txt.txt";
+
+            if (!File.Exists(path))
+            {
+                File.Create(path).Close();
+                File.WriteAllText(path, JsonSerializer.Serialize(new List<DataSet>()));
+            }
+
+            var data = File.ReadAllText(path);
+            var dataSet = JsonSerializer.Deserialize<List<DataSet>>(data);
+            return dataSet;
+        }
+        public void UpdateDataFile(Network network, List<DataSet> dataSet)
+        {
+            var dir = Directory.GetCurrentDirectory();
+            var path = @$"{dir}\{network.Name}_DataSet.txt";
+            var data = JsonSerializer.Serialize(dataSet);
+            File.WriteAllText(path, data);
         }
 
+        private double[] ConvertDirection(string prevDirection, string direction)
+        {
+            var target = new double[] { 0, 0 };
+
+            switch (prevDirection)
+            {
+                case "Up":
+                    switch (this.State.HeadDirection)
+                    {
+                        case "Left":
+                            target = new double[] { 1, 0 };
+                            break;
+                        case "Right":
+                            target = new double[] { 0, 1 };
+                            break;
+                    }
+                    break;
+                case "Left":
+                    switch (this.State.HeadDirection)
+                    {
+                        case "Up":
+                            target = new double[] { 0, 1 };
+                            break;
+                        case "Down":
+                            target = new double[] { 1, 0 };
+                            break;
+                    }
+                    break;
+                case "Down":
+                    switch (this.State.HeadDirection)
+                    {
+                        case "Left":
+                            target = new double[] { 0, 1 };
+                            break;
+                        case "Right":
+                            target = new double[] { 1, 0 };
+                            break;
+                    }
+                    break;
+                case "Right":
+                    switch (this.State.HeadDirection)
+                    {
+                        case "Up":
+                            target = new double[] { 1, 0 };
+                            break;
+                        case "Down":
+                            target = new double[] { 0, 1 };
+                            break;
+                    }
+                    break;
+            }
+
+            return target;
+        }
         private IFieldCellValue GetSnakeHead(GameField field)
         {
             foreach (var fieldCell in field.Field)
@@ -237,11 +332,13 @@ namespace SnakeGame.App.GameComponents.ViewController
         }
         #endregion
 
-        public NetworkViewController(Network network, State state, IViewer rendering)
+        public NetworkTeachController(Network network, State state, IViewer rendering)
         {
             this.Network = network;
             this.Rendering = rendering;
             this.State = state;
+            this.previousDirection = state.HeadDirection;
+            this.DataSet = ReadDataSetsFromFileOrCreate(network.Name);
         }
     }
 }

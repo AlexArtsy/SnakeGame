@@ -15,23 +15,31 @@ namespace SnakeGame
     {
         static void Main(string[] args)
         {
-            string networkname = "209-300-2";
-            var network = Network.ReadNetworkFromFileOrCreate(networkname, 209, new int[] { 300, 2 });
+            string networkname = "470-400-300-2";
+            var network = Network.ReadNetworkFromFileOrCreate(networkname, 470, new int[] { 400, 300, 2 });
             
 
             var gameState = new State();
             var rendering = new ConsoleRendering(gameState);
+            //var rendering = new NetworkTeachController(network, gameState, new ConsoleRendering(gameState));
             var gameController = new ArrowKeyController(gameState);
             var field = new GameField(3, 5, 20, 10, gameState);
             var game = new Game(gameState, field, rendering, gameController);
 
-            //var humanGamer = new Human(game);
+            var humanGamer = new Human(game);
 
-            //RunHumanGame(game);
-            RunTrainer(network);
+            RunHumanGame(game);
+            //RunTrainer(network);
 
             //var newGame = new Game(gameState, field, rendering, )
-            RunAIGamer(game);
+            //var viewer = new NetworkViewController(network, gameState, rendering);
+            //game.GameControl = new NetworkController(
+            //    network, 
+            //    gameState, 
+            //    field,
+            //    new Snake(3, 4, field, gameState), viewer);
+            //game.Rendering = viewer;
+            //RunAIGamer(game);
         }
         public static void RunHumanGame(Game game)
         {

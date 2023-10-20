@@ -2,6 +2,7 @@
 using SnakeGame.App.GameComponents.ViewController;
 using SnakeGame.App.Neural.NetworkComponents;
 using SnakeGame.App.SnakeComponents;
+using System;
 
 namespace SnakeGame.App.GameComponents.OperationController
 {
@@ -15,15 +16,49 @@ namespace SnakeGame.App.GameComponents.OperationController
 
         private string GetDirection(List<Value> outputs)   //  Перепроверить направления
         {
+            var outs = new double[] {outputs[0].Double, outputs[1].Double };
+            //int index = 0;
             var direction = "";
-            var Outs = new double[] {
-                outputs[0].Double + outputs[1].Double ,
-                outputs[2].Double + outputs[3].Double + outputs[4].Double,
-                outputs[5].Double + outputs[6].Double,
-            };
-            var index = Array.IndexOf(Outs, Outs.Max());
 
-            switch (Snake.head.Direction)
+            lock (Game.ConsoleWriterLock)
+            {
+                Console.SetCursorPosition(0, 0);
+                Console.Write($"{outs[0]}     {outs[1]}");
+
+                Console.SetCursorPosition(50, 0);
+                Console.Write($"{this.State.HeadDirection}");
+            }
+
+            //Console.ReadKey(true);
+
+            if (Math.Abs(outs[0] - outs[1]) < 0.2)
+            {
+                return this.State.HeadDirection;
+            }
+            else if(outs[0] < 0.2 & outs[1] < 0.2)
+            {
+                return this.State.HeadDirection;
+            }
+            else if(outs[0] > outs[1])
+            {
+                return ConvertDirection(0);
+            }
+            else if (outs[0] < outs[1])
+            {
+                return ConvertDirection(1);
+            }
+            //else
+            //{
+            //    index = 1;
+            //}
+
+            return this.State.HeadDirection;
+        }
+
+        private string ConvertDirection(int index)
+        {
+            var direction = "";
+            switch (this.State.HeadDirection)
             {
                 case "Up":
                     switch (index)
@@ -32,9 +67,6 @@ namespace SnakeGame.App.GameComponents.OperationController
                             direction = "Left";
                             break;
                         case 1:
-                            direction = "Up";
-                            break;
-                        case 2:
                             direction = "Right";
                             break;
                     }
@@ -46,9 +78,6 @@ namespace SnakeGame.App.GameComponents.OperationController
                             direction = "Down";
                             break;
                         case 1:
-                            direction = "Left";
-                            break;
-                        case 2:
                             direction = "Up";
                             break;
                     }
@@ -60,9 +89,6 @@ namespace SnakeGame.App.GameComponents.OperationController
                             direction = "Right";
                             break;
                         case 1:
-                            direction = "Down";
-                            break;
-                        case 2:
                             direction = "Left";
                             break;
                     }
@@ -74,9 +100,6 @@ namespace SnakeGame.App.GameComponents.OperationController
                             direction = "Up";
                             break;
                         case 1:
-                            direction = "Right";
-                            break;
-                        case 2:
                             direction = "Down";
                             break;
                     }
@@ -85,14 +108,14 @@ namespace SnakeGame.App.GameComponents.OperationController
 
             return direction;
         }
-       
         public void Run()
         {
-            while (this.State.IsSnakeAlive)
-            {
-                this.State.HeadDirection = DirectionGenerator();
-                Thread.Sleep(this.State.GameTickTimeValue - 10);    //  А если ноль?
-            }
+            //while (this.State.IsSnakeAlive)
+            //{
+            //    this.State.HeadDirection = DirectionGenerator();
+            //    //Thread.Sleep(1000);    //  А если ноль?
+            //}
+            this.State.HeadDirection = DirectionGenerator();
         }
         public string DirectionGenerator()
         {

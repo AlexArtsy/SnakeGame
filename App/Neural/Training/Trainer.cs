@@ -53,7 +53,8 @@ namespace SnakeGame.App.Neural.Training
 
 
             this.FieldViewer.UpdateField(field); // Фигня какая-то получается
-            Console.ReadKey(true);
+
+            //Console.ReadKey(true);
 
         }
 
@@ -83,7 +84,7 @@ namespace SnakeGame.App.Neural.Training
                     Train(network, manualData, field);
 
                     var randomData = CreateRandomTemplate(new GameField(field.X, field.Y, field.width, field.height, new State()), network);
-                    //Train(network, randomData, field);
+                    Train(network, randomData, field);
 
      
                 });
@@ -194,7 +195,7 @@ namespace SnakeGame.App.Neural.Training
                 emptiness, head, emptiness,
                 emptiness, snake, emptiness,
             };
-            AddDataToDataSet(template, referenceLeft, field);
+            //AddDataToDataSet(template, referenceLeft, field);
 
             template = new IFieldCellValue[]
             {
@@ -202,7 +203,8 @@ namespace SnakeGame.App.Neural.Training
                 emptiness, head, wall,
                 emptiness, snake, wall,
             };
-            AddDataToDataSet(template, referenceLeft, field);
+            //AddDataToDataSet(template, referenceLeft, field);
+            AddDataToDataSet(template, referenceCenter, field);
 
             template = new IFieldCellValue[]
             {
@@ -210,7 +212,8 @@ namespace SnakeGame.App.Neural.Training
                 wall, head, emptiness,
                 wall, snake, emptiness,
             };
-            AddDataToDataSet(template, referenceRight, field);
+            //AddDataToDataSet(template, referenceRight, field);
+            AddDataToDataSet(template, referenceCenter, field);
 
             template = new IFieldCellValue[]
             {
@@ -558,7 +561,10 @@ namespace SnakeGame.App.Neural.Training
             {
                 for (var x = 0; x < width; x += 1)
                 {
-                    template.Add(field[x, y].Value);
+                    for (var s = 0; s < 30; s += 1)
+                    {
+                        template.Add(field[x, y].Value);
+                    }
                 }
             }
         }

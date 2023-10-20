@@ -9,7 +9,7 @@ namespace SnakeGame.App.GameComponents.ViewController
     internal class ConsoleRendering : IViewer
     {
         #region Поля
-        public readonly object ConsoleWriterLock = new object();
+        //public readonly object ConsoleWriterLock = new object();
         #endregion
 
         #region Свойства
@@ -42,7 +42,7 @@ namespace SnakeGame.App.GameComponents.ViewController
 
         public void UpdateFieldCell(FieldCell cell)
         {
-            lock (ConsoleWriterLock)
+            lock (Game.ConsoleWriterLock)
             {
                 Console.SetCursorPosition(cell.Position.X, cell.Position.Y);
                 Console.ForegroundColor = cell.Value.Color;
@@ -57,7 +57,7 @@ namespace SnakeGame.App.GameComponents.ViewController
 
         public void BlinkFieldCell(FieldCell cell)
         {
-            lock (ConsoleWriterLock)
+            lock (Game.ConsoleWriterLock)
             {
                 var originalColor = cell.Value.BgColor;
 
@@ -83,7 +83,7 @@ namespace SnakeGame.App.GameComponents.ViewController
 
         public void ShowScore()
         {
-            lock (ConsoleWriterLock)
+            lock (Game.ConsoleWriterLock)
             {
                 Console.SetCursorPosition(3, 3);
                 Console.Write($"Очки: {State.GameScore}");
@@ -92,7 +92,7 @@ namespace SnakeGame.App.GameComponents.ViewController
 
         public void ShowSpeed()
         {
-            lock (ConsoleWriterLock)
+            lock (Game.ConsoleWriterLock)
             {
                 Console.SetCursorPosition(3, 2);
                 Console.Write($"Скорость: {State.SnakeSpeed}");

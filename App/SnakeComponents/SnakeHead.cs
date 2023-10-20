@@ -16,8 +16,9 @@ namespace SnakeGame.App.SnakeComponents
         public void Eat(IFieldCellValue food, FieldCell cell, Snake snake)
         {
             //  Проверить порядок выполнения
-            food.Consume(snake, cell);
             cell.Value = this;
+            food.Consume(snake, cell);
+            
         }
         #endregion
 

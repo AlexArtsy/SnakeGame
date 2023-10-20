@@ -113,7 +113,7 @@ namespace SnakeGame.App.SnakeComponents
         public Snake(int x, int y, GameField gameField, State state)
         {
             this.State = state;
-                this.head = new SnakeHead(new FieldCoordinates(x, y), State.HeadDirection);
+            this.head = new SnakeHead(new FieldCoordinates(x, y), State.HeadDirection);
             this.Body = new List<SnakeMember>();
             this.gameField = gameField;
             this.Mind = new SnakeMind(Body, head, this.gameField, this.State);

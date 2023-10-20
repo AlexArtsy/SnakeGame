@@ -14,7 +14,7 @@ namespace SnakeGame.App.GameComponents
         //public bool TrainingMode { get; set; } = false;
         //public GameField Field { get; set; }
         public int GameScore { get; set; } = 0;
-        public int GameTickTimeValue { get; set; } = 500;
+        public int GameTickTimeValue { get; set; } = 1000;
         //public bool TickFront { get; set; } = false;
         public int SnakeSpeed { get; set; }
 

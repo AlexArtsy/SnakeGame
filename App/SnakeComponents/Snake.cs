@@ -85,27 +85,21 @@ namespace SnakeGame.App.SnakeComponents
             cell.Value = newBodyPart;
             this.isSnakeRised = true;
 
-            this.State.GameTickTimeValue -= 50;
-            this.State.SnakeSpeed += 50;
-            this.State.GameScore += 100;
+            SnakeRised?.Invoke();
         }
 
         public void Die(FieldCell cell)
         {
-            this.State.IsSnakeAlive = false;
+            SnakeDies?.Invoke();
         }
         #endregion
 
         #region Делегаты
-        public delegate void SnakeVisualHandler(FieldCell cell, ConsoleColor color);
         public delegate void SnakeHandler();
         #endregion
 
         #region События
-        public event SnakeVisualHandler Raised;
-        public event SnakeVisualHandler Crashed;
         public event SnakeHandler SnakeRised;
-        public event SnakeHandler SnakeMoved;
         public event SnakeHandler SnakeDies;
         #endregion
 

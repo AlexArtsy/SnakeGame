@@ -5,11 +5,11 @@ namespace SnakeGame.App.Neural.Training
     public class DataSet
     {
         public double[] Target { get; set; }
-        public List<IFieldCellValue> InputData { get; set; }
+        public double[] InputData { get; set; }
 
-        public DataSet(List<IFieldCellValue> input, double[] target)
+        public DataSet(double[] inputData, double[] target)
         {
-            InputData = input;
+            InputData = inputData;
             Target = target;
         }
     }

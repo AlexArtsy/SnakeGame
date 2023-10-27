@@ -74,6 +74,10 @@ namespace SnakeGame.App.GameComponents
         {
             State.GameScore -= 1;
         }
+        public void DecreaseTickTime()
+        {
+            this.State.GameTickTimeValue = this.State.GameTickTimeValue == 100 ? this.State.GameTickTimeValue : this.State.GameTickTimeValue - 50; 
+        }
         public void KillSnake()
         {
             State.IsSnakeAlive = false;
@@ -91,6 +95,12 @@ namespace SnakeGame.App.GameComponents
             this.Rendering = rendering;
 
             this.Snake = new Snake(5, 5, this.GameField, this.State);
+
+            this.Snake.SnakeDies += KillSnake;
+            this.Snake.SnakeRised += IncreaseScore;
+            this.Snake.SnakeRised += IncreaseSpeed;
+            this.Snake.SnakeRised += DecreaseFoodValue;
+            this.Snake.SnakeRised += DecreaseTickTime;
         }
         #endregion
     }

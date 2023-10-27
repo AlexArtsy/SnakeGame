@@ -61,10 +61,10 @@ namespace SnakeGame.App.Field
                     continue;
                 }
 
-                if (state.FoodPiecesValue < 10 )
+                if (state.FoodPiecesValue < 5 )
                 {
                     Field[x, y].Value = new SnakeFood();
-                    Thread.Sleep(new Random().Next(this.State.GameTickTimeValue, this.State.GameTickTimeValue * 10) + 1000);
+                    Thread.Sleep(new Random().Next(this.State.GameTickTimeValue, this.State.GameTickTimeValue * 10) + 2000);
                 }
             }
         }

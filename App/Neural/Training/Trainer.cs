@@ -39,7 +39,7 @@ namespace SnakeGame.App.Neural.Training
 
         private void Train(Network network, DataSet data, GameField field)
         {
-            var inputsVector = this.FieldViewer.GetNetworkInputsVector(network, data.InputData);
+            var inputsVector = data.InputData;
             network.Calculate(inputsVector);
             network.TotalError = BackTrainer.Train(data.Target);
 
@@ -542,7 +542,7 @@ namespace SnakeGame.App.Neural.Training
             AddFieldToTemplate(template, nearArea, 3, 3);
             AddFieldToTemplate(template, field.Field, field.width, field.height);
 
-            return new DataSet(template, reference);
+            return new DataSet(this.FieldViewer.GetNetworkInputsVector(this.FieldViewer.Network, template), reference);
         }
 
         public void AddDataToDataSet(IFieldCellValue[] template, double[] reference, GameField field)
@@ -552,7 +552,7 @@ namespace SnakeGame.App.Neural.Training
             AddFieldToTemplate(dataTemplate, field.Field, field.width, field.height);
             
 
-            DataSet.Add(new DataSet(dataTemplate, reference));
+            DataSet.Add(new DataSet(this.FieldViewer.GetNetworkInputsVector(this.FieldViewer.Network, dataTemplate), reference));
         }
 
         private void AddFieldToTemplate(List<IFieldCellValue> template, FieldCell[,] field, int width, int height)

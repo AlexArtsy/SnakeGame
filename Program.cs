@@ -24,7 +24,8 @@ namespace SnakeGame
             //var rendering = new NetworkTeachController(network, gameState, new ConsoleRendering(gameState));
             var gameController = new ArrowKeyController(gameState);
             var field = new GameField(3, 5, 20, 10, gameState);
-            var game = new Game(gameState, field, rendering, gameController);
+            //var game = new Game(gameState, field, rendering, gameController);
+            var game = new Game(gameState, field, new NetworkTeachController(network, gameState, rendering), gameController);
 
             var humanGamer = new Human(game);
 

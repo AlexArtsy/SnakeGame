@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using SnakeGame.App.Neural.Training;
 using System.Reflection;
 using System.Text.Json;
+using Microsoft.VisualBasic;
 
 namespace SnakeGame.App.GameComponents.ViewController
 {
@@ -216,19 +217,20 @@ namespace SnakeGame.App.GameComponents.ViewController
                 target = ConvertDirection(this.previousDirection, this.State.HeadDirection);
             }
             
-            this.DataSet.Add(new DataSet(fieldCellValuesVector, target));
+            this.DataSet.Add(new DataSet(this.NetworkInputsVector, target));
 
             this.Rendering.UpdateField(field);  //  прокидываем отрисовку дальше
 
             if (!this.State.IsSnakeAlive)
             {
+                this.DataSet.RemoveRange(this.DataSet.Count - 1, 1);
                 UpdateDataFile(this.Network, this.DataSet);
             }
         }
         public List<DataSet> ReadDataSetsFromFileOrCreate(string name)
         {
             var dir = Directory.GetCurrentDirectory();
-            var path = @$"{dir}\{name}_DataSet.txt.txt";
+            var path = @$"{dir}\{name}_DataSet.txt";
 
             if (!File.Exists(path))
             {
@@ -306,7 +308,7 @@ namespace SnakeGame.App.GameComponents.ViewController
         {
             foreach (var fieldCell in field.Field)
             {
-                if (fieldCell.GetType().Equals(typeof(SnakeHead)))
+                if (fieldCell.Value.GetType().Equals(typeof(SnakeHead)))
                 {
                     return fieldCell.Value;
                 }
